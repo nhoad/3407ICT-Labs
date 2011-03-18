@@ -9,7 +9,7 @@ CC = g++
 TARGET = Core
 VPATH = Source
 
-_OBJS = HPTime.o Week2_LineDrawing.o
+_OBJS = HPTime.o Week3_Triangle.o
 OBJDIR = Intermediates
 
 # Optional to build examples
@@ -40,3 +40,6 @@ clean:
 	$(RM) $(OBJS)
 	$(RM) $(TARGET)
 	@echo
+
+run: $(TARGET)
+	./Core

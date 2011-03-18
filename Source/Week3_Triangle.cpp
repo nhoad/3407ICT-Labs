@@ -7,188 +7,194 @@
 
 #include "Week3_Triangle.h"
 #include <iostream>
-#include <cmath>
+#include <algorithm>
+#define round(x) (int) x + 0.5
 using namespace std;
 
 #if defined(__MACH__) && defined(__APPLE__)
-    // Allow SDL main hack, because of the OS X Cocoa binding
+// Allow SDL main hack, because of the OS X Cocoa binding
 #else
-    // SDL main hackery disabled for Windows and Linux
-    #define SDL_main main           
+// SDL main hackery disabled for Windows and Linux
+#define SDL_main main
 #endif
 
 int main(int argc, char* argv[])
 {
-    Core example;
-    example.start();
-    return 0;
+	Core example;
+	example.start();
+	return 0;
 }
 
-Core::Core(int width, int height) : running(true)
+Core::Core(int width, int height) : running(true), point(0, 0, 255)
 {
-    this->width = width;
-    this->height = height;
+	this->width = width;
+	this->height = height;
 }
 
 Core::~Core()
 {
-    // Allows SDL to exit properly
-    if (SDL_WasInit(SDL_INIT_VIDEO))
-        SDL_Quit();
+	// Allows SDL to exit properly
+	if (SDL_WasInit(SDL_INIT_VIDEO))
+		SDL_Quit();
 }
 
 void Core::start()
 {
-    // Setup and then enter main loop
-    initialise();
-    while (running) {
-        render();
-        handleEvents();
-    }
+	// Setup and then enter main loop
+	initialise();
+	while (running) {
+		handleEvents();
+	}
 }
 
 void Core::initialise()
 {
-    // Initialise SDL
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        cerr << SDL_GetError() << endl;
-        SDL_Quit();
-    }
+	// Initialise SDL
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+		cerr << SDL_GetError() << endl;
+		SDL_Quit();
+	}
 
-    // Create a framebuffer
-    Uint32 flags = SDL_SWSURFACE | SDL_DOUBLEBUF;
+	// Create a framebuffer
+	Uint32 flags = SDL_SWSURFACE | SDL_DOUBLEBUF;
 
-    buffer = SDL_SetVideoMode(width, height, 32, flags);
-    if (!buffer) {
-        cerr << SDL_GetError() << endl;
-        SDL_Quit();
-    }
+	buffer = SDL_SetVideoMode(width, height, 32, flags);
+	if (!buffer) {
+		cerr << SDL_GetError() << endl;
+		SDL_Quit();
+	}
+
+	// Clear the screen to black
+	SDL_FillRect(buffer, NULL, 0);
+	SDL_Flip(buffer);
 }
 
-void Core::render()
+void Core::draw(Point a, Point b)
 {
-    // Clear the screen to black
-    SDL_FillRect(buffer, NULL, 0);
+	SDL_LockSurface(buffer);
+	/////////////////////////////////////
+	// Draw objects here
+	line(a, b);
 
-    SDL_LockSurface(buffer);
-    /////////////////////////////////////
-    // Draw objects here
-    float scale = 256.f;    // Size of the triangle
-    float half = scale/2;
-
-    Point a(0, (int)-scale, 255, 0, 0);
-    Point b((int)(half*sqrt(3.f)), (int)half, 0, 255, 0);
-    Point c((int)(-half*sqrt(3.f)), (int)half, 0, 0, 255);
-
-    a.x += width/2;     a.y += height/2;
-    b.x += width/2;     b.y += height/2;
-    c.x += width/2;     c.y += height/2;
-
-    // Draw a RGB Equilateral triangle.
-    drawTriangle(a, b, c);
-
-    /////////////////////////////////////
-    SDL_UnlockSurface(buffer);
-    // Flip the buffers
-    SDL_Flip(buffer);
+	/////////////////////////////////////
+	SDL_UnlockSurface(buffer);
+	// Flip the buffers
+	SDL_Flip(buffer);
 }
 
-/////////////////////////////////////
-// Lab Exercise
-
-/////////////////////////////////////
-// Renders a triangle(a, b, c) to buffer
-void Core::drawTriangle(Point a, Point b, Point c)
+vector<Point> Core::makeLine(Point a, Point b)
 {
+	////////////////////////////////////////////
+	// Lab Exercise
 
+	vector<Point> result;
+
+	if (a.x > b.x)
+		swap(a, b);
+
+	// we want to store x and y as floats or it won't work!
+	double y = a.y;
+	double x = a.x;
+
+	// store colours for same reason
+	double red = a.r;
+	double green = a.g;
+	double blue = a.b;
+
+	double slope = ((double)(b.y - a.y)) / (double)(b.x - a.x);
+
+	if (slope <= 1.0 && slope > -1.0)
+	{
+		double r_inc = (double) (b.r - a.r) / (b.x - a.x);
+		double g_inc = (double) (b.g - a.g) / (b.x - a.x);
+		double b_inc = (double) (b.b - a.b) / (b.x - a.x);
+
+		for (; a.x < b.x; a.x++)
+		{
+			result.push_back(Point(a.x, round(y), round(red), round(green), round(blue)));
+
+			red += r_inc;
+			green += g_inc;
+			blue += b_inc;
+			y += slope;
+		}
+
+		return result;
+	}
+	else if (slope <= -1.0)
+	{
+		// because we're drawing a steep negative slope, swap a and b back to their original positions.
+		swap(a, b);
+
+		x = a.x;
+	}
+
+	double r_inc = (double) (b.r - a.r) / (b.y - a.y);
+	double g_inc = (double) (b.g - a.g) / (b.y - a.y);
+	double b_inc = (double) (b.b - a.b) / (b.y - a.y);
+
+	for (; a.y < b.y; a.y++)
+	{
+		result.push_back(Point(round(x), a.y, round(red), round(green), round(blue)));
+
+		red += r_inc;
+		green += g_inc;
+		blue += b_inc;
+		x += 1 / slope;
+	}
+
+	return result;
+
+	////////////////////////////////////////////
 }
 
-/////////////////////////////////////
-// "draws" the line(a, b) but stores the result in the vector.
-// This can be used to create your edge lists.
-// You can keep doing push_back() into the std::vector, but make sure that your lists are
-// of equal length after interpolation!
-void Core::makeLine(Point a, Point b, vector<Point> *line)
+void Core::line(Point a, Point b)
 {
+	vector<Point> points = makeLine(a, b);
 
+	for (int i=0; i < points.size(); i++)
+	{
+		Point p = points[i];
+		putpixel(p.x, p.y, p.r, p.g, p.b);
+	}
 }
 
-/////////////////////////////////////
-// Renders the line(a, b). Assume that a and b have the same y value.
-void Core::scanline(Point a, Point b)
+void Core::handleEvents()
 {
-
+	SDL_Event e;
+	while (SDL_PollEvent(&e)) {
+		switch (e.type) {
+			case SDL_QUIT:
+				running = false;
+				break;
+			case SDL_KEYUP:
+				switch (e.key.keysym.sym) {
+					case SDLK_ESCAPE:
+						running = false;
+						break;
+					default: break;
+				}
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				draw(point, Point(e.button.x, e.button.y, 0,0, 255));
+				point.x = e.button.x;
+				point.y = e.button.y;
+				point.b = point.r;
+				point.r = point.g;
+				point.g = point.b;
+				break;
+			default: break;
+		}
+	}
 }
-
-/////////////////////////////////////
-// Clips the triangle against the screen boundary. May return a quad.
-std::vector<Point> Core::clip(std::vector<Point>)
-{
-
-}
-
-/////////////////////////////////////
-// Decomposes a polygon (if more than a triangle) into multiple triangles.
-std::vector<Point> Core::decompose(std::vector<Point>)
-{
-
-}
-
-/////////////////////////////////////
-
-int Core::sign(int x)
-{
-    if (x < 0)
-        return -1;
-    else if (x > 0)
-        return 1;
-    return 0;
-}
-
-int Core::round(float x)
-{
-    return int(floor(x + 0.5f));
-}
-
-float Core::lerp(float a, float b, float ratio)
-{
-    if (a == b || ratio == 0.f)
-        return float(a);
-    if (ratio == 1.0f)
-        return float(b);
-    return a + ratio * (b - a);
-}
-
-void Core::handleEvents()  
-{  
-    SDL_Event e;  
-    while (SDL_PollEvent(&e)) {  
-        switch (e.type) {  
-            case SDL_QUIT:  
-                running = false;  
-            break;  
-            case SDL_KEYUP:
-                switch (e.key.keysym.sym) {
-                    case SDLK_ESCAPE:
-                        running = false;
-                    break;
-                    default: break;
-                }
-            break;
-            case SDL_MOUSEBUTTONDOWN: // Do nothing this time
-            break;
-            default: break;  
-        }  
-    }  
-}  
 
 void Core::putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {
-    Uint8 *p = (Uint8 *)buffer->pixels + y * buffer->pitch + x * 4;
+	Uint8 *p = (Uint8 *)buffer->pixels + y * buffer->pitch + x * 4;
 
 #if defined(__MACH__) && defined(__APPLE__)
-    *(Uint32 *)p = b << 24 | g << 16 | r << 8 | a; // Big endian
+	*(Uint32 *)p = b << 24 | g << 16 | r << 8 | a; // Big endian
 #else
-    *(Uint32 *)p = b | g << 8 | r << 16 | a << 24; // Lil endian
+	*(Uint32 *)p = b | g << 8 | r << 16 | a << 24; // Lil endian
 #endif
 }
