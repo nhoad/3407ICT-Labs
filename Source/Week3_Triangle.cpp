@@ -94,9 +94,23 @@ void Core::scanLine(Point a, Point b)
 	double g_inc = (double) (b.g - a.g) / dx;
 	double b_inc = (double) (b.b - a.b) / dx;
 
+	if (a.x > b.x)
+		swap<Point>(a, b);
+
+/*	cout << a.x << " -> " << b.x << " on " << y << endl;
+	cout << "a.y and b.y: " << a.y << ' ' << b.y << endl;
+*/
+	if (a.y != b.y)
+	{
+		cout << "shit's fucked" << endl;
+		cout << "a.y and b.y: " << a.y << ' ' << b.y << endl;
+		return;
+	}
+
 	while (a.x < b.x)
 	{
-		putpixel(a.x++, a.y, round(red), round(blue), round(green));
+		putpixel(a.x, a.y, round(red), round(blue), round(green));
+		a.x++;
 
 		red += r_inc;
 		blue += b_inc;
@@ -106,9 +120,39 @@ void Core::scanLine(Point a, Point b)
 
 vector<Point> Core::makeLine(Point a, Point b)
 {
-	////////////////////////////////////////////
-	// Lab Exercise
+	vector<Point> result;
 
+	// we want to x as a float or it won't work!
+	double x = a.x;
+
+	// store colours for same reason
+	double red = a.r;
+	double green = a.g;
+	double blue = a.b;
+
+	double dy = b.y - a.y;
+	double dx = b.x - a.x;
+
+	double slope = dy / dx;
+
+	double r_inc = (double) (b.r - a.r) / dy;
+	double g_inc = (double) (b.g - a.g) / dy;
+	double b_inc = (double) (b.b - a.b) / dy;
+
+	for (; a.y < b.y; a.y++)
+	{
+		result.push_back(Point(round(x), a.y, round(red), round(green), round(blue)));
+
+		red += r_inc;
+		green += g_inc;
+		blue += b_inc;
+		x += 1 / slope;
+	}
+	return result;
+}
+
+void Core::line(Point a, Point b)
+{
 	vector<Point> result;
 
 	if (a.x > b.x)
@@ -136,7 +180,7 @@ vector<Point> Core::makeLine(Point a, Point b)
 
 		for (; a.x < b.x; a.x++)
 		{
-			result.push_back(Point(a.x, round(y), round(red), round(green), round(blue)));
+			putpixel(a.x, round(y), round(red), round(green), round(blue));
 
 			red += r_inc;
 			green += g_inc;
@@ -144,7 +188,7 @@ vector<Point> Core::makeLine(Point a, Point b)
 			y += slope;
 		}
 
-		return result;
+		return;
 	}
 	else if (slope <= -1.0)
 	{
@@ -152,6 +196,7 @@ vector<Point> Core::makeLine(Point a, Point b)
 		swap(a, b);
 
 		x = a.x;
+		dy = b.y - a.y;
 	}
 
 	double r_inc = (double) (b.r - a.r) / dy;
@@ -160,7 +205,7 @@ vector<Point> Core::makeLine(Point a, Point b)
 
 	for (; a.y < b.y; a.y++)
 	{
-		result.push_back(Point(round(x), a.y, round(red), round(green), round(blue)));
+		putpixel(round(x), a.y, round(red), round(green), round(blue));
 
 		red += r_inc;
 		green += g_inc;
@@ -168,27 +213,79 @@ vector<Point> Core::makeLine(Point a, Point b)
 		x += 1 / slope;
 	}
 
-	return result;
-
 	////////////////////////////////////////////
-}
-
-void Core::line(Point a, Point b)
-{
-	vector<Point> points = makeLine(a, b);
-
-	for (int i=0; i < points.size(); i++)
-	{
-		Point p = points[i];
-		putpixel(p.x, p.y, p.r, p.g, p.b);
-	}
 }
 
 void Core::triangle(Point a, Point b, Point c)
 {
-	line(a, b);
-	line(b, c);
-	line(a, c);
+	// first, we sort the vertices on the Y axis, using sort from algorithm library.
+	vector<Point> sorted;
+
+	sorted.push_back(a);
+	sorted.push_back(b);
+	sorted.push_back(c);
+
+	sort(sorted.begin(), sorted.end(), compareOnY);
+
+	a = sorted[0];
+	b = sorted[1];
+	c = sorted[2];
+
+	// we'll make all the edges now rather than littering them through code.
+	vector<Point> ab_edge = makeLine(a, b);
+	vector<Point> bc_edge = makeLine(b, c);
+	vector<Point> ac_edge = makeLine(a, c);
+
+	vector<Point> l_edge, r_edge;
+
+	// find the left and right edges by comparing x values.
+	if (b.x < c.x)
+	{
+		l_edge = ab_edge;
+		r_edge = ac_edge;
+	}
+	else if (c.x < b.x)
+	{
+		l_edge = ac_edge;
+		r_edge = ab_edge;
+	}
+	else
+	{
+		l_edge = ac_edge;
+		r_edge = bc_edge;
+	}
+
+	// combine edges where necessary
+	if (l_edge.size() < r_edge.size())
+	{
+		for (unsigned i = 0; i < bc_edge.size(); i++)
+			l_edge.push_back(bc_edge[i]);
+	}
+	else
+	{
+		for (unsigned i = 0; i < bc_edge.size(); i++)
+			r_edge.push_back(bc_edge[i]);
+	}
+
+	// now, let's paint it.
+	for (int i=0; i < l_edge.size();i++)
+		scanLine(l_edge[i], r_edge[i]);
+
+	cout << "ab size: "<< ab_edge.size() << endl;
+	cout << "ac size: "<< ac_edge.size() << endl;
+	cout << "bc size: "<< bc_edge.size() << endl << endl;
+	cout << "l_edge size: " << l_edge.size() << endl;
+	cout << "r_edge size: " << r_edge.size() << endl << endl;
+}
+
+int compareOnX(Point a, Point b)
+{
+	return (a.x < b.x);
+}
+
+int compareOnY(Point a, Point b)
+{
+	return (a.y < b.y);
 }
 
 void Core::handleEvents()
@@ -228,7 +325,26 @@ void Core::handleEvents()
 					}
 					case SDLK_SPACE:
 						SDL_LockSurface(buffer);
-						scanLine(Point(50, 200, 255), Point(750, 200, 0, 255));
+						triangle(Point(50, 200, 255),
+									Point(200, 200, 0, 255),
+									Point(125, 50, 0,0,255));
+
+						triangle(Point(250, 200, 255),
+									Point(400, 200, 0, 255),
+									Point(250, 50, 0,0,255));
+
+						triangle(Point(80, 10, 255),
+									Point(70, 30, 0, 255),
+									Point(100, 60, 0, 0, 255));
+
+						triangle(Point(350, 200, 255),
+									Point(550, 250, 0, 255),
+									Point(650, 500, 0, 0, 255));
+
+						triangle(Point(50, 250, 255),
+									Point(250, 250, 0, 255),
+									Point(250, 500, 0, 0, 255));
+
 						SDL_UnlockSurface(buffer);
 						SDL_Flip(buffer);
 						break;

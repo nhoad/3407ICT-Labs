@@ -16,6 +16,9 @@ class Point
 		Point(int x, int y, Uint8 r=0, Uint8 g=0, Uint8 b=0) : x(x), y(y), r(r), g(g), b(b) {}
 };
 
+int compareOnX(Point a, Point b);
+int compareOnY(Point a, Point b);
+
 class Core
 {
 	int width, height;
