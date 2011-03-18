@@ -90,26 +90,16 @@ void Core::scanLine(Point a, Point b)
 	double blue = a.b;
 	double dx = b.x - a.x;
 
+	if (a.x > b.x)
+		swap<Point>(a, b);
+
 	double r_inc = (double) (b.r - a.r) / dx;
 	double g_inc = (double) (b.g - a.g) / dx;
 	double b_inc = (double) (b.b - a.b) / dx;
 
-	if (a.x > b.x)
-		swap<Point>(a, b);
-
-/*	cout << a.x << " -> " << b.x << " on " << y << endl;
-	cout << "a.y and b.y: " << a.y << ' ' << b.y << endl;
-*/
-	if (a.y != b.y)
-	{
-		cout << "shit's fucked" << endl;
-		cout << "a.y and b.y: " << a.y << ' ' << b.y << endl;
-		return;
-	}
-
 	while (a.x < b.x)
 	{
-		putpixel(a.x, a.y, round(red), round(blue), round(green));
+		putpixel(a.x, a.y, round(red), round(green), round(blue));
 		a.x++;
 
 		red += r_inc;
@@ -218,6 +208,10 @@ void Core::line(Point a, Point b)
 
 void Core::triangle(Point a, Point b, Point c)
 {
+	/*line(a, b);
+	line(b, c);
+	line(a, c);
+*/
 	// first, we sort the vertices on the Y axis, using sort from algorithm library.
 	vector<Point> sorted;
 
@@ -270,12 +264,6 @@ void Core::triangle(Point a, Point b, Point c)
 	// now, let's paint it.
 	for (int i=0; i < l_edge.size();i++)
 		scanLine(l_edge[i], r_edge[i]);
-
-	cout << "ab size: "<< ab_edge.size() << endl;
-	cout << "ac size: "<< ac_edge.size() << endl;
-	cout << "bc size: "<< bc_edge.size() << endl << endl;
-	cout << "l_edge size: " << l_edge.size() << endl;
-	cout << "r_edge size: " << r_edge.size() << endl << endl;
 }
 
 int compareOnX(Point a, Point b)
