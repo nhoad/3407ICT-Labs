@@ -20,6 +20,7 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+	srand(time(NULL));
 	Core example;
 	example.start();
 	return 0;
@@ -183,6 +184,13 @@ void Core::line(Point a, Point b)
 	}
 }
 
+void Core::triangle(Point a, Point b, Point c)
+{
+	line(a, b);
+	line(b, c);
+	line(a, c);
+}
+
 void Core::handleEvents()
 {
 	SDL_Event e;
@@ -196,6 +204,28 @@ void Core::handleEvents()
 					case SDLK_ESCAPE:
 						running = false;
 						break;
+					case SDLK_RETURN:
+					{
+						int x1, y1, x2, y2, x3, y3;
+
+						x1 = rand() % width;
+						x2 = rand() % width;
+						x3 = rand() % width;
+
+						y1 = rand() % height;
+						y2 = rand() % height;
+						y3 = rand() % height;
+
+						Point a = Point(x1, y1, 255);
+						Point b = Point(x2, y2, 0, 255);
+						Point c = Point(x3, y3, 0, 0, 255);
+
+						SDL_LockSurface(buffer);
+						triangle(a, b, c);
+						SDL_UnlockSurface(buffer);
+						SDL_Flip(buffer);
+						break;
+					}
 					case SDLK_SPACE:
 						SDL_LockSurface(buffer);
 						scanLine(Point(50, 200, 255), Point(750, 200, 0, 255));
