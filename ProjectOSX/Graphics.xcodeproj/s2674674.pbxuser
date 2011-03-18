@@ -1,0 +1,213 @@
+// !$*UTF8*$!
+{
+	002F3A2B09D0888800EBEB88 /* SDLMain.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {894, 704}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 374}";
+		};
+	};
+	002F3A2C09D0888800EBEB88 /* SDLMain.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {943, 4901}}";
+			sepNavSelRange = "{700, 2}";
+			sepNavVisRange = "{0, 1692}";
+		};
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Debug;
+		activeExecutable = D3F90C951315E88000C31FE8 /* Graphics */;
+		activeTarget = 8D1107260486CEB800E47090 /* Graphics */;
+		addToTargets = (
+			8D1107260486CEB800E47090 /* Graphics */,
+		);
+		codeSenseManager = D3F90CAA1315E88D00C31FE8 /* Code sense */;
+		executables = (
+			D3F90C951315E88000C31FE8 /* Graphics */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					716,
+					20,
+					48,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 320916226;
+			PBXWorkspaceStateSaveDate = 320916226;
+		};
+		perUserProjectItems = {
+			D3AA6A3C1320CBEE006069B5 /* PBXTextBookmark */ = D3AA6A3C1320CBEE006069B5 /* PBXTextBookmark */;
+			D3AA6A3D1320CBEE006069B5 /* XCBuildMessageTextBookmark */ = D3AA6A3D1320CBEE006069B5 /* XCBuildMessageTextBookmark */;
+			D3AA6A4C1320CC44006069B5 /* PBXTextBookmark */ = D3AA6A4C1320CC44006069B5 /* PBXTextBookmark */;
+			D3F90CF61315EB4E00C31FE8 /* PBXTextBookmark */ = D3F90CF61315EB4E00C31FE8 /* PBXTextBookmark */;
+			D3F90CF71315EB4E00C31FE8 /* PBXTextBookmark */ = D3F90CF71315EB4E00C31FE8 /* PBXTextBookmark */;
+			D3F90CF81315EB4E00C31FE8 /* PBXTextBookmark */ = D3F90CF81315EB4E00C31FE8 /* PBXTextBookmark */;
+		};
+		sourceControlManager = D3F90CA91315E88D00C31FE8 /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	8D1107260486CEB800E47090 /* Graphics */ = {
+		activeExec = 0;
+		executables = (
+			D3F90C951315E88000C31FE8 /* Graphics */,
+		);
+	};
+	D3AA6A3C1320CBEE006069B5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = D3F90CE11315EA4600C31FE8 /* SoftwareRendering.h */;
+		name = "SoftwareRendering.h: 11";
+		rLen = 0;
+		rLoc = 167;
+		rType = 0;
+		vrLen = 398;
+		vrLoc = 0;
+	};
+	D3AA6A3D1320CBEE006069B5 /* XCBuildMessageTextBookmark */ = {
+		isa = PBXTextBookmark;
+		comments = "SDL.h: No such file or directory";
+		fRef = D3AA6A3E1320CBEE006069B5 /* Graphics.pch */;
+		fallbackIsa = XCBuildMessageTextBookmark;
+		rLen = 1;
+		rLoc = 4;
+		rType = 1;
+	};
+	D3AA6A3E1320CBEE006069B5 /* Graphics.pch */ = {
+		isa = PBXFileReference;
+		lastKnownFileType = sourcecode.c.h;
+		name = Graphics.pch;
+		path = /Users/local/STUDENT/s2674674/3407ICT/ProjectOSX/Graphics.pch;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {894, 672}}";
+			sepNavSelRange = "{106, 0}";
+			sepNavVisRange = "{0, 175}";
+		};
+	};
+	D3AA6A4C1320CC44006069B5 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = D3AA6A4D1320CC44006069B5 /* Graphics.pch */;
+		name = "Graphics.pch: 5";
+		rLen = 0;
+		rLoc = 106;
+		rType = 0;
+		vrLen = 175;
+		vrLoc = 0;
+	};
+	D3AA6A4D1320CC44006069B5 /* Graphics.pch */ = {
+		isa = PBXFileReference;
+		name = Graphics.pch;
+		path = /Users/local/STUDENT/s2674674/3407ICT/ProjectOSX/Graphics.pch;
+		sourceTree = "<absolute>";
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {894, 695}}";
+			sepNavSelRange = "{106, 0}";
+			sepNavVisRange = "{0, 175}";
+		};
+	};
+	D3F90C951315E88000C31FE8 /* Graphics */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = Graphics;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+	};
+	D3F90CA91315E88D00C31FE8 /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	D3F90CAA1315E88D00C31FE8 /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	D3F90CDF1315EA3E00C31FE8 /* SoftwareRendering.cpp */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {894, 1547}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1127}";
+		};
+	};
+	D3F90CE11315EA4600C31FE8 /* SoftwareRendering.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {894, 695}}";
+			sepNavSelRange = "{167, 0}";
+			sepNavVisRange = "{0, 398}";
+			sepNavWindowFrame = "{{38, 834}, {750, 558}}";
+		};
+	};
+	D3F90CF61315EB4E00C31FE8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 002F3A2C09D0888800EBEB88 /* SDLMain.m */;
+		name = "SDLMain.m: 21";
+		rLen = 2;
+		rLoc = 700;
+		rType = 0;
+		vrLen = 1692;
+		vrLoc = 0;
+	};
+	D3F90CF71315EB4E00C31FE8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 002F3A2B09D0888800EBEB88 /* SDLMain.h */;
+		name = "SDLMain.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 374;
+		vrLoc = 0;
+	};
+	D3F90CF81315EB4E00C31FE8 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = D3F90CDF1315EA3E00C31FE8 /* SoftwareRendering.cpp */;
+		name = "SoftwareRendering.cpp: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1127;
+		vrLoc = 0;
+	};
+}
