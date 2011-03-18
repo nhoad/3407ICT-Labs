@@ -82,6 +82,27 @@ void Core::draw(Point a, Point b)
 	SDL_Flip(buffer);
 }
 
+void Core::scanLine(Point a, Point b)
+{
+	double red = a.r;
+	double green = a.g;
+	double blue = a.b;
+	double dx = b.x - a.x;
+
+	double r_inc = (double) (b.r - a.r) / dx;
+	double g_inc = (double) (b.g - a.g) / dx;
+	double b_inc = (double) (b.b - a.b) / dx;
+
+	while (a.x < b.x)
+	{
+		putpixel(a.x++, a.y, round(red), round(blue), round(green));
+
+		red += r_inc;
+		blue += b_inc;
+		green += g_inc;
+	}
+}
+
 vector<Point> Core::makeLine(Point a, Point b)
 {
 	////////////////////////////////////////////
@@ -101,13 +122,16 @@ vector<Point> Core::makeLine(Point a, Point b)
 	double green = a.g;
 	double blue = a.b;
 
-	double slope = ((double)(b.y - a.y)) / (double)(b.x - a.x);
+	double dy = b.y - a.y;
+	double dx = b.x - a.x;
+
+	double slope = dy / dx;
 
 	if (slope <= 1.0 && slope > -1.0)
 	{
-		double r_inc = (double) (b.r - a.r) / (b.x - a.x);
-		double g_inc = (double) (b.g - a.g) / (b.x - a.x);
-		double b_inc = (double) (b.b - a.b) / (b.x - a.x);
+		double r_inc = (double) (b.r - a.r) / dx;
+		double g_inc = (double) (b.g - a.g) / dx;
+		double b_inc = (double) (b.b - a.b) / dx;
 
 		for (; a.x < b.x; a.x++)
 		{
@@ -129,9 +153,9 @@ vector<Point> Core::makeLine(Point a, Point b)
 		x = a.x;
 	}
 
-	double r_inc = (double) (b.r - a.r) / (b.y - a.y);
-	double g_inc = (double) (b.g - a.g) / (b.y - a.y);
-	double b_inc = (double) (b.b - a.b) / (b.y - a.y);
+	double r_inc = (double) (b.r - a.r) / dy;
+	double g_inc = (double) (b.g - a.g) / dy;
+	double b_inc = (double) (b.b - a.b) / dy;
 
 	for (; a.y < b.y; a.y++)
 	{
@@ -172,6 +196,13 @@ void Core::handleEvents()
 					case SDLK_ESCAPE:
 						running = false;
 						break;
+					case SDLK_SPACE:
+						SDL_LockSurface(buffer);
+						scanLine(Point(50, 200, 255), Point(750, 200, 0, 255));
+						SDL_UnlockSurface(buffer);
+						SDL_Flip(buffer);
+						break;
+
 					default: break;
 				}
 				break;

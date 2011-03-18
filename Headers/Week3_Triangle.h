@@ -36,6 +36,7 @@ class Core
 	void handleEvents();
 
 	vector<Point> makeLine(Point a, Point b);
+	void scanLine(Point a, Point b);
 	void putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);
 	void draw(Point a, Point b);
 	void line(Point a, Point b);
