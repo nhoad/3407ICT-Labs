@@ -41,6 +41,11 @@ class Core
 
 	vector<Point> makeLine(Point a, Point b);
 	void draw_polygon(vector<Point> polygon);
+	vector<Point> clip(vector<Point> polygon);
+	vector<Point> clip_left(vector<Point> polygon);
+	vector<Point> clip_right(vector<Point> polygon);
+	vector<Point> clip_top(vector<Point> polygon);
+	vector<Point> clip_bottom(vector<Point> polygon);
 	void triangle(Point a, Point b, Point c);
 	void scanLine(Point a, Point b);
 	void putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);

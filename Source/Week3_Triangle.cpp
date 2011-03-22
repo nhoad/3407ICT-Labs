@@ -28,6 +28,17 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
+int compareOnX(Point a, Point b)
+{
+	return (a.x < b.x);
+}
+
+int compareOnY(Point a, Point b)
+{
+	return (a.y < b.y);
+}
+
+
 Core::Core(int width, int height) : running(true), point(0, 0, 255)
 {
 	this->width = width;
@@ -212,9 +223,9 @@ vector<Point> Core::decompose(vector<Point> polygon)
 {
 	vector<Point> result;
 
+	// build triangles from the first point, next point and final point.
 	while (polygon.size() > 2)
 	{
-		cout << "size: " << polygon.size() << endl;
 		result.push_back(polygon[0]);
 		result.push_back(polygon[1]);
 		result.push_back(polygon[polygon.size()-1]);
@@ -222,38 +233,209 @@ vector<Point> Core::decompose(vector<Point> polygon)
 		polygon.erase(polygon.begin(), polygon.begin()+1);
 	}
 
-	cout << "polygon.size(): " << polygon.size() << endl;
-	cout << "decomposed.size(): " << result.size() << endl;
+	return result;
+}
+
+vector<Point> Core::clip_left(vector<Point> polygon)
+{
+	vector<Point> result;
+
+	const int minX = 0;
+
+	for (unsigned i=0; i < polygon.size(); i++)
+	{
+		Point a = polygon[i];
+		Point b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
+
+		if (a.x < minX && b.x < minX)
+			continue;
+		else if (a.x >= minX && b.x >= minX)
+			result.push_back(a);
+		else
+		{
+			bool swapped = false;
+
+			// if a.x is within bounds, operate on b.
+			if (a.x >= minX)
+			{
+				swapped = true;
+				swap(a, b);
+			}
+
+			double dy = b.y - a.y;
+			double dx = b.x - a.x;
+
+			a.y += ((double)(dy / dx)) * (double)(minX - a.x);
+			a.x = minX;
+
+			result.insert(result.begin(), a);
+			if (swapped)
+				result.push_back(b);
+		}
+
+	}
 
 	return result;
 }
 
+vector<Point> Core::clip_right(vector<Point> polygon)
+{
+	vector<Point> result;
+	const int maxX = width;
+
+	for (unsigned i=0; i < polygon.size(); i++)
+	{
+		Point a = polygon[i];
+		Point b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
+
+		if (a.x > maxX && b.x > maxX)
+			continue;
+		else if (a.x <= maxX && b.x <= maxX)
+			result.push_back(a);
+		else
+		{
+			bool swapped = false;
+
+			// if a.x is within boundaries, we'll operate on b.
+			if (a.x <= maxX)
+			{
+				swapped = true;
+				swap(a, b);
+			}
+
+			double dy = b.y - a.y;
+			double dx = b.x - a.x;
+
+			a.y += (dy / dx) * (maxX - a.x);
+			a.x = maxX-1;
+
+			if (swapped)
+				result.push_back(b);
+
+			result.push_back(a);
+		}
+
+	}
+
+	return result;
+}
+
+vector<Point> Core::clip_bottom(vector<Point> polygon)
+{
+	vector<Point> result;
+	const int maxY = height;
+
+	for (unsigned i=0; i < polygon.size(); i++)
+	{
+		Point a = polygon[i];
+		Point b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
+
+		if (a.y > maxY && b.y > maxY)
+			continue;
+		else if (a.y <= maxY && b.y <= maxY)
+			result.push_back(a);
+		else
+		{
+			bool swapped = false;
+
+			double dy =(double) b.y / a.y;
+			double dx =(double) b.x / a.x;
+
+			// if a.y is within boundaries, we'll operate on b.
+			if (a.y <= maxY)
+			{
+				swapped = true;
+				swap(a, b);
+			}
+
+			a.x += (maxY - a.y) / (dy / dx);
+			a.y = maxY-1;
+
+			if (swapped)
+				result.push_back(b);
+
+			result.push_back(a);
+		}
+
+	}
+
+	return result;
+}
+vector<Point> Core::clip_top(vector<Point> polygon)
+{
+	vector<Point> result;
+	const int minY = 0;
+
+	for (unsigned i=0; i < polygon.size(); i++)
+	{
+		Point a = polygon[i];
+		Point b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
+
+		if (a.y < minY && b.y < minY)
+			continue;
+		else if (a.y >= minY && b.y >= minY)
+			result.push_back(a);
+		else
+		{
+			bool swapped = false;
+
+			// if a.y is within boundaries, we'll operate on b.
+			if (a.y >= minY)
+			{
+				swapped = true;
+				swap(a, b);
+			}
+
+			double dy = (double) b.y / a.y;
+			double dx = (double) b.x / a.x;
+
+			a.x += (minY - a.y) / (dy / dx);
+			a.y = minY;
+
+			result.insert(result.begin(), a);
+			if (swapped)
+				result.push_back(b);
+		}
+
+	}
+
+	return result;
+}
+vector<Point> Core::clip(vector<Point> polygon)
+{
+	cout << endl << "before clipping: " << endl;
+	for (unsigned i=0; i < polygon.size(); i++)
+		cout << i << " : " << polygon[i].x << ' ' << polygon[i].y << endl;
+
+	polygon = clip_bottom(polygon);
+	polygon = clip_top(polygon);
+	polygon = clip_left(polygon);
+	polygon = clip_right(polygon);
+
+	cout << endl << "after clipping: " << endl;
+	for (unsigned i=0; i < polygon.size(); i++)
+		cout << i << " : " << polygon[i].x << ' ' << polygon[i].y << endl;
+
+	return polygon;
+}
+
 void Core::draw_polygon(vector<Point> polygon)
 {
-	vector<Point> decomposed = decompose(polygon);
+	vector<Point> clipped = clip(polygon);
+	vector<Point> decomposed = decompose(clipped);
 
-	for (int i = 0; i < decomposed.size(); i++) {
-		cout << i << " : " << decomposed[i].x << ' ' << decomposed[i].y << endl;
-	}
-
-	for (int i = 0; i < decomposed.size() -2; i+=3) {
-		cout << "drawing triangle on these three points: " << endl;
-		cout << "decomposed range " << i << " to " << i+2 << endl;
-		cout << decomposed[i].x << ' ' << decomposed[i].y << endl;
-		cout << decomposed[i+1].x << ' ' << decomposed[i+1].y << endl;
-		cout << decomposed[i+2].x << ' ' << decomposed[i+2].y << endl;
-
+	for (unsigned i = 0; i < decomposed.size() -2; i+=3)
+	{
+		SDL_LockSurface(buffer);
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
+		SDL_UnlockSurface(buffer);
+		SDL_Flip(buffer);
+		sleep(1);
 	}
-
 }
 
 void Core::triangle(Point a, Point b, Point c)
 {
-	/*line(a, b);
-	line(b, c);
-	line(a, c);
-*/
 	// first, we sort the vertices on the Y axis, using sort from algorithm library.
 	vector<Point> sorted;
 
@@ -325,18 +507,8 @@ void Core::triangle(Point a, Point b, Point c)
 	}
 
 	// now, let's paint it.
-	for (int i=0; i < l_edge.size();i++)
+	for (unsigned i=0; i < l_edge.size();i++)
 		scanLine(l_edge[i], r_edge[i]);
-}
-
-int compareOnX(Point a, Point b)
-{
-	return (a.x < b.x);
-}
-
-int compareOnY(Point a, Point b)
-{
-	return (a.y < b.y);
 }
 
 void Core::handleEvents()
@@ -399,19 +571,35 @@ void Core::handleEvents()
 						SDL_UnlockSurface(buffer);
 						SDL_Flip(buffer);
 						break;
-					case SDLK_TAB:
+					case SDLK_1:
 					{
 						vector<Point> polygon;
+
+						// below is a nice normal polygon
 						polygon.push_back(Point(100, 200, 255));
 						polygon.push_back(Point(150, 100, 0, 255));
 						polygon.push_back(Point(300, 100, 0, 0, 255));
 						polygon.push_back(Point(400, 300, 255, 255));
 						polygon.push_back(Point(200, 500, 255, 0, 255));
 
-						SDL_LockSurface(buffer);
 						draw_polygon(polygon);
-						SDL_UnlockSurface(buffer);
-						SDL_Flip(buffer);
+						break;
+					}
+					case SDLK_2:
+					{
+						vector<Point> polygon;
+
+						// this polygon will be clipped before it's drawn
+						polygon.push_back(Point(-100, 300, 255)); // clipped on left
+						polygon.push_back(Point(400, -100, 0, 255)); // clipped on top
+						polygon.push_back(Point(900, 300, 0, 0, 255)); // clipped on right
+						polygon.push_back(Point(400, 700, 255, 255)); // clip on bottom
+
+						/*polygon.push_back(Point(100, 300, 255));
+						polygon.push_back(Point(400, 100, 0, 255));
+						polygon.push_back(Point(700, 300, 0, 0, 255));
+						polygon.push_back(Point(400, 700, 255, 255));
+						*/draw_polygon(polygon);
 						break;
 					}
 
