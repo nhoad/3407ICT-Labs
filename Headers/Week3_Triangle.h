@@ -29,6 +29,7 @@ class Core
 	public:
 	Core(int width=800, int height=600);
 	virtual ~Core();
+	vector<Point> decompose(vector<Point> polygon);
 
 	void start();
 
@@ -39,6 +40,7 @@ class Core
 	void handleEvents();
 
 	vector<Point> makeLine(Point a, Point b);
+	void draw_polygon(vector<Point> polygon);
 	void triangle(Point a, Point b, Point c);
 	void scanLine(Point a, Point b);
 	void putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);

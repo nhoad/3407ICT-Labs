@@ -20,9 +20,11 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
+
 	srand(time(NULL));
 	Core example;
 	example.start();
+
 	return 0;
 }
 
@@ -106,6 +108,22 @@ void Core::scanLine(Point a, Point b)
 		blue += b_inc;
 		green += g_inc;
 	}
+}
+
+vector<Point> Core::decompose(vector<Point> polygon)
+{
+	vector<Point> result;
+
+	sort(polygon.begin(), polygon.end(), compareOnX);
+
+	for (int i=1; i < polygon.size() -1; i++)
+	{
+		result.push_back(polygon[0]);
+		result.push_back(polygon[i]);
+		result.push_back(polygon[i+1]);
+	}
+
+	return result;
 }
 
 vector<Point> Core::makeLine(Point a, Point b)
@@ -206,6 +224,17 @@ void Core::line(Point a, Point b)
 	////////////////////////////////////////////
 }
 
+void Core::draw_polygon(vector<Point> polygon)
+{
+	vector<Point> decomposed = decompose(polygon);
+
+	for (int i = 0; i < decomposed.size() -1; i++) {
+		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
+//		cout << decomposed[i].x << endl;
+	}
+
+}
+
 void Core::triangle(Point a, Point b, Point c)
 {
 	/*line(a, b);
@@ -237,28 +266,49 @@ void Core::triangle(Point a, Point b, Point c)
 	{
 		l_edge = ab_edge;
 		r_edge = ac_edge;
+
+		if (l_edge.size() < r_edge.size())
+		{
+			for (unsigned i = 0; i < bc_edge.size(); i++)
+				l_edge.push_back(bc_edge[i]);
+		}
+		else
+		{
+			for (unsigned i = 0; i < bc_edge.size(); i++)
+				r_edge.push_back(bc_edge[i]);
+		}
 	}
 	else if (c.x < b.x)
 	{
 		l_edge = ac_edge;
 		r_edge = ab_edge;
+
+		if (l_edge.size() < r_edge.size())
+		{
+			for (unsigned i = 0; i < bc_edge.size(); i++)
+				l_edge.push_back(bc_edge[i]);
+		}
+		else
+		{
+			for (unsigned i = 0; i < bc_edge.size(); i++)
+				r_edge.push_back(bc_edge[i]);
+		}
 	}
 	else
 	{
 		l_edge = ac_edge;
 		r_edge = bc_edge;
-	}
 
-	// combine edges where necessary
-	if (l_edge.size() < r_edge.size())
-	{
-		for (unsigned i = 0; i < bc_edge.size(); i++)
-			l_edge.push_back(bc_edge[i]);
-	}
-	else
-	{
-		for (unsigned i = 0; i < bc_edge.size(); i++)
-			r_edge.push_back(bc_edge[i]);
+		if (l_edge.size() < r_edge.size())
+		{
+			for (unsigned i = 0; i < bc_edge.size(); i++)
+				l_edge.push_back(bc_edge[i]);
+		}
+		else
+		{
+			for (unsigned i = 0; i < ab_edge.size(); i++)
+				r_edge.push_back(ab_edge[i]);
+		}
 	}
 
 	// now, let's paint it.
@@ -336,6 +386,26 @@ void Core::handleEvents()
 						SDL_UnlockSurface(buffer);
 						SDL_Flip(buffer);
 						break;
+					case SDLK_TAB:
+					{
+						SDL_LockSurface(buffer);
+						vector<Point> polygon;
+
+						polygon.push_back(Point(200, 100, 255));
+						polygon.push_back(Point(300, 200, 255));
+						polygon.push_back(Point(400, 100, 255));
+						polygon.push_back(Point(500, 300, 255));
+						polygon.push_back(Point(400, 400, 255));
+						polygon.push_back(Point(300, 500, 255));
+						polygon.push_back(Point(200, 500, 255));
+						polygon.push_back(Point(100, 400, 255));
+						polygon.push_back(Point(100, 200, 255));
+
+						draw_polygon(polygon);
+						SDL_UnlockSurface(buffer);
+						SDL_Flip(buffer);
+						break;
+					}
 
 					default: break;
 				}
