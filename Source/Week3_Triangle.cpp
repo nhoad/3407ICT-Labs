@@ -110,6 +110,9 @@ void Core::scanLine(Point a, Point b)
 	double g_inc = (double) (b.g - a.g) / dx;
 	double b_inc = (double) (b.b - a.b) / dx;
 
+	// Note that I lock the framebuffer here so I can visually watch each line drawn in.
+	// Plus it looks pretty cool.
+	SDL_LockSurface(buffer);
 	while (a.x < b.x)
 	{
 		putpixel(a.x, a.y, round(red), round(green), round(blue));
@@ -119,6 +122,9 @@ void Core::scanLine(Point a, Point b)
 		blue += b_inc;
 		green += g_inc;
 	}
+	SDL_UnlockSurface(buffer);
+	SDL_Flip(buffer);
+	usleep(100);
 }
 
 vector<Point> Core::makeLine(Point a, Point b)
@@ -247,10 +253,13 @@ vector<Point> Core::clip_left(vector<Point> polygon)
 		Point a = polygon[i];
 		Point b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
 
+		// if the vertex is invisible, ignore it.
 		if (a.x < minX && b.x < minX)
 			continue;
+		// if both are visible, add the first one.
 		else if (a.x >= minX && b.x >= minX)
 			result.push_back(a);
+		// else, deal with a partially visible line.
 		else
 		{
 			bool swapped = false;
@@ -330,6 +339,7 @@ vector<Point> Core::clip_bottom(vector<Point> polygon)
 		Point a = polygon[i];
 		Point b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
 
+		// if the vertex is invisible, ignore it.
 		if (a.y > maxY && b.y > maxY)
 			continue;
 		else if (a.y <= maxY && b.y <= maxY)
@@ -354,7 +364,8 @@ vector<Point> Core::clip_bottom(vector<Point> polygon)
 			if (swapped)
 				result.push_back(b);
 
-			result.push_back(a);
+			result.insert(result.begin(), a);
+
 		}
 
 	}
@@ -371,6 +382,7 @@ vector<Point> Core::clip_top(vector<Point> polygon)
 		Point a = polygon[i];
 		Point b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
 
+		// if the vertex is invisible, ignore it.
 		if (a.y < minY && b.y < minY)
 			continue;
 		else if (a.y >= minY && b.y >= minY)
@@ -403,19 +415,11 @@ vector<Point> Core::clip_top(vector<Point> polygon)
 }
 vector<Point> Core::clip(vector<Point> polygon)
 {
-	cout << endl << "before clipping: " << endl;
-	for (unsigned i=0; i < polygon.size(); i++)
-		cout << i << " : " << polygon[i].x << ' ' << polygon[i].y << endl;
-
-	polygon = clip_bottom(polygon);
+	// NOTE left and right work perfectly on their own, top and bottom have problems...
 	polygon = clip_top(polygon);
 	polygon = clip_left(polygon);
+	polygon = clip_bottom(polygon);
 	polygon = clip_right(polygon);
-
-	cout << endl << "after clipping: " << endl;
-	for (unsigned i=0; i < polygon.size(); i++)
-		cout << i << " : " << polygon[i].x << ' ' << polygon[i].y << endl;
-
 	return polygon;
 }
 
@@ -426,16 +430,15 @@ void Core::draw_polygon(vector<Point> polygon)
 
 	for (unsigned i = 0; i < decomposed.size() -2; i+=3)
 	{
-		SDL_LockSurface(buffer);
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
-		SDL_UnlockSurface(buffer);
-		SDL_Flip(buffer);
-		sleep(1);
 	}
 }
 
 void Core::triangle(Point a, Point b, Point c)
 {
+	line(a, b);
+	line(a, c);
+	line(b, c);
 	// first, we sort the vertices on the Y axis, using sort from algorithm library.
 	vector<Point> sorted;
 
@@ -455,28 +458,12 @@ void Core::triangle(Point a, Point b, Point c)
 	vector<Point> ac_edge = makeLine(a, c);
 
 	vector<Point> l_edge, r_edge;
+	l_edge = ab_edge;
+	r_edge = ac_edge;
 
 	// find the left and right edges by comparing x values.
 	if (b.x < c.x)
 	{
-		l_edge = ab_edge;
-		r_edge = ac_edge;
-
-		if (l_edge.size() < r_edge.size())
-		{
-			for (unsigned i = 0; i < bc_edge.size(); i++)
-				l_edge.push_back(bc_edge[i]);
-		}
-		else
-		{
-			for (unsigned i = 0; i < bc_edge.size(); i++)
-				r_edge.push_back(bc_edge[i]);
-		}
-	}
-	else if (c.x < b.x)
-	{
-		l_edge = ac_edge;
-		r_edge = ab_edge;
 
 		if (l_edge.size() < r_edge.size())
 		{
@@ -491,8 +478,7 @@ void Core::triangle(Point a, Point b, Point c)
 	}
 	else
 	{
-		l_edge = ac_edge;
-		r_edge = bc_edge;
+		swap(l_edge, r_edge);
 
 		if (l_edge.size() < r_edge.size())
 		{
@@ -501,8 +487,8 @@ void Core::triangle(Point a, Point b, Point c)
 		}
 		else
 		{
-			for (unsigned i = 0; i < ab_edge.size(); i++)
-				r_edge.push_back(ab_edge[i]);
+			for (unsigned i = 0; i < bc_edge.size(); i++)
+				r_edge.push_back(bc_edge[i]);
 		}
 	}
 
@@ -590,16 +576,17 @@ void Core::handleEvents()
 						vector<Point> polygon;
 
 						// this polygon will be clipped before it's drawn
+/*						polygon.push_back(Point(100, 300, 255)); // clipped on left
+						polygon.push_back(Point(400, 100, 0, 255)); // clipped on top
+						polygon.push_back(Point(700, 300, 0, 0, 255)); // clipped on right
+						polygon.push_back(Point(400, 599, 255, 255)); // clip on bottom
+						/*/
 						polygon.push_back(Point(-100, 300, 255)); // clipped on left
 						polygon.push_back(Point(400, -100, 0, 255)); // clipped on top
 						polygon.push_back(Point(900, 300, 0, 0, 255)); // clipped on right
 						polygon.push_back(Point(400, 700, 255, 255)); // clip on bottom
 
-						/*polygon.push_back(Point(100, 300, 255));
-						polygon.push_back(Point(400, 100, 0, 255));
-						polygon.push_back(Point(700, 300, 0, 0, 255));
-						polygon.push_back(Point(400, 700, 255, 255));
-						*/draw_polygon(polygon);
+						draw_polygon(polygon);
 						break;
 					}
 
