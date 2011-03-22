@@ -110,22 +110,6 @@ void Core::scanLine(Point a, Point b)
 	}
 }
 
-vector<Point> Core::decompose(vector<Point> polygon)
-{
-	vector<Point> result;
-
-	sort(polygon.begin(), polygon.end(), compareOnX);
-
-	for (int i=1; i < polygon.size() -1; i++)
-	{
-		result.push_back(polygon[0]);
-		result.push_back(polygon[i]);
-		result.push_back(polygon[i+1]);
-	}
-
-	return result;
-}
-
 vector<Point> Core::makeLine(Point a, Point b)
 {
 	vector<Point> result;
@@ -224,13 +208,42 @@ void Core::line(Point a, Point b)
 	////////////////////////////////////////////
 }
 
+vector<Point> Core::decompose(vector<Point> polygon)
+{
+	vector<Point> result;
+
+	while (polygon.size() > 2)
+	{
+		cout << "size: " << polygon.size() << endl;
+		result.push_back(polygon[0]);
+		result.push_back(polygon[1]);
+		result.push_back(polygon[polygon.size()-1]);
+
+		polygon.erase(polygon.begin(), polygon.begin()+1);
+	}
+
+	cout << "polygon.size(): " << polygon.size() << endl;
+	cout << "decomposed.size(): " << result.size() << endl;
+
+	return result;
+}
+
 void Core::draw_polygon(vector<Point> polygon)
 {
 	vector<Point> decomposed = decompose(polygon);
 
-	for (int i = 0; i < decomposed.size() -1; i++) {
+	for (int i = 0; i < decomposed.size(); i++) {
+		cout << i << " : " << decomposed[i].x << ' ' << decomposed[i].y << endl;
+	}
+
+	for (int i = 0; i < decomposed.size() -2; i+=3) {
+		cout << "drawing triangle on these three points: " << endl;
+		cout << "decomposed range " << i << " to " << i+2 << endl;
+		cout << decomposed[i].x << ' ' << decomposed[i].y << endl;
+		cout << decomposed[i+1].x << ' ' << decomposed[i+1].y << endl;
+		cout << decomposed[i+2].x << ' ' << decomposed[i+2].y << endl;
+
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
-//		cout << decomposed[i].x << endl;
 	}
 
 }
@@ -388,19 +401,14 @@ void Core::handleEvents()
 						break;
 					case SDLK_TAB:
 					{
-						SDL_LockSurface(buffer);
 						vector<Point> polygon;
-
-						polygon.push_back(Point(200, 100, 255));
-						polygon.push_back(Point(300, 200, 255));
-						polygon.push_back(Point(400, 100, 255));
-						polygon.push_back(Point(500, 300, 255));
-						polygon.push_back(Point(400, 400, 255));
-						polygon.push_back(Point(300, 500, 255));
-						polygon.push_back(Point(200, 500, 255));
-						polygon.push_back(Point(100, 400, 255));
 						polygon.push_back(Point(100, 200, 255));
+						polygon.push_back(Point(150, 100, 0, 255));
+						polygon.push_back(Point(300, 100, 0, 0, 255));
+						polygon.push_back(Point(400, 300, 255, 255));
+						polygon.push_back(Point(200, 500, 255, 0, 255));
 
+						SDL_LockSurface(buffer);
 						draw_polygon(polygon);
 						SDL_UnlockSurface(buffer);
 						SDL_Flip(buffer);
