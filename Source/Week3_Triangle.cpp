@@ -280,19 +280,7 @@ vector<Point> Core::clip_left(vector<Point> polygon)
 
 				result.insert(result.begin(), a);
 			}
-			continue;
-/*
-			double dy = b.y - a.y;
-			double dx = b.x - a.x;
-
-			a.y += ((double)(dy / dx)) * (double)(minX - a.x);
-			a.x = minX;
-
-			result.insert(result.begin(), a);
-
-//			if (swapped)
-				result.push_back(b);
-*/		}
+		}
 
 	}
 
@@ -315,25 +303,27 @@ vector<Point> Core::clip_right(vector<Point> polygon)
 			result.push_back(a);
 		else
 		{
-			bool swapped = false;
-
-			// if a.x is within boundaries, we'll operate on b.
-			if (a.x <= maxX)
-			{
-				swapped = true;
-				swap(a, b);
-			}
-
 			double dy = b.y - a.y;
 			double dx = b.x - a.x;
 
-			a.y += (dy / dx) * (maxX - a.x);
-			a.x = maxX-1;
+			// if a == in and b == out
+			if (a.x <= maxX)
+			{
+				b.y += (dy / dx) * (maxX - b.x);
+				b.x = maxX-1;
 
-			if (swapped)
+				//result.insert(result.begin(), b);
+				//result.insert(result.begin(), a);
+				result.push_back(a);
 				result.push_back(b);
+			}
+			else // a == out and b == in
+			{
+				a.y += (dy / dx) * (maxX - a.x);
+				a.x = maxX-1;
 
-			result.push_back(a);
+				result.push_back(a);
+			}
 		}
 
 	}
@@ -433,8 +423,8 @@ vector<Point> Core::clip(vector<Point> polygon)
 	// NOTE left and right work perfectly on their own, top and bottom have problems...
 	//polygon = clip_top(polygon);
 	polygon = clip_left(polygon);
+	polygon = clip_right(polygon);
 	//polygon = clip_bottom(polygon);
-	//polygon = clip_right(polygon);
 
 	cout << "after clip" << endl;
 	for (int i=0; i < polygon.size(); i++)
@@ -599,9 +589,9 @@ void Core::handleEvents()
 						polygon.push_back(Point(400, 599, 255, 255)); // clip on bottom
 */
 
-						polygon.push_back(Point(-100, 300, 255)); // clipped on left
+						polygon.push_back(Point(100, 300, 255)); // clipped on left
 						polygon.push_back(Point(400, 100, 0, 255)); // clipped on top
-						polygon.push_back(Point(700, 300, 0, 0, 255)); // clipped on right
+						polygon.push_back(Point(899, 300, 0, 0, 255)); // clipped on right
 						polygon.push_back(Point(400, 599, 255, 255)); // clip on bottom
 
 						draw_polygon(polygon);
