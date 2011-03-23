@@ -1,7 +1,6 @@
 #pragma once
 #include "SDL.h"
 #include <vector>
-using std::vector;
 
 class Point
 {
@@ -29,7 +28,7 @@ class Core
 	public:
 	Core(int width=800, int height=600);
 	virtual ~Core();
-	vector<Point> decompose(vector<Point> polygon);
+	std::vector<Point> decompose(std::vector<Point> polygon);
 
 	void start();
 
@@ -39,13 +38,13 @@ class Core
 	void render();
 	void handleEvents();
 
-	vector<Point> makeLine(Point a, Point b);
-	void draw_polygon(vector<Point> polygon);
-	vector<Point> clip(vector<Point> polygon);
-	vector<Point> clip_left(vector<Point> polygon);
-	vector<Point> clip_right(vector<Point> polygon);
-	vector<Point> clip_top(vector<Point> polygon);
-	vector<Point> clip_bottom(vector<Point> polygon);
+	std::vector<Point> makeLine(Point a, Point b);
+	void draw_polygon(std::vector<Point> polygon);
+	std::vector<Point> clip(std::vector<Point> polygon);
+	std::vector<Point> clip_left(std::vector<Point> polygon);
+	std::vector<Point> clip_right(std::vector<Point> polygon);
+	std::vector<Point> clip_top(std::vector<Point> polygon);
+	std::vector<Point> clip_bottom(std::vector<Point> polygon);
 	void triangle(Point a, Point b, Point c);
 	void scanLine(Point a, Point b);
 	void putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);

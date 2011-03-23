@@ -8,6 +8,8 @@
 #include "Week3_Triangle.h"
 #include <iostream>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 #define round(x) (int) x + 0.5
 using namespace std;
 
@@ -229,14 +231,11 @@ vector<Point> Core::decompose(vector<Point> polygon)
 {
 	vector<Point> result;
 
-	// build triangles from the first point, next point and final point.
-	while (polygon.size() > 2)
+	for (unsigned i=1; i < polygon.size() -1; i++)
 	{
 		result.push_back(polygon[0]);
-		result.push_back(polygon[1]);
-		result.push_back(polygon[polygon.size()-1]);
-
-		polygon.erase(polygon.begin(), polygon.begin()+1);
+		result.push_back(polygon[i]);
+		result.push_back(polygon[i+1]);
 	}
 
 	return result;
@@ -262,15 +261,27 @@ vector<Point> Core::clip_left(vector<Point> polygon)
 		// else, deal with a partially visible line.
 		else
 		{
-			bool swapped = false;
+			double dy = b.y - a.y;
+			double dx = b.x - a.x;
 
-			// if a.x is within bounds, operate on b.
+			// if a == in and b == out
 			if (a.x >= minX)
 			{
-				swapped = true;
-				swap(a, b);
-			}
+				b.y += ((double)(dy / dx)) * (double)(minX - b.x);
+				b.x = minX;
 
+				result.insert(result.begin(), b);
+				result.insert(result.begin(), a);
+			}
+			else // a == out and b == in
+			{
+				a.y += ((double)(dy / dx)) * (double)(minX - a.x);
+				a.x = minX;
+
+				result.insert(result.begin(), a);
+			}
+			continue;
+/*
 			double dy = b.y - a.y;
 			double dx = b.x - a.x;
 
@@ -278,9 +289,10 @@ vector<Point> Core::clip_left(vector<Point> polygon)
 			a.x = minX;
 
 			result.insert(result.begin(), a);
-			if (swapped)
+
+//			if (swapped)
 				result.push_back(b);
-		}
+*/		}
 
 	}
 
@@ -415,11 +427,18 @@ vector<Point> Core::clip_top(vector<Point> polygon)
 }
 vector<Point> Core::clip(vector<Point> polygon)
 {
+	cout << "before clip" << endl;
+	for (int i=0; i < polygon.size(); i++)
+		cout << i << " : " << polygon[i].x << ' ' << polygon[i].y << endl;
 	// NOTE left and right work perfectly on their own, top and bottom have problems...
-	polygon = clip_top(polygon);
+	//polygon = clip_top(polygon);
 	polygon = clip_left(polygon);
-	polygon = clip_bottom(polygon);
-	polygon = clip_right(polygon);
+	//polygon = clip_bottom(polygon);
+	//polygon = clip_right(polygon);
+
+	cout << "after clip" << endl;
+	for (int i=0; i < polygon.size(); i++)
+		cout << i << " : " << polygon[i].x << ' ' << polygon[i].y << endl;
 	return polygon;
 }
 
@@ -429,9 +448,7 @@ void Core::draw_polygon(vector<Point> polygon)
 	vector<Point> decomposed = decompose(clipped);
 
 	for (unsigned i = 0; i < decomposed.size() -2; i+=3)
-	{
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
-	}
 }
 
 void Core::triangle(Point a, Point b, Point c)
@@ -580,11 +597,12 @@ void Core::handleEvents()
 						polygon.push_back(Point(400, 100, 0, 255)); // clipped on top
 						polygon.push_back(Point(700, 300, 0, 0, 255)); // clipped on right
 						polygon.push_back(Point(400, 599, 255, 255)); // clip on bottom
-						/*/
+*/
+
 						polygon.push_back(Point(-100, 300, 255)); // clipped on left
-						polygon.push_back(Point(400, -100, 0, 255)); // clipped on top
-						polygon.push_back(Point(900, 300, 0, 0, 255)); // clipped on right
-						polygon.push_back(Point(400, 700, 255, 255)); // clip on bottom
+						polygon.push_back(Point(400, 100, 0, 255)); // clipped on top
+						polygon.push_back(Point(700, 300, 0, 0, 255)); // clipped on right
+						polygon.push_back(Point(400, 599, 255, 255)); // clip on bottom
 
 						draw_polygon(polygon);
 						break;
