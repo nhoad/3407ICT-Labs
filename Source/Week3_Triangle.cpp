@@ -312,8 +312,6 @@ vector<Point> Core::clip_right(vector<Point> polygon)
 				b.y += (dy / dx) * (maxX - b.x);
 				b.x = maxX-1;
 
-				//result.insert(result.begin(), b);
-				//result.insert(result.begin(), a);
 				result.push_back(a);
 				result.push_back(b);
 			}
@@ -348,26 +346,25 @@ vector<Point> Core::clip_bottom(vector<Point> polygon)
 			result.push_back(a);
 		else
 		{
-			bool swapped = false;
+			double dy = b.y - a.y;
+			double dx = b.x - a.x;
 
-			double dy =(double) b.y / a.y;
-			double dx =(double) b.x / a.x;
-
-			// if a.y is within boundaries, we'll operate on b.
-			if (a.y <= maxY)
+			// if a == in and b == out
+			if (a.y < maxY)
 			{
-				swapped = true;
-				swap(a, b);
-			}
+				b.x += (maxY - b.y) / (dy / dx);
+				b.y = maxY-1;
 
-			a.x += (maxY - a.y) / (dy / dx);
-			a.y = maxY-1;
-
-			if (swapped)
+				result.push_back(a);
 				result.push_back(b);
+			}
+			else // a == out and b == in
+			{
+				a.x += (maxY - a.y) / (dy / dx);
+				a.y = maxY-1;
 
-			result.insert(result.begin(), a);
-
+				result.push_back(a);
+			}
 		}
 
 	}
@@ -422,9 +419,9 @@ vector<Point> Core::clip(vector<Point> polygon)
 		cout << i << " : " << polygon[i].x << ' ' << polygon[i].y << endl;
 	// NOTE left and right work perfectly on their own, top and bottom have problems...
 	//polygon = clip_top(polygon);
-	polygon = clip_left(polygon);
-	polygon = clip_right(polygon);
-	//polygon = clip_bottom(polygon);
+//	polygon = clip_left(polygon);
+//	polygon = clip_right(polygon);
+	polygon = clip_bottom(polygon);
 
 	cout << "after clip" << endl;
 	for (int i=0; i < polygon.size(); i++)
@@ -591,8 +588,8 @@ void Core::handleEvents()
 
 						polygon.push_back(Point(100, 300, 255)); // clipped on left
 						polygon.push_back(Point(400, 100, 0, 255)); // clipped on top
-						polygon.push_back(Point(899, 300, 0, 0, 255)); // clipped on right
-						polygon.push_back(Point(400, 599, 255, 255)); // clip on bottom
+						polygon.push_back(Point(699, 300, 0, 0, 255)); // clipped on right
+						polygon.push_back(Point(400, 699, 255, 255)); // clip on bottom
 
 						draw_polygon(polygon);
 						break;
