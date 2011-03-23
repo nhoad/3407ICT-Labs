@@ -112,9 +112,6 @@ void Core::scanLine(Point a, Point b)
 	double g_inc = (double) (b.g - a.g) / dx;
 	double b_inc = (double) (b.b - a.b) / dx;
 
-	// Note that I lock the framebuffer here so I can visually watch each line drawn in.
-	// Plus it looks pretty cool.
-	SDL_LockSurface(buffer);
 	while (a.x < b.x)
 	{
 		putpixel(a.x, a.y, round(red), round(green), round(blue));
@@ -124,9 +121,6 @@ void Core::scanLine(Point a, Point b)
 		blue += b_inc;
 		green += g_inc;
 	}
-	SDL_UnlockSurface(buffer);
-	SDL_Flip(buffer);
-	usleep(100);
 }
 
 vector<Point> Core::makeLine(Point a, Point b)
@@ -395,7 +389,7 @@ vector<Point> Core::clip_top(vector<Point> polygon)
 			if (a.y >= minY)
 			{
 				b.x += (minY - b.y) / (dy / dx);
-				b.y = minY-1;
+				b.y = minY;
 
 				result.push_back(a);
 				result.push_back(b);
@@ -418,11 +412,10 @@ vector<Point> Core::clip(vector<Point> polygon)
 	cout << "before clip" << endl;
 	for (int i=0; i < polygon.size(); i++)
 		cout << i << " : " << polygon[i].x << ' ' << polygon[i].y << endl;
-	// NOTE left and right work perfectly on their own, top and bottom have problems...
 	polygon = clip_top(polygon);
-//	polygon = clip_left(polygon);
-//	polygon = clip_right(polygon);
-//	polygon = clip_bottom(polygon);
+	polygon = clip_left(polygon);
+	polygon = clip_right(polygon);
+	polygon = clip_bottom(polygon);
 
 	cout << "after clip" << endl;
 	for (int i=0; i < polygon.size(); i++)
@@ -435,15 +428,15 @@ void Core::draw_polygon(vector<Point> polygon)
 	vector<Point> clipped = clip(polygon);
 	vector<Point> decomposed = decompose(clipped);
 
+	SDL_LockSurface(buffer);
 	for (unsigned i = 0; i < decomposed.size() -2; i+=3)
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
+	SDL_UnlockSurface(buffer);
+	SDL_Flip(buffer);
 }
 
 void Core::triangle(Point a, Point b, Point c)
 {
-	line(a, b);
-	line(a, c);
-	line(b, c);
 	// first, we sort the vertices on the Y axis, using sort from algorithm library.
 	vector<Point> sorted;
 
@@ -581,16 +574,10 @@ void Core::handleEvents()
 						vector<Point> polygon;
 
 						// this polygon will be clipped before it's drawn
-/*						polygon.push_back(Point(100, 300, 255)); // clipped on left
-						polygon.push_back(Point(400, 100, 0, 255)); // clipped on top
-						polygon.push_back(Point(700, 300, 0, 0, 255)); // clipped on right
-						polygon.push_back(Point(400, 599, 255, 255)); // clip on bottom
-*/
-
-						polygon.push_back(Point(100, 300, 255)); // clipped on left
+						polygon.push_back(Point(-100, 300, 255)); // clipped on left
 						polygon.push_back(Point(400, -100, 0, 255)); // clipped on top
-						polygon.push_back(Point(699, 300, 0, 0, 255)); // clipped on right
-						polygon.push_back(Point(400, 499, 255, 255)); // clip on bottom
+						polygon.push_back(Point(899, 300, 0, 0, 255)); // clipped on right
+						polygon.push_back(Point(400, 699, 255, 255)); // clip on bottom
 
 						draw_polygon(polygon);
 						break;
