@@ -5,6 +5,8 @@
  */
 #pragma once
 #include "SDL.h"
+#include <vector>
+#include "glew.h"
 
 /**
  * Top-tier class, handles mainloop, events, and other classes.
@@ -31,6 +33,9 @@ class Core
 {
 	/** Width and height of the rendering window. */
 	int width, height;
+
+	unsigned int buffer;
+	unsigned int verticeCount;
 
 	/** fullscreen flag */
 	bool fullscreen;
@@ -63,6 +68,4 @@ class Core
 
 	/** Handles user events. */
 	void handleEvents();
-
-	void triangle(Point a, Point b, Point c);
 };

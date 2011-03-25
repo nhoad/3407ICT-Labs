@@ -9,7 +9,7 @@ CC = g++
 TARGET = Core
 VPATH = Source
 
-_OBJS = HPTime.o Week3_Triangle.o
+_OBJS = HPTime.o VertexBufferObject.o
 OBJDIR = Intermediates
 
 # Optional to build examples
@@ -19,7 +19,7 @@ OBJDIR = Intermediates
 OBJS = $(patsubst %,$(OBJDIR)/%,$(_OBJS))
 INCLUDE = -I./Headers -I./Headers/Linux
 
-FLAGS = -g3 -Wall -O0 -DDEBUG -fmessage-length=0
+FLAGS = -g3 -Wall -O0 -DDEBUG -fmessage-length=0 -pedantic
 LIBS = -ldl -lXft -lpthread -lSDL -lSDLmain -lSDL_ttf -lSDL_image -lm -lGLEW -lGL
 LIB_PATH = -L./Libraries/
 

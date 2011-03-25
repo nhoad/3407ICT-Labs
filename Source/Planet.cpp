@@ -3,7 +3,7 @@
  * Tutorial Graphics Rendering Framework
  * @author Xavier Ho (contact@xavierho.com)
  */
-#include "Core.h"
+#include "Planet.h"
 
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
@@ -115,45 +115,12 @@ void Core::preprocess()
 	// Define or load objects here
 }
 
-void Core::triangle(Point a, Point b, Point c)
-{
-	double x1, x2, x3;
-	double y1, y2, y3;
-
-	x1 = ((double) a.x / width) * 2 - 1;
-	x2 = ((double) b.x / width) * 2 - 1;
-	x3 = ((double) c.x / width) * 2 - 1;
-
-	y1 = ((double) a.y / height) * 2 - 1;
-	y2 = ((double) b.y / height) * 2 - 1;
-	y3 = ((double) c.y / height) * 2 - 1;
-
-	glBegin(GL_TRIANGLES);
-
-	glVertex2f(x1, y1);
-	glColor3f(a.c.r, a.c.g, a.c.b);
-	glVertex2f(x2, y2);
-	glColor3f(b.c.r, b.c.g, b.c.b);
-	glVertex2f(x3, y3);
-	glColor3f(c.c.r, c.c.g, c.c.b);
-
-	glEnd();
-}
-
 void Core::render()
 {
 	// Draw Objects here
 
-	// top
-	triangle(Point(350, 400, Color(255)), Point(450, 400, Color(0, 255)), Point(400, 500, Color(0, 0, 255)));
 
-	// bottom left
-	triangle(Point(300, 300, Color(255)), Point(400, 300, Color(0, 255)), Point(350, 400, Color(0, 0, 255)));
 
-	// bottom right
-	triangle(Point(400, 300, Color(255)), Point(500, 300, Color(0, 255)), Point(450, 400, Color(0, 0, 255)));
-
-	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
 }
 
