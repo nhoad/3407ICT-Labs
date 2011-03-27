@@ -34,8 +34,7 @@ class Core
 	/** Width and height of the rendering window. */
 	int width, height;
 
-	unsigned int buffer;
-	unsigned int verticeCount;
+	unsigned int * buffers, bufferCount, * verticeCount;
 
 	/** fullscreen flag */
 	bool fullscreen;

@@ -112,8 +112,9 @@ void Core::initialise()
 
 void Core::preprocess()
 {
+
 		// bottom rectangle
-	GLfloat vertices[] = {
+	GLfloat tree[] = {
 		// top most point
 		-0.2f, 0.05f, 0.0f, 1.0f,
 		// top left leaf
@@ -131,10 +132,6 @@ void Core::preprocess()
 
 		// can't get this to draw, probably need another buffer?
 		// bottom rectangle
-		/*-0.75f, -0.65f, 0.0f, 1.0f,
-		-0.75f, -0.75f, 0.0f, 1.0f,
-		0.75f, -0.75f, 0.0f, 1.0f,
-		0.75f, -0.65f, 0.0f, 1.0f,*/
 
 		// right trunk
 		-0.15f, -0.6f, 0.0f, 1.0f,
@@ -152,33 +149,53 @@ void Core::preprocess()
 		-0.1f, -0.1f, 0.0f, 1.0f,
 	};
 
-	verticeCount = sizeof(vertices) / sizeof(GLfloat);
-	cout << verticeCount << endl;
+	GLfloat base[] = {
+		-0.75f, -0.6f, 0.0f, 1.0f,
+		-0.75f, -0.7f, 0.0f, 1.0f,
+		0.75f, -0.7f, 0.0f, 1.0f,
+		0.75f, -0.6f, 0.0f, 1.0f,
+	};
 
-	glGenBuffers(1, &buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
-	glBufferData(GL_ARRAY_BUFFER, verticeCount * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+	bufferCount = 2;
+
+	verticeCount = new unsigned[bufferCount];
+	buffers = new unsigned[bufferCount];
+
+	verticeCount[0] = sizeof(tree) / sizeof(GLfloat);
+	verticeCount[1] = sizeof(base) / sizeof(GLfloat);
+
+	glGenBuffers(bufferCount, buffers);
+
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
+	glBufferData(GL_ARRAY_BUFFER, verticeCount[0] * sizeof(GLfloat), tree, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
+	glBufferData(GL_ARRAY_BUFFER, verticeCount[1] * sizeof(GLfloat), base, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void Core::render()
 {
-	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	glEnableClientState(GL_VERTEX_ARRAY);
+	for (int i=0; i < bufferCount; i++)
+	{
+		glEnableClientState(GL_VERTEX_ARRAY);
 
-	glVertexPointer(4, GL_FLOAT, 0, 0);
-	glDrawArrays(GL_POLYGON, 0, verticeCount / 4);
+		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+		glVertexPointer(4, GL_FLOAT, 0, 0);
+		glDrawArrays(GL_POLYGON, 0, verticeCount[i] / 4);
+
+		glDisableClientState(GL_VERTEX_ARRAY);
+	}
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	SDL_GL_SwapBuffers();
 
 	int error = glGetError();
 
 	if (error)
 		cout << "there was an error: " << error << endl;
-
-	SDL_GL_SwapBuffers();
 }
 
 void Core::handleEvents()
