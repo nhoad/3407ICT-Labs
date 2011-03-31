@@ -9,7 +9,7 @@ CC = g++
 TARGET = Core
 VPATH = Source
 
-_OBJS = HPTime.o VertexBufferObject.o
+_OBJS = HPTime.o Planet.o
 OBJDIR = Intermediates
 
 # Optional to build examples

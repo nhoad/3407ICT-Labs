@@ -3,7 +3,7 @@
  * Tutorial Graphics Rendering Framework
  * @author Xavier Ho (contact@xavierho.com)
  */
-#include "VertexBufferObject.h"
+#include "ImmediateMode.h"
 
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
@@ -54,9 +54,6 @@ Core::~Core()
 		TTF_Quit();
 	if (SDL_WasInit(SDL_INIT_VIDEO))
 		SDL_Quit();
-
-	delete[] verticeCount;
-	delete[] buffers[];
 }
 
 ///
@@ -115,90 +112,49 @@ void Core::initialise()
 
 void Core::preprocess()
 {
+	// Define or load objects here
+}
 
-		// bottom rectangle
-	GLfloat tree[] = {
-		// top most point
-		-0.2f, 0.05f, 0.0f, 1.0f,
-		// top left leaf
-		-0.3f, -0.1f, 0.0f, 1.0f,
-		-0.2f, -0.1f, 0.0f, 1.0f,
-		// middle left leaf
-		-0.35f, -0.3f, 0.0f, 1.0f,
-		-0.25f, -0.3f, 0.0f, 1.0f,
-		// bottom left leaf
-		-0.4f, -0.5f, 0.0f, 1.0f,
-		-0.25f, -0.5f, 0.0f, 1.0f,
+void Core::triangle(Point a, Point b, Point c)
+{
+	double x1, x2, x3;
+	double y1, y2, y3;
 
-		// left trunk
-		-0.25f, -0.6f, 0.0f, 1.0f,
+	x1 = ((double) a.x / width) * 2 - 1;
+	x2 = ((double) b.x / width) * 2 - 1;
+	x3 = ((double) c.x / width) * 2 - 1;
 
-		// can't get this to draw, probably need another buffer?
-		// bottom rectangle
+	y1 = ((double) a.y / height) * 2 - 1;
+	y2 = ((double) b.y / height) * 2 - 1;
+	y3 = ((double) c.y / height) * 2 - 1;
 
-		// right trunk
-		-0.15f, -0.6f, 0.0f, 1.0f,
+	glBegin(GL_TRIANGLES);
 
-		// bottom right leaf
-		-0.15f, -0.5f, 0.0f, 1.0f,
-		0.0f, -0.5f, 0.0f, 1.0f,
+	glVertex2f(x1, y1);
+	glColor3f(a.c.r, a.c.g, a.c.b);
+	glVertex2f(x2, y2);
+	glColor3f(b.c.r, b.c.g, b.c.b);
+	glVertex2f(x3, y3);
+	glColor3f(c.c.r, c.c.g, c.c.b);
 
-		// middle right leaf
-		-0.15f, -0.3f, 0.0f, 1.0f,
-		-0.05f, -0.3f, 0.0f, 1.0f,
-
-		// top right leaf
-		-0.2f, -0.1f, 0.0f, 1.0f,
-		-0.1f, -0.1f, 0.0f, 1.0f,
-	};
-
-	GLfloat base[] = {
-		-0.75f, -0.6f, 0.0f, 1.0f,
-		-0.75f, -0.7f, 0.0f, 1.0f,
-		0.75f, -0.7f, 0.0f, 1.0f,
-		0.75f, -0.6f, 0.0f, 1.0f,
-	};
-
-	bufferCount = 2;
-
-	verticeCount = new unsigned[bufferCount];
-	buffers = new unsigned[bufferCount];
-
-	verticeCount[0] = sizeof(tree) / sizeof(GLfloat);
-	verticeCount[1] = sizeof(base) / sizeof(GLfloat);
-
-	glGenBuffers(bufferCount, buffers);
-
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, verticeCount[0] * sizeof(GLfloat), tree, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
-	glBufferData(GL_ARRAY_BUFFER, verticeCount[1] * sizeof(GLfloat), base, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glEnd();
 }
 
 void Core::render()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	// Draw Objects here
 
-	for (int i=0; i < bufferCount; i++)
-	{
-		glEnableClientState(GL_VERTEX_ARRAY);
+	// top
+	triangle(Point(350, 400, Color(255)), Point(450, 400, Color(0, 255)), Point(400, 500, Color(0, 0, 255)));
 
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
+	// bottom left
+	triangle(Point(300, 300, Color(255)), Point(400, 300, Color(0, 255)), Point(350, 400, Color(0, 0, 255)));
 
-		glVertexPointer(4, GL_FLOAT, 0, 0);
-		glDrawArrays(GL_POLYGON, 0, verticeCount[i] / 4);
+	// bottom right
+	triangle(Point(400, 300, Color(255)), Point(500, 300, Color(0, 255)), Point(450, 400, Color(0, 0, 255)));
 
-		glDisableClientState(GL_VERTEX_ARRAY);
-	}
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
-
-	int error = glGetError();
-
-	if (error)
-		cout << "there was an error: " << error << endl;
 }
 
 void Core::handleEvents()

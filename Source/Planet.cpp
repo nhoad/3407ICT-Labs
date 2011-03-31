@@ -4,6 +4,8 @@
  * @author Xavier Ho (contact@xavierho.com)
  */
 #include "Planet.h"
+#include <cmath>
+#define PI 3.1415
 
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
@@ -113,13 +115,50 @@ void Core::initialise()
 void Core::preprocess()
 {
 	// Define or load objects here
+	angle = 0;
+}
+
+void Core::planet(double r)
+{
+	glPushMatrix();
+	glBegin(GL_TRIANGLE_FAN);
+		for (float i=0; i < 2 * PI; i += 0.15)
+			glVertex3f(r * cos(i), r * sin(i), 0.0f);
+	glEnd();
+	glPopMatrix();
 }
 
 void Core::render()
 {
-	// Draw Objects here
+	glClear(GL_COLOR_BUFFER_BIT);
+	glLoadIdentity();
 
+	//translate along the x-axis
+	glColor3f(0.0f,0.0f,1.0f); //blue color
 
+	angle += 0.01;
+
+	if (angle >= 360)
+		angle = 0;
+
+	glMatrixMode(GL_MODELVIEW);
+	glRotatef(angle, 0.0f, 0.0f, 0.1f);
+
+	planet(0.2); // earth
+
+	glMatrixMode(GL_MODELVIEW);
+	glTranslatef(0.4,-0.4f,0.0f);
+	glRotatef(angle, 0.0f, 0.0f, 0.1f);
+	glColor3f(0.737f,0.56f,0.56f); //blue color
+
+	planet(0.1); // moon
+
+	glMatrixMode(GL_MODELVIEW);
+	glTranslatef(0.15f,-0.15f,0.0f);
+	glRotatef(angle, 0.0f, 0.0f, 0.1f);
+	glColor3f(0.0,1.0f,0.0f); //blue color
+
+	planet(0.05); // tiny moon!
 
 	SDL_GL_SwapBuffers();
 }
