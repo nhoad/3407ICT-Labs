@@ -3,7 +3,7 @@
  * Tutorial Graphics Rendering Framework
  * @author Xavier Ho (contact@xavierho.com)
  */
-#include "VertexBufferObject.h"
+#include "RGBCube.h"
 
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
@@ -54,9 +54,6 @@ Core::~Core()
 		TTF_Quit();
 	if (SDL_WasInit(SDL_INIT_VIDEO))
 		SDL_Quit();
-
-	delete[] verticeCount;
-	delete[] buffers;
 }
 
 ///
@@ -115,90 +112,79 @@ void Core::initialise()
 
 void Core::preprocess()
 {
+	// build the cube
 
-		// bottom rectangle
-	GLfloat tree[] = {
-		// top most point
-		-0.2f, 0.05f, 0.0f, 1.0f,
-		// top left leaf
-		-0.3f, -0.1f, 0.0f, 1.0f,
-		-0.2f, -0.1f, 0.0f, 1.0f,
-		// middle left leaf
-		-0.35f, -0.3f, 0.0f, 1.0f,
-		-0.25f, -0.3f, 0.0f, 1.0f,
-		// bottom left leaf
-		-0.4f, -0.5f, 0.0f, 1.0f,
-		-0.25f, -0.5f, 0.0f, 1.0f,
+	angle = 0;
 
-		// left trunk
-		-0.25f, -0.6f, 0.0f, 1.0f,
+	// left face
+	cube.push_back(Vertex(0., 0., 0., 1., 0., 1., 1., 1.));
+	cube.push_back(Vertex(0., 1., 0., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(0., 1., 1., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(0., 0., 1., 1., 1., 1., 1., 1.));
 
-		// can't get this to draw, probably need another buffer?
-		// bottom rectangle
+	// bottom face
+	cube.push_back(Vertex(1., 0., 1., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(0., 0., 1., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(0., 0., 0., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(1., 0., 0., 1., 1., 1., 1., 1.));
 
-		// right trunk
-		-0.15f, -0.6f, 0.0f, 1.0f,
+	// top face
+	cube.push_back(Vertex(1., 1., 1., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(0., 1., 1., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(0., 1., 0., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(1., 1., 0., 1., 1., 1., 1., 1.));
 
-		// bottom right leaf
-		-0.15f, -0.5f, 0.0f, 1.0f,
-		0.0f, -0.5f, 0.0f, 1.0f,
+	// front face
+	cube.push_back(Vertex(1., 0., 1., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(0., 0., 1., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(0., 1., 1., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(1., 1., 1., 1., 1., 1., 1., 1.));
 
-		// middle right leaf
-		-0.15f, -0.3f, 0.0f, 1.0f,
-		-0.05f, -0.3f, 0.0f, 1.0f,
+	// right face
+	cube.push_back(Vertex(1., 0., 1., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(1., 0., 0., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(1., 1., 0., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(1., 1., 1., 1., 1., 1., 1., 1.));
 
-		// top right leaf
-		-0.2f, -0.1f, 0.0f, 1.0f,
-		-0.1f, -0.1f, 0.0f, 1.0f,
-	};
+	// back face
+	cube.push_back(Vertex(1., 0., 0., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(0., 0., 0., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(0., 1., 0., 1., 1., 1., 1., 1.));
+	cube.push_back(Vertex(1., 1., 0., 1., 1., 1., 1., 1.));
 
-	GLfloat base[] = {
-		-0.75f, -0.6f, 0.0f, 1.0f,
-		-0.75f, -0.7f, 0.0f, 1.0f,
-		0.75f, -0.7f, 0.0f, 1.0f,
-		0.75f, -0.6f, 0.0f, 1.0f,
-	};
+	cameraX = -1.0;
+	cameraY = -1.0;
+	cameraZ = -1.0;
 
-	bufferCount = 2;
-
-	verticeCount = new unsigned[bufferCount];
-	buffers = new unsigned[bufferCount];
-
-	verticeCount[0] = sizeof(tree) / sizeof(GLfloat);
-	verticeCount[1] = sizeof(base) / sizeof(GLfloat);
-
-	glGenBuffers(bufferCount, buffers);
-
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[0]);
-	glBufferData(GL_ARRAY_BUFFER, verticeCount[0] * sizeof(GLfloat), tree, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, buffers[1]);
-	glBufferData(GL_ARRAY_BUFFER, verticeCount[1] * sizeof(GLfloat), base, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glEnable(GL_DEPTH_TEST);
+	gluPerspective(-45.0, width / height, 1.0, 20.0);
+	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 void Core::render()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+	// Draw Objects here
 
-	for (int i=0; i < bufferCount; i++)
-	{
-		glEnableClientState(GL_VERTEX_ARRAY);
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
 
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
+	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
+	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
 
-		glVertexPointer(4, GL_FLOAT, 0, 0);
-		glDrawArrays(GL_POLYGON, 0, verticeCount[i] / 4);
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDrawArrays(GL_QUADS, 4, 8);
+	glDrawArrays(GL_QUADS, 8, 12);
+	glDrawArrays(GL_QUADS, 12, 16);
 
-		glDisableClientState(GL_VERTEX_ARRAY);
-	}
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+
+	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
-
-	int error = glGetError();
-
-	if (error)
-		cout << "there was an error: " << error << endl;
 }
 
 void Core::handleEvents()

@@ -5,26 +5,28 @@
  */
 #pragma once
 #include "SDL.h"
-#include <vector>
-#include "glew.h"
 
 /**
  * Top-tier class, handles mainloop, events, and other classes.
  * This class has been designed with a minimal style in mind.
  */
-
+#include "Primitives.h"
 class Core
 {
 	/** Width and height of the rendering window. */
 	int width, height;
-
-	unsigned int * buffers, bufferCount, * verticeCount;
 
 	/** fullscreen flag */
 	bool fullscreen;
 
 	/** The amount of time passed after each frame */
 	double elapsedTime;
+
+	float cameraX, cameraY, cameraZ;
+
+	float angle;
+
+	Mesh cube;
 
 	/** Mainloop control toggle */
 	bool running;

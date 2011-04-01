@@ -9,7 +9,7 @@ CC = g++
 TARGET = Core
 VPATH = Source
 
-_OBJS = HPTime.o Planet.o
+_OBJS = HPTime.o RGBCube.o
 OBJDIR = Intermediates
 
 # Optional to build examples

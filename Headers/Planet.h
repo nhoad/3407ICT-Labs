@@ -12,22 +12,6 @@
  * Top-tier class, handles mainloop, events, and other classes.
  * This class has been designed with a minimal style in mind.
  */
-class Color
-{
-	public:
-		Uint8 r, g, b;
-
-		Color(Uint8 r=0, Uint8 g=0, Uint8 b=0) : r(r), g(g), b(b) {}
-};
-
-class Point
-{
-	public:
-		int x, y;
-		Color c;
-
-		Point(int a, int b, Color c) : x(a), y(b), c(c) {}
-};
 
 class Core
 {
