@@ -125,49 +125,13 @@ void Core::preprocess()
 
 	cout << "final cube size: " << cube.size() << endl;
 
-/*	// left face
-	cube.push_back(Vertex(0., 0., 0., 1., 0., 1., 1., 1.));
-	cube.push_back(Vertex(0., 1., 0., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(0., 1., 1., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(0., 0., 1., 1., 1., 1., 1., 1.));
-
-	// bottom face
-	cube.push_back(Vertex(1., 0., 1., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(0., 0., 1., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(0., 0., 0., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(1., 0., 0., 1., 1., 1., 1., 1.));
-
-	// top face
-	cube.push_back(Vertex(1., 1., 1., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(0., 1., 1., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(0., 1., 0., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(1., 1., 0., 1., 1., 1., 1., 1.));
-
-	// front face
-	cube.push_back(Vertex(1., 0., 1., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(0., 0., 1., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(0., 1., 1., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(1., 1., 1., 1., 1., 1., 1., 1.));
-
-	// right face
-	cube.push_back(Vertex(1., 0., 1., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(1., 0., 0., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(1., 1., 0., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(1., 1., 1., 1., 1., 1., 1., 1.));
-
-	// back face
-	cube.push_back(Vertex(1., 0., 0., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(0., 0., 0., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(0., 1., 0., 1., 1., 1., 1., 1.));
-	cube.push_back(Vertex(1., 1., 0., 1., 1., 1., 1., 1.));
-*/
 	cameraX = -1.0;
 	cameraY = -1.0;
 	cameraZ = -1.0;
 
 	glEnable(GL_DEPTH_TEST);
-/*	gluPerspective(-45.0, width / height, 1.0, 20.0);
-	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);*/
+	gluPerspective(-45.0, width / height, 1.0, 20.0);
+	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 void Core::render()
@@ -183,9 +147,9 @@ void Core::render()
 	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
 	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
 
-	glTranslatef(-0.5, -0.5, 0);
+/*	glTranslatef(-0.5, -0.5, 0);
 	glRotatef(angle, 0.1, 0.1, 0.1);
-
+*/
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDrawArrays(GL_QUADS, 4, 8);
 	glDrawArrays(GL_QUADS, 8, 12);
