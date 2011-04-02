@@ -4,6 +4,7 @@
  * @author Xavier Ho (contact@xavierho.com)
  */
 #include "RGBCube.h"
+#include "ObjectLoader.h"
 
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
@@ -116,7 +117,15 @@ void Core::preprocess()
 
 	angle = 0;
 
-	// left face
+	ObjectLoader loader;
+
+	loader.read("Cube.obj");
+
+	cube = loader.object();
+
+	cout << "final cube size: " << cube.size() << endl;
+
+/*	// left face
 	cube.push_back(Vertex(0., 0., 0., 1., 0., 1., 1., 1.));
 	cube.push_back(Vertex(0., 1., 0., 1., 1., 1., 1., 1.));
 	cube.push_back(Vertex(0., 1., 1., 1., 1., 1., 1., 1.));
@@ -151,14 +160,14 @@ void Core::preprocess()
 	cube.push_back(Vertex(0., 0., 0., 1., 1., 1., 1., 1.));
 	cube.push_back(Vertex(0., 1., 0., 1., 1., 1., 1., 1.));
 	cube.push_back(Vertex(1., 1., 0., 1., 1., 1., 1., 1.));
-
+*/
 	cameraX = -1.0;
 	cameraY = -1.0;
 	cameraZ = -1.0;
 
 	glEnable(GL_DEPTH_TEST);
-	gluPerspective(-45.0, width / height, 1.0, 20.0);
-	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+/*	gluPerspective(-45.0, width / height, 1.0, 20.0);
+	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);*/
 }
 
 void Core::render()
@@ -174,15 +183,21 @@ void Core::render()
 	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
 	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
 
+	glTranslatef(-0.5, -0.5, 0);
+	glRotatef(angle, 0.1, 0.1, 0.1);
+
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDrawArrays(GL_QUADS, 4, 8);
 	glDrawArrays(GL_QUADS, 8, 12);
 	glDrawArrays(GL_QUADS, 12, 16);
 
-
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
+	angle += 0.01;
+
+	if (angle >= 360)
+		angle = 0;
 	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
 }
