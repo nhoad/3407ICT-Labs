@@ -2,11 +2,18 @@
 #include <iostream>
 using std::cout;
 using std::endl;
+using std::ostream;
 
 Mat4::Mat4()
 {
 	for (int i=0; i < 16; i++)
 		data[i] = (i % 5 == 0) ? 1 : 0;
+}
+
+Mat4::Mat4(float defaultValue)
+{
+	for (int i=0; i < 16; i++)
+		data[i] = defaultValue;
 }
 
 Mat4::Mat4(float * values)
@@ -34,27 +41,42 @@ Mat4& Mat4::operator=(const Mat4& m)
 
 }
 
+Mat4 Mat4::operator*(const Mat4 & m)
+{
+	Mat4 result(0.0);
+
+	int row = 0;
+	for (int row=0; row < 4; row++)
+		for (int column=0; column < 4; column++)
+		{
+			for (int i=0; i < 4; i++)
+				result(row, column) += (*this)(row, i) * m(i, column);
+		}
+
+	return result;
+}
+
+ostream & operator<<(ostream & o, const Mat4 & m)
+{
+	for (int y=0; y < 16; y++)
+		o << m(0, y) << endl;
+
+	return o;
+}
+
 int main(void)
 {
-	Mat4 m;
+	Mat4 m, n;
 
-	cout << m(0, 0) << endl;
-	cout << m(1, 1) << endl;
-	cout << m(2, 2) << endl;
-	cout << m(3, 3) << endl;
-
-	cout << endl;
 	m(0, 1) = 5;
+	n(0, 1) = 9;
+	cout << m << endl;
+	cout << n << endl;
 
-	cout << m(0, 0) << endl;
-	cout << m(0, 1) << endl;
-	cout << m(0, 2) << endl;
-	cout << m(0, 3) << endl;
+	Mat4 r = m * n;
 
-	Mat4 n = m;
+	cout << r << endl;
 
-	cout << "new: " << endl;
-	cout << n(0, 1) << endl;
 }
 
 
