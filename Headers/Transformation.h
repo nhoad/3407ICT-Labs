@@ -17,6 +17,12 @@ class Mat4
 
 		static Mat4 mul(const Mat4& m, const Mat4& n);
 		static Vec4 mul(const Mat4& m, const Vec4& v);
+
+		static Mat4 translate(float x, float y, float z);
+		static Mat4 rotateX(float degree);
+		static Mat4 rotateY(float degree);
+		static Mat4 rotateZ(float degree);
+		static Mat4 scale(float x, float y, float z); // done
 };
 
 class Vec4

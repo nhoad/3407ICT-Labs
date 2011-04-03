@@ -99,6 +99,22 @@ Vec4 Mat4::mul(const Mat4& m, const Vec4& v)
 	return result;
 }
 
+Mat4 Mat4::translate(float x, float y, float z)
+{
+
+}
+
+Mat4 Mat4::scale(float x, float y, float z)
+{
+	Mat4 result;
+
+	result(0, 0) = x;
+	result(1, 1) = y;
+	result(2, 2) = z;
+
+	return result;
+}
+
 ostream & operator<<(ostream & o, const Mat4 & m)
 {
 	for (int y=0; y < 16; y++)
@@ -109,11 +125,11 @@ ostream & operator<<(ostream & o, const Mat4 & m)
 
 int main(void)
 {
-	Mat4 m;
-
 	Vec4 a(4, 15, 3);
 
-	cout << Mat4::mul(m, a) << endl;
+	cout << Mat4::mul(Mat4::scale(0.5, 0.5, 0.5), a) << endl;
+
+//	cout << Mat4::mul(m, a) << endl;
 }
 
 
