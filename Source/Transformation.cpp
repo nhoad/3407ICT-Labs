@@ -4,6 +4,8 @@ using std::cout;
 using std::endl;
 using std::ostream;
 
+#include <cmath>
+
 Mat4::Mat4()
 {
 	for (int i=0; i < 16; i++)
@@ -101,7 +103,50 @@ Vec4 Mat4::mul(const Mat4& m, const Vec4& v)
 
 Mat4 Mat4::translate(float x, float y, float z)
 {
+	Mat4 result;
 
+	result(3, 0) = x;
+	result(3, 1) = y;
+	result(3, 2) = z;
+
+	return result;
+}
+
+Mat4 Mat4::rotateX(float degree)
+{
+	Mat4 result = Mat4::translate(0.0, 0.0, 0.0);
+
+	result(1, 1) = cos(degree);
+	result(1, 2) = -sin(degree);
+	result(2, 1) = sin(degree);
+	result(2, 2) = cos(degree);
+
+	return result;
+
+}
+
+Mat4 Mat4::rotateY(float degree)
+{
+	Mat4 result;
+
+	result(0, 0) = cos(degree);
+	result(0, 2) = -sin(degree);
+	result(2, 0) = sin(degree);
+	result(2, 2) = cos(degree);
+
+	return result;
+}
+
+Mat4 Mat4::rotateZ(float degree)
+{
+	Mat4 result;
+
+	result(0, 0) = cos(degree);
+	result(0, 1) = -sin(degree);
+	result(1, 0) = sin(degree);
+	result(1, 1) = cos(degree);
+
+	return result;
 }
 
 Mat4 Mat4::scale(float x, float y, float z)
@@ -123,7 +168,7 @@ ostream & operator<<(ostream & o, const Mat4 & m)
 	return o;
 }
 
-int main(void)
+/*int main(void)
 {
 	Vec4 a(4, 15, 3);
 
@@ -132,4 +177,4 @@ int main(void)
 //	cout << Mat4::mul(m, a) << endl;
 }
 
-
+*/

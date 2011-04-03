@@ -5,6 +5,7 @@
  */
 #include "RGBCube.h"
 #include "ObjectLoader.h"
+#include "Transformation.h"
 
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
@@ -67,11 +68,14 @@ void Core::start()
 	t.start();
 
 	preprocess();
+
 	while (running) {
 		render();
 		handleEvents();
+
 		elapsedTime = t.getSeconds();
 		t.start();
+
 	}
 }
 
@@ -115,7 +119,7 @@ void Core::preprocess()
 {
 	// build the cube
 
-	angle = 0;
+	angle = 1;
 
 	ObjectLoader loader;
 
@@ -130,8 +134,9 @@ void Core::preprocess()
 	cameraZ = -1.0;
 
 	glEnable(GL_DEPTH_TEST);
-	gluPerspective(-45.0, width / height, 1.0, 20.0);
-	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+//	glMatrixMode(GL_PROJECTION);
+	/*gluPerspective(-45.0, width / height, 1.0, 20.0);
+	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);*/
 }
 
 void Core::render()
@@ -139,17 +144,38 @@ void Core::render()
 	// Draw Objects here
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_PROJECTION);
+	//glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_MODELVIEW);
+	// load an identity matrix
 	glLoadIdentity();
+
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 
 	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
 	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
 
-/*	glTranslatef(-0.5, -0.5, 0);
-	glRotatef(angle, 0.1, 0.1, 0.1);
-*/
+	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);
+//	glTranslatef(1.0, 1.0, 0.0);
+//	glMultMatrixf(Mat4::translate(-0.5, -0.5, 0.0).data);
+
+/*	glMultMatrixf(Mat4::translate(0.0, 0.0, 0.0).data);
+	glMultMatrixf(Mat4::rotateX(angle).data);
+	glMultMatrixf(Mat4::translate(-0.5, -0.5, 0.0).data);*/
+
+/*	glMultMatrixf(Mat4::translate(0.0, 0.0, 0.0).data);
+	glMultMatrixf(Mat4::rotateY(angle).data);
+	glMultMatrixf(Mat4::translate(-0.5, -0.5, 0.0).data);*/
+
+	glMultMatrixf(Mat4::translate(0.0, 0.0, 0.0).data);
+	glMultMatrixf(Mat4::rotateZ(angle).data);
+	glMultMatrixf(Mat4::translate(-0.5, -0.5, 0.0).data);
+
+	//glMultMatrixf(Mat4::translate(-0.5, -0.5, 0.0).data);
+
+	//glRotatef(angle, 1.0, 1.0, 1.0);
+//	glRotatef(angle, 1.0, 1.0, 1.0);
+
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDrawArrays(GL_QUADS, 4, 8);
 	glDrawArrays(GL_QUADS, 8, 12);
@@ -158,7 +184,9 @@ void Core::render()
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	angle += 0.01;
+	angle += elapsedTime;
+
+	//cout << 1.0 / elapsedTime << endl;
 
 	if (angle >= 360)
 		angle = 0;

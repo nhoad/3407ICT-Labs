@@ -4,9 +4,9 @@ class Vec4;
 
 class Mat4
 {
-	float data[16];
-
 	public:
+		float data[16];
+
 		Mat4();
 		Mat4(float * values);
 		Mat4(float defaultValue);
