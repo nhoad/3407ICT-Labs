@@ -118,9 +118,6 @@ void Core::initialise()
 void Core::preprocess()
 {
 	// build the cube
-
-	angle = 1;
-
 	ObjectLoader loader;
 
 	loader.read("Cube.obj");
@@ -132,6 +129,10 @@ void Core::preprocess()
 	cameraZ = -1.0;
 
 	glEnable(GL_DEPTH_TEST);
+
+	angle = -15.0;
+
+	// to use a camera instead, just uncomment the below code.
 /*	glMatrixMode(GL_PROJECTION);
 	gluPerspective(-45.0, width / height, 1.0, 20.0);
 	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);*/
@@ -142,12 +143,12 @@ void Core::render()
 	// Draw Objects here
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	//glMatrixMode(GL_PROJECTION);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+
 /*
 	glMultMatrixf(Mat4::translate(0.5, 0.5, 0.5).data);
 	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);
