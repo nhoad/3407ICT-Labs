@@ -1,4 +1,6 @@
 #include <vector>
+#include <iostream>
+
 
 #pragma once
 struct Vertex
@@ -20,6 +22,19 @@ struct Vertex
 		this->a = a;
 	}
 
+	friend std::ostream & operator<<(std::ostream & o, const Vertex v)
+	{
+		o << "x: " << v.x << std::endl;
+		o << "y: " << v.y << std::endl;
+		o << "z: " << v.z << std::endl;
+
+		return o;
+	}
+
 };
 
 typedef std::vector<Vertex> Mesh;
+
+float mesh_z(const Mesh & mesh);
+float mesh_y(const Mesh & mesh);
+float mesh_x(const Mesh & mesh);

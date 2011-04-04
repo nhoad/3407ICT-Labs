@@ -134,8 +134,8 @@ void Core::preprocess()
 	cameraZ = -1.0;
 
 	glEnable(GL_DEPTH_TEST);
-//	glMatrixMode(GL_PROJECTION);
-	/*gluPerspective(-45.0, width / height, 1.0, 20.0);
+/*	glMatrixMode(GL_PROJECTION);
+	gluPerspective(-45.0, width / height, 1.0, 20.0);
 	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);*/
 }
 
@@ -146,35 +146,32 @@ void Core::render()
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 	//glMatrixMode(GL_PROJECTION);
 	glMatrixMode(GL_MODELVIEW);
-	// load an identity matrix
 	glLoadIdentity();
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
+/*
+	glMultMatrixf(Mat4::translate(0.5, 0.5, 0.5).data);
+	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);
+	glMultMatrixf(Mat4::rotateX(angle).data);
+	glMultMatrixf(Mat4::rotateY(angle).data);
+*/
+
+	float x = mesh_x(cube);
+	float y = mesh_y(cube);
+	float z = mesh_z(cube);
+
+	glMultMatrixf(Mat4::translate(x, y, z).data);
+	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);
+	//glRotatef(angle, 0, 0, 1);
+//	glMultMatrixf(Mat4::rotateX(angle).data);
+//	glMultMatrixf(Mat4::rotateY(angle).data);
+	glMultMatrixf(Mat4::rotateZ(angle).data);
+//	cout << angle << endl;
+	glMultMatrixf(Mat4::translate(-x, -y, -z).data);
 
 	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
 	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
-
-	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);
-//	glTranslatef(1.0, 1.0, 0.0);
-//	glMultMatrixf(Mat4::translate(-0.5, -0.5, 0.0).data);
-
-/*	glMultMatrixf(Mat4::translate(0.0, 0.0, 0.0).data);
-	glMultMatrixf(Mat4::rotateX(angle).data);
-	glMultMatrixf(Mat4::translate(-0.5, -0.5, 0.0).data);*/
-
-/*	glMultMatrixf(Mat4::translate(0.0, 0.0, 0.0).data);
-	glMultMatrixf(Mat4::rotateY(angle).data);
-	glMultMatrixf(Mat4::translate(-0.5, -0.5, 0.0).data);*/
-
-	glMultMatrixf(Mat4::translate(0.0, 0.0, 0.0).data);
-	glMultMatrixf(Mat4::rotateZ(angle).data);
-	glMultMatrixf(Mat4::translate(-0.5, -0.5, 0.0).data);
-
-	//glMultMatrixf(Mat4::translate(-0.5, -0.5, 0.0).data);
-
-	//glRotatef(angle, 1.0, 1.0, 1.0);
-//	glRotatef(angle, 1.0, 1.0, 1.0);
 
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDrawArrays(GL_QUADS, 4, 8);
@@ -184,7 +181,7 @@ void Core::render()
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	angle += elapsedTime;
+	angle += elapsedTime * 1;
 
 	//cout << 1.0 / elapsedTime << endl;
 

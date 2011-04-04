@@ -109,6 +109,7 @@ Mat4 Mat4::translate(float x, float y, float z)
 	result(3, 1) = y;
 	result(3, 2) = z;
 
+
 	return result;
 }
 
@@ -116,10 +117,13 @@ Mat4 Mat4::rotateX(float degree)
 {
 	Mat4 result = Mat4::translate(0.0, 0.0, 0.0);
 
-	result(1, 1) = cos(degree);
-	result(1, 2) = -sin(degree);
-	result(2, 1) = sin(degree);
-	result(2, 2) = cos(degree);
+	const float c = cos(degree);
+	const float s = sin(degree);
+
+	result(1, 1) = c;
+	result(1, 2) = s;
+	result(2, 1) = -s;
+	result(2, 2) = c;
 
 	return result;
 
@@ -129,10 +133,13 @@ Mat4 Mat4::rotateY(float degree)
 {
 	Mat4 result;
 
-	result(0, 0) = cos(degree);
-	result(0, 2) = -sin(degree);
-	result(2, 0) = sin(degree);
-	result(2, 2) = cos(degree);
+	const float c = cos(degree);
+	const float s = sin(degree);
+
+	result(0, 0) = c;
+	result(0, 2) = -s;
+	result(2, 0) = s;
+	result(2, 2) = c;
 
 	return result;
 }
@@ -141,10 +148,13 @@ Mat4 Mat4::rotateZ(float degree)
 {
 	Mat4 result;
 
-	result(0, 0) = cos(degree);
-	result(0, 1) = -sin(degree);
-	result(1, 0) = sin(degree);
-	result(1, 1) = cos(degree);
+	const float c = cos(degree);
+	const float s = sin(degree);
+
+	result(0, 0) = c;
+	result(1, 0) = -s;
+	result(0, 1) = s;
+	result(1, 1) = c;
 
 	return result;
 }
