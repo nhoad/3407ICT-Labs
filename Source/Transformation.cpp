@@ -1,4 +1,5 @@
 #include "Transformation.h"
+#define PI 3.14159265
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -117,6 +118,8 @@ Mat4 Mat4::rotateX(float degree)
 {
 	Mat4 result = Mat4::translate(0.0, 0.0, 0.0);
 
+	degree = (degree * PI) / 180;
+
 	const float c = cos(degree);
 	const float s = sin(degree);
 
@@ -133,6 +136,8 @@ Mat4 Mat4::rotateY(float degree)
 {
 	Mat4 result;
 
+	degree = (degree * PI) / 180;
+
 	const float c = cos(degree);
 	const float s = sin(degree);
 
@@ -147,6 +152,8 @@ Mat4 Mat4::rotateY(float degree)
 Mat4 Mat4::rotateZ(float degree)
 {
 	Mat4 result;
+
+	degree = (degree * PI) / 180;
 
 	const float c = cos(degree);
 	const float s = sin(degree);

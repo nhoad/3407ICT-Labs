@@ -127,8 +127,6 @@ void Core::preprocess()
 
 	cube = loader.object();
 
-	cout << "final cube size: " << cube.size() << endl;
-
 	cameraX = -1.0;
 	cameraY = -1.0;
 	cameraZ = -1.0;
@@ -163,11 +161,13 @@ void Core::render()
 
 	glMultMatrixf(Mat4::translate(x, y, z).data);
 	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);
-	//glRotatef(angle, 0, 0, 1);
-//	glMultMatrixf(Mat4::rotateX(angle).data);
-//	glMultMatrixf(Mat4::rotateY(angle).data);
-	glMultMatrixf(Mat4::rotateZ(angle).data);
-//	cout << angle << endl;
+
+	// multiply x by y by z to get arbitrary rotation, and then upload it.
+	Mat4 m = Mat4::mul(Mat4::rotateX(angle), Mat4::rotateY(angle));
+	m = Mat4::mul(m, Mat4::rotateZ(angle));
+
+	glMultMatrixf(m.data);
+
 	glMultMatrixf(Mat4::translate(-x, -y, -z).data);
 
 	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
@@ -181,12 +181,9 @@ void Core::render()
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	angle += elapsedTime * 1;
-
-	//cout << 1.0 / elapsedTime << endl;
-
 	if (angle >= 360)
 		angle = 0;
+
 	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
 }

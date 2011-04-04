@@ -22,7 +22,7 @@ class Mat4
 		static Mat4 rotateX(float degree);
 		static Mat4 rotateY(float degree);
 		static Mat4 rotateZ(float degree);
-		static Mat4 scale(float x, float y, float z); // done
+		static Mat4 scale(float x, float y, float z);
 };
 
 class Vec4

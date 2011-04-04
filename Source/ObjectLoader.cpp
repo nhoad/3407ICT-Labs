@@ -14,7 +14,6 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-
 Mesh ObjectLoader::object()
 {
 	return mesh;
@@ -68,7 +67,6 @@ void ObjectLoader::read(const string filename)
 
 			// we don't want to add them to the mesh just yet.
 			vertices.push_back(Vertex(x, y, z, 1.0, x, y, z, 1.0));
-			cout << line << endl;
 		}
 		else if (type == "vn")
 		{
