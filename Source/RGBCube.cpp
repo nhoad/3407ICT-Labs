@@ -182,9 +182,6 @@ void Core::render()
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	if (angle >= 360)
-		angle = 0;
-
 	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
 }
