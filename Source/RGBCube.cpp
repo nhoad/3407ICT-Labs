@@ -156,9 +156,13 @@ void Core::render()
 	glMultMatrixf(Mat4::rotateY(angle).data);
 */
 
-	float x = mesh_x(cube);
-	float y = mesh_y(cube);
-	float z = mesh_z(cube);
+	Vertex v;
+
+	float x = v.centreX(cube);
+	float y = v.centreY(cube);
+	float z = v.centreZ(cube);
+
+	//float x = 0.5, y =0.5, z = 0.5;
 
 	glMultMatrixf(Mat4::translate(x, y, z).data);
 	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);

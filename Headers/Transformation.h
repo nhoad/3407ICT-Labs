@@ -1,5 +1,6 @@
 #include <iostream>
 
+#pragma once
 class Vec4;
 
 class Mat4

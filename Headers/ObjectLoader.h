@@ -1,6 +1,8 @@
 #include "Primitives.h"
 #include <string>
 
+#pragma once
+
 class ObjectLoader
 {
 	public:

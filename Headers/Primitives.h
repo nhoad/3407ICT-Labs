@@ -1,13 +1,23 @@
 #include <vector>
 #include <iostream>
 
-
 #pragma once
+class Vertex;
+
+typedef std::vector<Vertex> Mesh;
+
 struct Vertex
 {
 
 	float x, y, z, w;
 	float r, g, b, a;
+
+	public:
+	Vertex() { }
+
+	float centreX(const Mesh & mesh);
+	float centreY(const Mesh & mesh);
+	float centreZ(const Mesh & mesh);
 
 	Vertex(float x, float y, float z, float w, float r, float g, float b, float a)
 	{
@@ -32,9 +42,3 @@ struct Vertex
 	}
 
 };
-
-typedef std::vector<Vertex> Mesh;
-
-float mesh_z(const Mesh & mesh);
-float mesh_y(const Mesh & mesh);
-float mesh_x(const Mesh & mesh);
