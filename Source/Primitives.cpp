@@ -56,3 +56,8 @@ float centreX(const Mesh & mesh)
 	}
 	return (minX + maxX) / 2.0f;
 }
+
+int compareOnY(Point a, Point b)
+{
+	return (a.y < b.y);
+}

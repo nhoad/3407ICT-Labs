@@ -1,10 +1,23 @@
 #include <vector>
 #include <iostream>
+#include "SDL.h"
 
 #pragma once
 class Vertex;
 
 typedef std::vector<Vertex> Mesh;
+
+class Point
+{
+	public:
+	int x, y, z;
+	Uint8 r, g, b;
+
+	Point(int x, int y, Uint8 r=0, Uint8 g=0, Uint8 b=0) : x(x), y(y), z(z), r(r), g(g), b(b) {}
+
+};
+
+int compareOnY(Point a, Point b);
 
 struct Vertex
 {

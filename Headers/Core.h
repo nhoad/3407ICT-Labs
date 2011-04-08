@@ -13,48 +13,131 @@
  */
 class Core
 {
-    /** Width and height of the rendering window. */
-    int width, height;
+	/** Width and height of the rendering window. */
+	int width, height;
 
-    /** fullscreen flag */
-    bool fullscreen;
+	/** fullscreen flag */
+	bool fullscreen;
 
-    /** The amount of time passed after each frame */
-    double elapsedTime;
+	/** The amount of time passed after each frame */
+	double elapsedTime;
 
-    /** Mainloop control toggle */
-    bool running;
+	/** buffer for drawing */
+	SDL_Surface * buffer;
 
-	 /** The mesh for a cube */
-	 Mesh cube;
+	/** Mainloop control toggle */
+	bool running;
 
-	 /** rotation angle */
-	 float angle;
+	/** The mesh for a cube */
+	Mesh cube;
 
-public:
-    /** Constructor. */
-    Core(int width=512, int height=512, bool fullscreen=false);
+	/** rotation angle */
+	float angle;
 
-    /** Destructor */
-    virtual ~Core();
+	public:
+	/** Constructor. */
+	Core(int width=512, int height=512, bool fullscreen=false);
 
-    /** Starts the main loop. */
-    void start();
+	/** Destructor */
+	virtual ~Core();
 
-protected:
-    /** Sets up rendering context. */
-    void initialise();
+	/** Starts the main loop. */
+	void start();
 
-    /** Prepares objects for rendering. */
-    void preprocess();
+	protected:
+	/** Sets up rendering context. */
+	void initialise();
 
-    /** Draws to screen. */
-    void render();
+	/** Prepares objects for rendering. */
+	void preprocess();
 
-    /** Handles user events. */
-    void handleEvents();
+	/** Draws to screen. */
+	void render();
 
-	 void drawCube(Mesh & mesh, int i);
-	 //void drawCube(Mesh & mesh, int i, int b);
+	/** Handles user events. */
+	void handleEvents();
 
+	/**
+		Performs clipping on a polygon.
+
+		\param polygon the polygon to clip.
+		\return returns a clipped polygon.
+	*/
+	std::vector<Point> clip(std::vector<Point> polygon);
+
+	/**
+		Performs clipping on left side of a polygon.
+
+		\param polygon the polygon to clip.
+		\return returns a left-side clipped polygon.
+	*/
+	std::vector<Point> clipLeft(std::vector<Point> polygon);
+
+	/**
+		Performs clipping on right side of a polygon.
+
+		\param polygon the polygon to clip.
+		\return returns a right-side clipped polygon.
+	*/
+	std::vector<Point> clipRight(std::vector<Point> polygon);
+
+	/**
+		Performs clipping on top side of a polygon.
+
+		\param polygon the polygon to clip.
+		\return returns a top-side clipped polygon.
+	*/
+	std::vector<Point> clipTop(std::vector<Point> polygon);
+
+	/**
+		Performs clipping on left side of a polygon.
+
+		\param polygon the polygon to clip.
+		\return returns a bottom-side clipped polygon.
+	*/
+	std::vector<Point> clipBottom(std::vector<Point> polygon);
+
+	/**
+		make a line from point A to point B.
+
+		\param a the starting point
+		\param b the finish point.
+		\return a vector of Points, making up a line from A to B.
+	*/
+	std::vector<Point> makeLine(Point a, Point b);
+
+	/**
+	 draw a convex polygon.
+
+	 \param polygon the polygon to draw.
+	*/
+	void drawPolygon(std::vector<Point> polygon);
+
+	/**
+	 Decompose a polygon into triangles.
+
+	 \param polygon the polygon to decompose.
+	 \return returns a vector of Points that will be a multiple of three.
+	*/
+	std::vector<Point> decompose(std::vector<Point> polygon);
+
+	/**
+	 scan line algorithm for polygon filling.
+	 \param a the first point to draw from
+	 \param b the second point to draw to.
+	*/
+	void scanLine(Point a, Point b);
+
+	/**
+	 draw a triangle.
+	 \param a point to draw triangle from
+	 \param b point to draw triangle from
+	 \param c point to draw triangle from
+	*/
+	void triangle(Point a, Point b, Point c);
+
+	// TODO: Comment this properly.
+	void drawCube(Mesh & mesh, int i);
+
+	void putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);
 };
