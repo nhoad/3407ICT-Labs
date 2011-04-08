@@ -3,7 +3,7 @@ using std::vector;
 
 #include "Primitives.h"
 
-float Vertex::centreZ(const Mesh & mesh)
+float centreZ(const Mesh & mesh)
 {
 	float minZ, maxZ;
 
@@ -21,7 +21,7 @@ float Vertex::centreZ(const Mesh & mesh)
 	return (minZ + maxZ) / 2.0f;
 }
 
-float Vertex::centreY(const Mesh & mesh)
+float centreY(const Mesh & mesh)
 {
 	float minY, maxY;
 
@@ -39,7 +39,7 @@ float Vertex::centreY(const Mesh & mesh)
 	return (minY + maxY) / 2.0f;
 }
 
-float Vertex::centreX(const Mesh & mesh)
+float centreX(const Mesh & mesh)
 {
 	float minX, maxX;
 

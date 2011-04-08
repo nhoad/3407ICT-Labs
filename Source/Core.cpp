@@ -4,6 +4,9 @@
  * @author Xavier Ho (contact@xavierho.com)
  */
 #include "Core.h"
+#include "ObjectLoader.h"
+#include "Primitives.h"
+#include "Transformation.h"
 
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
@@ -113,45 +116,84 @@ void Core::initialise()
 void Core::preprocess()
 {
 	// Define or load objects here
+	//
+
+	ObjectLoader loader;
+	loader.read("Assets/Cube.obj");
+	cube = loader.object();
+
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	glMultMatrixf(Mat4::perspectiveMatrix(45.0, width / height, 1, 20).data);
+//	gluPerspective(45.0, width / height, 1.0, 20.0);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(-1, -1, -1, 0, 0, 0, 0, 1, 0);
+
+	glViewport(0, 0, width, height);
+
+	angle = 15.0;
 }
 
-void Core::triangle(Point a, Point b, Point c)
+//void Core::drawCube(Mesh & mesh, int i_x, int i_y)
+void Core::drawCube(Mesh & mesh, int i)
 {
-	double x1, x2, x3;
-	double y1, y2, y3;
+	float x = centreX(mesh);
+	float y = centreY(mesh);
+	float z = centreZ(mesh);
 
-	x1 = ((double) a.x / width) * 2 - 1;
-	x2 = ((double) b.x / width) * 2 - 1;
-	x3 = ((double) c.x / width) * 2 - 1;
+/*	int i_x = (i * width) / 10 + 5, i_y = 1;
 
-	y1 = ((double) a.y / height) * 2 - 1;
-	y2 = ((double) b.y / height) * 2 - 1;
-	y3 = ((double) c.y / height) * 2 - 1;
+	float x_offset = ((float)i_x / width) * 2 - 1;
+	float y_offset = ((float)i_y / height) * 2 - 1;
 
-	glBegin(GL_TRIANGLES);
+	cout << "Draw at: " << x_offset << ' ' << y_offset << endl;
+	cout << x_offset << endl;
+*/
+	glPushMatrix();
 
-	glVertex2f(x1, y1);
-	glColor3f(a.c.r, a.c.g, a.c.b);
-	glVertex2f(x2, y2);
-	glColor3f(b.c.r, b.c.g, b.c.b);
-	glVertex2f(x3, y3);
-	glColor3f(c.c.r, c.c.g, c.c.b);
+//	glMultMatrixf(Mat4::translate(x, y, 0).data);
+	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);
 
-	glEnd();
+	glMultMatrixf(Mat4::rotateX(angle).data);
+
+	glMultMatrixf(Mat4::translate(-x, -y, -z).data);
+
+	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
+	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
+
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDrawArrays(GL_QUADS, 4, 8);
+	glDrawArrays(GL_QUADS, 8, 12);
+	glDrawArrays(GL_QUADS, 12, 16);
+
+	glPopMatrix();
+
 }
 
 void Core::render()
 {
 	// Draw Objects here
 
-	// top
-	triangle(Point(350, 400, Color(255)), Point(450, 400, Color(0, 255)), Point(400, 500, Color(0, 0, 255)));
+	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
 
-	// bottom left
-	triangle(Point(300, 300, Color(255)), Point(400, 300, Color(0, 255)), Point(350, 400, Color(0, 0, 255)));
+	for (int i=0; i < 1; i++)
+	{
+		cout << "drawing cube " << i << " at " << (i * width) / 10 + 5 << endl;
+		//drawCube(cube, (i * width) / 10 + 5, 20);
+		drawCube(cube, i);
+	}
 
-	// bottom right
-	triangle(Point(400, 300, Color(255)), Point(500, 300, Color(0, 255)), Point(450, 400, Color(0, 0, 255)));
+	angle += elapsedTime * 100;
+
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();

@@ -15,10 +15,6 @@ struct Vertex
 	public:
 	Vertex() { }
 
-	float centreX(const Mesh & mesh);
-	float centreY(const Mesh & mesh);
-	float centreZ(const Mesh & mesh);
-
 	Vertex(float x, float y, float z, float w, float r, float g, float b, float a)
 	{
 		this->x = x;
@@ -42,3 +38,8 @@ struct Vertex
 	}
 
 };
+
+float centreX(const Mesh & mesh);
+float centreY(const Mesh & mesh);
+float centreZ(const Mesh & mesh);
+

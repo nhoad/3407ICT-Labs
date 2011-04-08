@@ -116,7 +116,7 @@ Mat4 Mat4::translate(float x, float y, float z)
 
 Mat4 Mat4::rotateX(float degree)
 {
-	Mat4 result = Mat4::translate(0.0, 0.0, 0.0);
+	Mat4 result;
 
 	degree = (degree * PI) / 180;
 
@@ -177,6 +177,27 @@ Mat4 Mat4::scale(float x, float y, float z)
 	return result;
 }
 
+
+Mat4 Mat4::perspectiveMatrix(float fieldOfView, float aspectRatio, float near, float far)
+{
+	Mat4 result(0.0);
+
+	const float top = near * tan(fieldOfView * (PI / 360));
+	const float bottom = -top;
+	const float right = top * aspectRatio;
+	const float left = bottom * aspectRatio;
+
+	result(0,0) = (2.0 * near) / (right - left);
+	result(1,1) = (2.0 * near) / (top - bottom);
+	result(2,2) = -(far + near) / (far - near);
+
+	result(2,3) = -1.0;
+	result(3,2) = (-2.0 * far * near) / (far - near);
+//	result(2,2) = -(far + near) / (near - far);
+//	result(2,3) = (-2 * far * near) / (near - far);
+	return result;
+}
+
 ostream & operator<<(ostream & o, const Mat4 & m)
 {
 	for (int y=0; y < 16; y++)
@@ -184,14 +205,3 @@ ostream & operator<<(ostream & o, const Mat4 & m)
 
 	return o;
 }
-
-/*int main(void)
-{
-	Vec4 a(4, 15, 3);
-
-	cout << Mat4::mul(Mat4::scale(0.5, 0.5, 0.5), a) << endl;
-
-//	cout << Mat4::mul(m, a) << endl;
-}
-
-*/

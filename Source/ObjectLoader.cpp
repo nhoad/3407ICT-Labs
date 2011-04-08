@@ -14,6 +14,10 @@ using std::vector;
 using std::cout;
 using std::endl;
 
+#include <cerrno>
+#include <cstring>
+#include <cstdlib>
+
 Mesh ObjectLoader::object()
 {
 	return mesh;
@@ -42,7 +46,8 @@ void ObjectLoader::read(const string filename)
 	}
 	else
 	{
-		cout << "Could not open file" << endl;
+		cout << "ObjectLoader: Could not open " << filename << ": " << strerror(errno) << endl;
+		exit(1);
 	}
 
 	float x, y, z;

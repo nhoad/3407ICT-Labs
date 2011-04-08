@@ -4,65 +4,57 @@
  * @author Xavier Ho (contact@xavierho.com)
  */
 #pragma once
-#include "SDL.h"
+
+#include "Primitives.h"
 
 /**
  * Top-tier class, handles mainloop, events, and other classes.
  * This class has been designed with a minimal style in mind.
  */
-class Color
-{
-	public:
-		Uint8 r, g, b;
-
-		Color(Uint8 r=0, Uint8 g=0, Uint8 b=0) : r(r), g(g), b(b) {}
-};
-
-class Point
-{
-	public:
-		int x, y;
-		Color c;
-
-		Point(int a, int b, Color c) : x(a), y(b), c(c) {}
-};
-
 class Core
 {
-	/** Width and height of the rendering window. */
-	int width, height;
+    /** Width and height of the rendering window. */
+    int width, height;
 
-	/** fullscreen flag */
-	bool fullscreen;
+    /** fullscreen flag */
+    bool fullscreen;
 
-	/** The amount of time passed after each frame */
-	double elapsedTime;
+    /** The amount of time passed after each frame */
+    double elapsedTime;
 
-	/** Mainloop control toggle */
-	bool running;
+    /** Mainloop control toggle */
+    bool running;
 
-	public:
-	/** Constructor. */
-	Core(int width=800, int height=600, bool fullscreen=false);
+	 /** The mesh for a cube */
+	 Mesh cube;
 
-	/** Destructor */
-	virtual ~Core();
+	 /** rotation angle */
+	 float angle;
 
-	/** Starts the main loop. */
-	void start();
+public:
+    /** Constructor. */
+    Core(int width=512, int height=512, bool fullscreen=false);
 
-	protected:
-	/** Sets up rendering context. */
-	void initialise();
+    /** Destructor */
+    virtual ~Core();
 
-	/** Prepares objects for rendering. */
-	void preprocess();
+    /** Starts the main loop. */
+    void start();
 
-	/** Draws to screen. */
-	void render();
+protected:
+    /** Sets up rendering context. */
+    void initialise();
 
-	/** Handles user events. */
-	void handleEvents();
+    /** Prepares objects for rendering. */
+    void preprocess();
 
-	void triangle(Point a, Point b, Point c);
+    /** Draws to screen. */
+    void render();
+
+    /** Handles user events. */
+    void handleEvents();
+
+	 void drawCube(Mesh & mesh, int i);
+	 //void drawCube(Mesh & mesh, int i, int b);
+
 };
