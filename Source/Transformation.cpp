@@ -80,122 +80,112 @@ Mat4& Mat4::operator=(const Mat4& m)
 
 Mat4 Mat4::mul(const Mat4& m, const Mat4& n)
 {
-	Mat4 result(0.0);
+	Mat4 r(0.0);
 	for (int row=0; row < 4; row++)
 		for (int column=0; column < 4; column++)
 			for (int i=0; i < 4; i++)
-				result(row, column) += m(row, i) * n(i, column);
-	return result;
+				r(row, column) += m(row, i) * n(i, column);
+	return r;
 }
 
 Vec4 Mat4::mul(const Mat4& m, const Vec4& v)
 {
-	Vec4 result(0, 0, 0, 0);
+	Vec4 r(0, 0, 0, 0);
 
 	for (int row=0; row < 4; row++)
 		for (int i=0; i < 4; i++)
 		{
 			cout << "multiplying " << m(row, i) << " by " << v(i) << endl;
-			result(row) += m(row, i) * v(i);
+			r(row) += m(row, i) * v(i);
 		}
 
-	return result;
+	return r;
 }
 
 Mat4 Mat4::translate(float x, float y, float z)
 {
-	Mat4 result;
+	Mat4 r;
 
-	result(3, 0) = x;
-	result(3, 1) = y;
-	result(3, 2) = z;
+	r(3, 0) = x; r(3, 1) = y; r(3, 2) = z;
 
-
-	return result;
+	return r;
 }
 
 Mat4 Mat4::rotateX(float degree)
 {
-	Mat4 result;
+	Mat4 r;
 
 	degree = (degree * PI) / 180;
 
 	const float c = cos(degree);
 	const float s = sin(degree);
 
-	result(1, 1) = c;
-	result(1, 2) = s;
-	result(2, 1) = -s;
-	result(2, 2) = c;
+	r(1, 1) = c;  r(1, 2) = s;
+	r(2, 1) = -s; r(2, 2) = c;
 
-	return result;
+	return r;
 
 }
 
 Mat4 Mat4::rotateY(float degree)
 {
-	Mat4 result;
+	Mat4 r;
 
 	degree = (degree * PI) / 180;
 
 	const float c = cos(degree);
 	const float s = sin(degree);
 
-	result(0, 0) = c;
-	result(0, 2) = -s;
-	result(2, 0) = s;
-	result(2, 2) = c;
+	r(0, 0) = c; r(0, 2) = -s;
+	r(2, 0) = s; r(2, 2) = c;
 
-	return result;
+	return r;
 }
 
 Mat4 Mat4::rotateZ(float degree)
 {
-	Mat4 result;
+	Mat4 r;
 
 	degree = (degree * PI) / 180;
 
 	const float c = cos(degree);
 	const float s = sin(degree);
 
-	result(0, 0) = c;
-	result(1, 0) = -s;
-	result(0, 1) = s;
-	result(1, 1) = c;
+	r(0, 0) = c;  r(0, 1) = s;
+	r(1, 0) = -s; r(1, 1) = c;
 
-	return result;
+	return r;
 }
 
 Mat4 Mat4::scale(float x, float y, float z)
 {
-	Mat4 result;
+	Mat4 r;
 
-	result(0, 0) = x;
-	result(1, 1) = y;
-	result(2, 2) = z;
+	r(0, 0) = x;
+	r(1, 1) = y;
+	r(2, 2) = z;
 
-	return result;
+	return r;
 }
 
 
-Mat4 Mat4::perspectiveMatrix(float fieldOfView, float aspectRatio, float near, float far)
+Mat4 Mat4::perspectiveMatrix(float fieldOfView, float aspectRatio, float n, float f)
 {
-	Mat4 result(0.0);
+	Mat4 m(0.0);
 
-	const float top = near * tan(fieldOfView * (PI / 360));
-	const float bottom = -top;
-	const float right = top * aspectRatio;
-	const float left = bottom * aspectRatio;
+	const float t = n * tan(fieldOfView * (PI / 360));
+	const float b = -t;
+	const float r = t * aspectRatio;
+	const float l = b * aspectRatio;
 
-	result(0,0) = (2.0 * near) / (right - left);
-	result(1,1) = (2.0 * near) / (top - bottom);
-	result(2,2) = -(far + near) / (far - near);
+	m(0,0) = (2.0 * n) / (r - l);
+	m(1,1) = (2.0 * n) / (t - b);
+	m(2,2) = -(f + n) / (f - n);
+	m(3,2) = -1.0;
 
-	result(2,3) = -1.0;
-	result(3,2) = (-2.0 * far * near) / (far - near);
-//	result(2,2) = -(far + near) / (near - far);
-//	result(2,3) = (-2 * far * near) / (near - far);
-	return result;
+	m(2,3) = (-2.0 * f * n) / (f - n);
+
+	return m;
 }
 
 ostream & operator<<(ostream & o, const Mat4 & m)

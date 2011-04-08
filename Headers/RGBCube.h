@@ -26,6 +26,8 @@ class Core
 
 	float angle;
 
+	float cubeX, cubeY, yInc, xInc;
+
 	Mesh cube;
 
 	/** Mainloop control toggle */
@@ -53,4 +55,7 @@ class Core
 
 	/** Handles user events. */
 	void handleEvents();
+
+	void drawCube(int i_x, int i_y);
+
 };

@@ -184,6 +184,9 @@ void Core::render()
 {
 	// Draw Objects here
 	SDL_LockSurface(buffer);
+
+
+
 	triangle(Point(20, 250, 255), Point(200, 200, 0, 255), Point(100, 100, 0, 0, 255));
 	SDL_UnlockSurface(buffer);
 	SDL_Flip(buffer);
@@ -303,6 +306,15 @@ vector<Point> Core::clipLeft(vector<Point> polygon)
 			{
 				a.y += ((double)(dy / dx)) * (double)(minX - a.x);
 				a.x = minX;
+//				a.r = something;
+//				a.g = something;
+//				a.b = something;
+
+				// get dx and dy
+				// set r, g, and b to the x_incs * the difference between the old x and y and the new x and y.
+				double r_inc = (double) (b.r - a.r) / dy;
+				double g_inc = (double) (b.g - a.g) / dy;
+				double b_inc = (double) (b.b - a.b) / dy;
 
 				result.insert(result.begin(), a);
 			}

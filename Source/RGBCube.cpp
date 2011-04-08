@@ -6,6 +6,7 @@
 #include "RGBCube.h"
 #include "ObjectLoader.h"
 #include "Transformation.h"
+#define round(x) (int) x + 0.5
 
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
@@ -119,23 +120,65 @@ void Core::preprocess()
 {
 	// build the cube
 	ObjectLoader loader;
-
-	loader.read("Cube.obj");
-
+	loader.read("Assets/Cube.obj");
 	cube = loader.object();
 
-	cameraX = -1.0;
-	cameraY = -1.0;
-	cameraZ = -1.0;
+	cameraX = 0.0;
+	cameraY = 0.0;
+	cameraZ = 0.0;
+	angle = 15.0;
 
 	glEnable(GL_DEPTH_TEST);
 
-	angle = -15.0;
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+//	glMultMatrixf(Mat4::perspectiveMatrix(45.0, (float) (width / height), 1.0, 2.0).data);
 
-	// to use a camera instead, just uncomment the below code.
-/*	glMatrixMode(GL_PROJECTION);
-	gluPerspective(-45.0, width / height, 1.0, 20.0);
-	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);*/
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+	cubeX = 0;
+	cubeY = 0;
+	xInc = 0.1;
+	yInc = ((float) width / height) / 10;
+	glViewport(0, 0, width, height);
+}
+
+void Core::drawCube(int i_x, int i_y)
+{
+	float x = centreX(cube);
+	float y = centreY(cube);
+	float z = centreZ(cube);
+
+	float scale = 0.125;
+	float normScale = 1.0 / scale;
+
+	glPushMatrix();
+
+	glMultMatrixf(Mat4::scale(scale, scale, scale).data);
+
+	float curX = ((float) i_x / width) * normScale * 2 - normScale;
+	float curY = ((float) i_y / height) * normScale * 2 - normScale;
+
+	glMultMatrixf(Mat4::translate(curX, curY, -z).data);
+
+	glMultMatrixf(Mat4::rotateX(angle).data);
+	glMultMatrixf(Mat4::rotateX(angle).data);
+	glMultMatrixf(Mat4::rotateZ(angle).data);
+
+	glMultMatrixf(Mat4::translate(-x, -y, -z).data);
+
+	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
+	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
+
+	glDrawArrays(GL_QUADS, 0, 4);
+	glDrawArrays(GL_QUADS, 4, 8);
+	glDrawArrays(GL_QUADS, 8, 12);
+	glDrawArrays(GL_QUADS, 12, 16);
+
+	glPopMatrix();
+
 }
 
 void Core::render()
@@ -149,39 +192,17 @@ void Core::render()
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 
-/*
-	glMultMatrixf(Mat4::translate(0.5, 0.5, 0.5).data);
-	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);
-	glMultMatrixf(Mat4::rotateX(angle).data);
-	glMultMatrixf(Mat4::rotateY(angle).data);
-*/
+	drawCube(round(cubeX), round(cubeY));
 
-	Vertex v;
+	angle += elapsedTime * 100;
+	cubeX += xInc;
+	cubeY += yInc;
 
-	float x = v.centreX(cube);
-	float y = v.centreY(cube);
-	float z = v.centreZ(cube);
+	if (cubeY >= height || cubeY < 0)
+		yInc = -yInc;
 
-	//float x = 0.5, y =0.5, z = 0.5;
-
-	glMultMatrixf(Mat4::translate(x, y, z).data);
-	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);
-
-	// multiply x by y by z to get arbitrary rotation, and then upload it.
-	Mat4 m = Mat4::mul(Mat4::rotateX(angle), Mat4::rotateY(angle));
-	m = Mat4::mul(m, Mat4::rotateZ(angle));
-
-	glMultMatrixf(m.data);
-
-	glMultMatrixf(Mat4::translate(-x, -y, -z).data);
-
-	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
-	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
-
-	glDrawArrays(GL_QUADS, 0, 4);
-	glDrawArrays(GL_QUADS, 4, 8);
-	glDrawArrays(GL_QUADS, 8, 12);
-	glDrawArrays(GL_QUADS, 12, 16);
+	if (cubeX >= width || cubeX < 0)
+		xInc = -xInc;
 
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
