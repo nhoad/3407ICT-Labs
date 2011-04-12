@@ -28,6 +28,7 @@ class Mat4
 		static Mat4 rotateY(float degree);
 		static Mat4 rotateZ(float degree);
 		static Mat4 scale(float x, float y, float z);
+		static Mat4 lookAt(Vec4 & camera, Vec4 & target, Vec4 & up);
 
 };
 
@@ -40,6 +41,29 @@ class Vec4
 		float& operator()(int x);
 		float operator()(int x) const;
 
-		friend std::ostream & operator<<(std::ostream & o, const Mat4 & m);
+		/**
+			Subtract one Vector from another.
+
+			\param v the vector to subtract
+			\return the result of subtracting v from the current Vec4.
+		*/
+		Vec4 operator-(const Vec4 & v) const;
+
+		/**
+			Cross product of two Vectors.
+
+			\param v the other vector to use for a cross product.
+			\return cross product of this Vec4 with v.
+		*/
+		Vec4 operator*(const Vec4 & v) const;
+
+
+		Vec4 operator/(const Vec4 & v) const;
+
+		float length();
+
+		Vec4 normalised();
+
+		friend std::ostream & operator<<(std::ostream & o, const Vec4 & m);
 
 };

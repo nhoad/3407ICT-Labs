@@ -125,11 +125,7 @@ void Core::preprocess()
 
 	cube = loader.object();
 
-	cameraX = -1.0;
-	cameraY = -1.0;
-	cameraZ = -1.0;
 	angle = 15.0;
-
 	cubeX = 0;
 	cubeY = 0;
 
@@ -141,11 +137,18 @@ void Core::preprocess()
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
+	//gluPerspective(45.0, ((float)width / height), 1.0, 20.0);
 	glMultMatrixf(Mat4::perspectiveMatrix(45.0, ((float)width / height), 1.0, 20.0));
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+	Vec4 camera(0.0, 0.0, 1.0);
+	Vec4 target(0.0, 0.0, 0.0);
+	Vec4 up(0.0, 1.0, 0.0);
+
+	//glMultMatrixf(Mat4::lookAt(camera, target, up));
+	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 	glViewport(0, 0, width, height);
 
@@ -159,8 +162,8 @@ void Core::drawCube(int i_x, int i_y)
 
 	glPushMatrix();
 
-	float scale = 0.5;
-	float normScale = 1.0 / scale;
+	float scale = 0.125;
+	float normScale = (scale * 2) / scale;
 
 	float curX = ((float) i_x / width) * normScale * 2 - normScale;
 	float curY = ((float) i_y / height) * normScale * 2 - normScale;
