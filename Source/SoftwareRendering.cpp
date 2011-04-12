@@ -1,3 +1,8 @@
+/**
+ * 3407ICT Graphics Programming
+ * Tutorial Graphics Rendering Framework
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
+ */
 #include "SoftwareRendering.h"
 #include <iostream>
 using namespace std;
@@ -6,7 +11,7 @@ using namespace std;
     // Allow SDL main hack, because of the OS X Cocoa binding
 #else
     // SDL main hackery disabled for Windows and Linux
-    #define SDL_main main           
+    #define SDL_main main
 #endif
 
 int main(int argc, char* argv[])
@@ -70,7 +75,7 @@ void Core::render()
     SDL_LockSurface(buffer);
     /////////////////////////////////////
     // Draw objects here
-    
+
 
     /////////////////////////////////////
     SDL_UnlockSurface(buffer);
@@ -78,14 +83,14 @@ void Core::render()
     SDL_Flip(buffer);
 }
 
-void Core::handleEvents()  
-{  
-    SDL_Event e;  
-    while (SDL_PollEvent(&e)) {  
-        switch (e.type) {  
-            case SDL_QUIT:  
-                running = false;  
-            break;  
+void Core::handleEvents()
+{
+    SDL_Event e;
+    while (SDL_PollEvent(&e)) {
+        switch (e.type) {
+            case SDL_QUIT:
+                running = false;
+            break;
             case SDL_KEYUP:
                 switch (e.key.keysym.sym) {
                     case SDLK_ESCAPE:
@@ -94,10 +99,10 @@ void Core::handleEvents()
                     default: break;
                 }
             break;
-            default: break;  
-        }  
-    }  
-}  
+            default: break;
+        }
+    }
+}
 
 void Core::putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a)
 {

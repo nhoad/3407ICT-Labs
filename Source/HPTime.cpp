@@ -1,7 +1,7 @@
 /**
  * @file Time.cpp
  * This file takes control of time.
- * @author Xavier Ho (contact@xavierho.com)
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
  */
 #include "HPTime.h"
 

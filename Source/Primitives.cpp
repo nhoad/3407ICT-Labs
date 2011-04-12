@@ -1,3 +1,8 @@
+/**
+ * 3407ICT Graphics Programming
+ * Tutorial Graphics Rendering Framework
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
+ */
 #include <vector>
 using std::vector;
 

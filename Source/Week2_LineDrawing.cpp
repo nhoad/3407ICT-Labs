@@ -1,10 +1,8 @@
-//////////////////////////////////////////////////////////////
-/// Author:             <Your Name>
-/// Student Number:     <s0000000>
-/// Operating System:   <Windows|Mac OS X|Linux>
-/// Comments:           <Notes about running your program>
-//////////////////////////////////////////////////////////////
-
+/**
+ * 3407ICT Graphics Programming
+ * Tutorial Graphics Rendering Framework
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
+ */
 #include "Week2_LineDrawing.h"
 #include <iostream>
 #include <algorithm>

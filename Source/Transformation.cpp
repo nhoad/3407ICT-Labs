@@ -1,5 +1,9 @@
+/**
+ * 3407ICT Graphics Programming
+ * Tutorial Graphics Rendering Framework
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
+ */
 #include "Transformation.h"
-#define PI 3.14159265
 #include <iostream>
 using std::cout;
 using std::endl;

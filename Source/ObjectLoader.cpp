@@ -1,3 +1,8 @@
+/**
+ * 3407ICT Graphics Programming
+ * ObjectLoader implementation.
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
+ */
 #include "ObjectLoader.h"
 #include <string>
 using std::string;

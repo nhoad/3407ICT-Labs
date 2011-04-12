@@ -1,7 +1,7 @@
 /**
  * 3407ICT Graphics Programming
  * Tutorial Graphics Rendering Framework
- * @author Xavier Ho (contact@xavierho.com)
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
  */
 #include "VertexBufferObject.h"
 
