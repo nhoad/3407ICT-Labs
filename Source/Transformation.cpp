@@ -49,6 +49,11 @@ float& Vec4::operator()(int x)
 		return this->w;
 }
 
+Mat4::operator float*()
+{
+	return data;
+}
+
 ostream & operator<<(ostream & o, const Vec4 & v)
 {
 	o << "x: " << v.x << endl;
@@ -94,10 +99,7 @@ Vec4 Mat4::mul(const Mat4& m, const Vec4& v)
 
 	for (int row=0; row < 4; row++)
 		for (int i=0; i < 4; i++)
-		{
-			cout << "multiplying " << m(row, i) << " by " << v(i) << endl;
 			r(row) += m(row, i) * v(i);
-		}
 
 	return r;
 }
@@ -151,8 +153,8 @@ Mat4 Mat4::rotateZ(float degree)
 	const float c = cos(degree);
 	const float s = sin(degree);
 
-	r(0, 0) = c;  r(0, 1) = s;
-	r(1, 0) = -s; r(1, 1) = c;
+	r(0, 0) = c;  r(0, 1) = -s;
+	r(1, 0) = s; r(1, 1) = c;
 
 	return r;
 }
@@ -173,16 +175,15 @@ Mat4 Mat4::perspectiveMatrix(float fieldOfView, float aspectRatio, float n, floa
 {
 	Mat4 m(0.0);
 
-	const float t = n * tan(fieldOfView * (PI / 360));
+	const float t = n * tan(fieldOfView * (PI / 360.0));
 	const float b = -t;
 	const float r = t * aspectRatio;
-	const float l = b * aspectRatio;
+	const float l = -r;
 
 	m(0,0) = (2.0 * n) / (r - l);
 	m(1,1) = (2.0 * n) / (t - b);
 	m(2,2) = -(f + n) / (f - n);
 	m(3,2) = -1.0;
-
 	m(2,3) = (-2.0 * f * n) / (f - n);
 
 	return m;

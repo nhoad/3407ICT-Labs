@@ -5,8 +5,10 @@ class Vec4;
 
 class Mat4
 {
-	public:
+	private:
 		float data[16];
+
+	public:
 
 		Mat4();
 		Mat4(float * values);
@@ -14,6 +16,7 @@ class Mat4
 		float& operator()(int x, int y);
 		float operator()(int x, int y) const;
 		Mat4& operator=(const Mat4& m);
+		operator float*();
 		friend std::ostream & operator<<(std::ostream & o, const Mat4 & m);
 
 		static Mat4 mul(const Mat4& m, const Mat4& n);
@@ -25,7 +28,7 @@ class Mat4
 		static Mat4 rotateY(float degree);
 		static Mat4 rotateZ(float degree);
 		static Mat4 scale(float x, float y, float z);
-		
+
 };
 
 class Vec4

@@ -120,29 +120,35 @@ void Core::preprocess()
 {
 	// build the cube
 	ObjectLoader loader;
+
 	loader.read("Assets/Cube.obj");
+
 	cube = loader.object();
 
-	cameraX = 0.0;
-	cameraY = 0.0;
-	cameraZ = 0.0;
+	cameraX = -1.0;
+	cameraY = -1.0;
+	cameraZ = -1.0;
 	angle = 15.0;
+
+	cubeX = 0;
+	cubeY = 0;
+
+	xInc = 0.1;
+	yInc = ((float) width / height) / 10;
 
 	glEnable(GL_DEPTH_TEST);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-//	glMultMatrixf(Mat4::perspectiveMatrix(45.0, (float) (width / height), 1.0, 2.0).data);
+
+	glMultMatrixf(Mat4::perspectiveMatrix(45.0, ((float)width / height), 1.0, 20.0));
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-	cubeX = 0;
-	cubeY = 0;
-	xInc = 0.1;
-	yInc = ((float) width / height) / 10;
 	glViewport(0, 0, width, height);
+
 }
 
 void Core::drawCube(int i_x, int i_y)
@@ -151,23 +157,23 @@ void Core::drawCube(int i_x, int i_y)
 	float y = centreY(cube);
 	float z = centreZ(cube);
 
-	float scale = 0.125;
-	float normScale = 1.0 / scale;
-
 	glPushMatrix();
 
-	glMultMatrixf(Mat4::scale(scale, scale, scale).data);
+	float scale = 0.5;
+	float normScale = 1.0 / scale;
 
 	float curX = ((float) i_x / width) * normScale * 2 - normScale;
 	float curY = ((float) i_y / height) * normScale * 2 - normScale;
 
-	glMultMatrixf(Mat4::translate(curX, curY, -z).data);
+	glMultMatrixf(Mat4::translate(curX, curY, -z));
 
-	glMultMatrixf(Mat4::rotateX(angle).data);
-	glMultMatrixf(Mat4::rotateX(angle).data);
-	glMultMatrixf(Mat4::rotateZ(angle).data);
+	glMultMatrixf(Mat4::scale(scale, scale, scale));
 
-	glMultMatrixf(Mat4::translate(-x, -y, -z).data);
+	glMultMatrixf(Mat4::rotateX(angle));
+	glMultMatrixf(Mat4::rotateY(angle));
+	glMultMatrixf(Mat4::rotateZ(angle));
+
+	glMultMatrixf(Mat4::translate(-x, -y, -z));
 
 	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
 	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
@@ -178,7 +184,6 @@ void Core::drawCube(int i_x, int i_y)
 	glDrawArrays(GL_QUADS, 12, 16);
 
 	glPopMatrix();
-
 }
 
 void Core::render()
@@ -186,8 +191,6 @@ void Core::render()
 	// Draw Objects here
 
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -195,6 +198,7 @@ void Core::render()
 	drawCube(round(cubeX), round(cubeY));
 
 	angle += elapsedTime * 100;
+
 	cubeX += xInc;
 	cubeY += yInc;
 
