@@ -147,8 +147,22 @@ void Core::preprocess()
 	Vec4 target(0.0, 0.0, 0.0);
 	Vec4 up(0.0, 1.0, 0.0);
 
+	Vec4 v(3, 1, 2, 0);
+
+	cout << v << endl;
+	cout << v.length() << endl;
+	cout << v.normalised() << endl;
+
+//	exit(0);
+
 	//glMultMatrixf(Mat4::lookAt(camera, target, up));
 	gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+
+	GLfloat values[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, values);
+	cout << "GOOD" << Mat4(values) << endl;
+	cout << "MINE" << Mat4::lookAt(camera, target, up) << endl;
+	exit(0);
 
 	glViewport(0, 0, width, height);
 

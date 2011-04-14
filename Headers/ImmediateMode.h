@@ -7,9 +7,7 @@
 #include "SDL.h"
 
 /**
- * Top-tier class, handles mainloop, events, and other classes.
- * This class has been designed with a minimal style in mind.
- */
+ * Color class representing a Color with RGB values.
 class Color
 {
 	public:
@@ -18,6 +16,9 @@ class Color
 		Color(Uint8 r=0, Uint8 g=0, Uint8 b=0) : r(r), g(g), b(b) {}
 };
 
+/**
+ * Point class, representing a point in 2D space
+ */
 class Point
 {
 	public:
@@ -27,6 +28,10 @@ class Point
 		Point(int a, int b, Color c) : x(a), y(b), c(c) {}
 };
 
+/**
+ * Top-tier class, handles mainloop, events, and other classes.
+ * This class has been designed with a minimal style in mind.
+ */
 class Core
 {
 	/** Width and height of the rendering window. */
