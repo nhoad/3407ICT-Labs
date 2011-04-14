@@ -69,6 +69,21 @@ float Cube::centreX()
 	return (minX + maxX) / 2.0f;
 }
 
+vector<Point> Cube::getPoints(const int start, const int end)
+{
+	vector<Point> result;
+	for (int i=start; i < end; i++)
+	{
+		Uint8 r = mesh[i].r * 255;
+		Uint8 g = mesh[i].g * 255;
+		Uint8 b = mesh[i].b * 255;
+
+		result.push_back(Point(x, y, r, g, b));
+	}
+
+	return result;
+}
+
 int compareOnY(Point a, Point b)
 {
 	return (a.y < b.y);

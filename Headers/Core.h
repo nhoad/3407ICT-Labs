@@ -29,14 +29,14 @@ class Core
 	bool running;
 
 	/** The mesh for a cube */
-	Mesh cube;
+	Cube cube;
 
 	/** rotation angle */
 	float angle;
 
 	public:
 	/** Constructor. */
-	Core(int width=512, int height=512, bool fullscreen=false);
+	Core(int width=800, int height=600, bool fullscreen=false);
 
 	/** Destructor */
 	virtual ~Core();
@@ -137,7 +137,7 @@ class Core
 	void triangle(Point a, Point b, Point c);
 
 	// TODO: Comment this properly.
-	void drawCube(Mesh & mesh, int i);
+	void drawCube(Cube cube);
 
 	void putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);
 };

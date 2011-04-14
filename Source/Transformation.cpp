@@ -230,7 +230,7 @@ Mat4 Mat4::scale(float x, float y, float z)
 	return r;
 }
 
-Mat4 Mat4::perspectiveFrustrum(float fieldOfView, float aspectRatio, float n, float f)
+Mat4 Mat4::perspectiveFrustum(float fieldOfView, float aspectRatio, float n, float f)
 {
 	Mat4 m(0.0);
 

@@ -130,7 +130,7 @@ void Core::preprocess()
 	cube.x = 0;
 	cube.y = 0;
 	angle = 15.0;
-	cube.speed = 100;
+	cube.speed = 10;
 
 	xInc = 1 / cube.speed;
 	yInc = ((float) width / height) / cube.speed;
@@ -141,7 +141,8 @@ void Core::preprocess()
 	glLoadIdentity();
 
 	//gluPerspective(45.0, ((float)width / height), 1.0, 20.0);
-	glMultMatrixf(Mat4::perspectiveMatrix(45.0, ((float)width / height), 1.0, 20.0));
+	//glMultMatrixf(Mat4::perspectiveMatrix(45.0, ((float)width / height), 1.0, 20.0));
+	glFrustum(-1, 1, -1, 1, 1, 10);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -153,8 +154,6 @@ void Core::preprocess()
 	glMultMatrixf(Mat4::lookAt(camera, target, up));
 	//gluLookAt(0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
-	/*GLfloat values[16];
-	glGetFloatv(GL_MODELVIEW_MATRIX, values); */
 	glViewport(0, 0, width, height);
 
 }
@@ -166,13 +165,13 @@ void Core::drawCube(Cube cube)
 	float y = cube.centreY();
 	float z = cube.centreZ();
 
-	glPushMatrix();
-
 	float scale = cube.scale;
 	float normScale = (scale * 2) / scale;
 
 	float curX = (cube.x / width) * normScale * 2 - normScale;
 	float curY = (cube.y / height) * normScale * 2 - normScale;
+
+	glPushMatrix();
 
 	glMultMatrixf(Mat4::translate(curX, curY, -z));
 
@@ -187,17 +186,17 @@ void Core::drawCube(Cube cube)
 	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube.mesh[0]);
 	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube.mesh[0].r);
 
+
+/*
+	GLfloat values[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, values);
+	cout << Mat4(values) << endl;
+*/
+
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDrawArrays(GL_QUADS, 4, 8);
 	glDrawArrays(GL_QUADS, 8, 12);
 	glDrawArrays(GL_QUADS, 12, 16);
-
-	/*
-	drawPolygon(cube.getPoints(0, 4));
-	drawPolygon(cube.getPoints(4, 8));
-	drawPolygon(cube.getPoints(8, 12));
-	drawPolygon(cube.getPoints(12, 16));
-	*/
 
 	glPopMatrix();
 }
@@ -215,10 +214,10 @@ void Core::render()
 
 	angle += elapsedTime * 100;
 
-	if (round(cube.y) >= height || round(cube.y) <= 0)
+	if (cube.y >= height || cube.y < 0)
 		yInc = -yInc;
 
-	if (round(cube.x) >= width || round(cube.x) <= 0)
+	if (cube.x >= width || cube.x < 0)
 		xInc = -xInc;
 
 	cube.x += xInc;

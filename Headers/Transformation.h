@@ -29,7 +29,7 @@ class Mat4
 		static Mat4 scale(float x, float y, float z);
 		static Mat4 lookAt(Vec4 & camera, Vec4 & target, Vec4 & up);
 		static Mat4 perspectiveMatrix(float fieldOfView, float aspectRatio, float near, float far);
-		static Mat4 perspectiveFrustrum(float fieldOfView, float aspectRatio, float near, float far);
+		static Mat4 perspectiveFrustum(float fieldOfView, float aspectRatio, float near, float far);
 
 };
 

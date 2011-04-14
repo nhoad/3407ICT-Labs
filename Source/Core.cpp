@@ -7,8 +7,8 @@
 #include "ObjectLoader.h"
 #include "Primitives.h"
 #include "Transformation.h"
-
 #define round(x) (int) x+0.5
+
 #include <algorithm>
 using std::sort;
 
@@ -74,9 +74,7 @@ void Core::start()
 
 	preprocess();
 	while (running) {
-		cout << "before render" << endl;
 		render();
-		cout << "before handleEvents" << endl;
 		handleEvents();
 		elapsedTime = t.getSeconds();
 		t.start();
@@ -123,61 +121,75 @@ void Core::preprocess()
 	// Define or load objects here
 	//
 
-	/*	ObjectLoader loader;
-		loader.read("Assets/Cube.obj");
-		cube = loader.object();
+	ObjectLoader loader;
 
-		glEnable(GL_DEPTH_TEST);
+	loader.read("Assets/Cube.obj");
 
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
+	cube.mesh = loader.object();
+	cube.scale = 0.125;
 
-		glMultMatrixf(Mat4::perspectiveMatrix(45.0, width / height, 1, 20).data);
-	//	gluPerspective(45.0, width / height, 1.0, 20.0);
+	cube.x = 0;
+	cube.y = 0;
+	angle = 15.0;
+	cube.speed = 100;
+
+	glEnable(GL_DEPTH_TEST);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glMultMatrixf(Mat4::perspectiveMatrix(45.0, ((float)width / height), 1.0, 20.0));
+
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(-1, -1, -1, 0, 0, 0, 0, 1, 0);
+	Vec4 camera(0, 0, 3.5), target(0, 0, 0), up(0, 1.0, 0);
+	glMultMatrixf(Mat4::lookAt(camera, target, up));
 
-	glViewport(0, 0, width, height);
-	*/
-	angle = 15.0;
 }
 
-//void Core::drawCube(Mesh & mesh, int i_x, int i_y)
-void Core::drawCube(Mesh & mesh, int i)
+void Core::drawCube(Cube cube)
 {
-	float x = centreX(mesh);
-	float y = centreY(mesh);
-	float z = centreZ(mesh);
+	float x = cube.centreX();
+	float y = cube.centreY();
+	float z = cube.centreZ();
 
-	/*	int i_x = (i * width) / 10 + 5, i_y = 1;
+	float scale = cube.scale;
+	float normScale = (scale * 2) / scale;
 
-		float x_offset = ((float)i_x / width) * 2 - 1;
-		float y_offset = ((float)i_y / height) * 2 - 1;
+	float curX = (cube.x / width) * normScale * 2 - normScale;
+	float curY = (cube.y / height) * normScale * 2 - normScale;
 
-		cout << "Draw at: " << x_offset << ' ' << y_offset << endl;
-		cout << x_offset << endl;
-		*/
 	glPushMatrix();
 
-	//	glMultMatrixf(Mat4::translate(x, y, 0).data);
-	glMultMatrixf(Mat4::scale(0.5, 0.5, 0.5).data);
+	glMultMatrixf(Mat4::translate(-x, -y, -z));
+	glMultMatrixf(Mat4::scale(scale, scale, scale));
 
-	glMultMatrixf(Mat4::rotateX(angle).data);
+	glMultMatrixf(Mat4::rotateX(angle));
+	glMultMatrixf(Mat4::rotateY(angle));
+	glMultMatrixf(Mat4::rotateZ(angle));
 
-	glMultMatrixf(Mat4::translate(-x, -y, -z).data);
+	glMultMatrixf(Mat4::translate(-x, -y, -z));
 
-	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
-	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
+	/*
+	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube.mesh[0]);
+	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube.mesh[0].r);
 
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDrawArrays(GL_QUADS, 4, 8);
 	glDrawArrays(GL_QUADS, 8, 12);
 	glDrawArrays(GL_QUADS, 12, 16);
+	*/
+
+	GLfloat values[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, values);
+
+	drawPolygon(cube.getPoints(0, 4));
+	drawPolygon(cube.getPoints(4, 8));
+	drawPolygon(cube.getPoints(8, 12));
+	drawPolygon(cube.getPoints(12, 16));
+
 
 	glPopMatrix();
-
 }
 
 void Core::render()
@@ -185,30 +197,11 @@ void Core::render()
 	// Draw Objects here
 	SDL_LockSurface(buffer);
 
-
+	drawCube(cube);
 
 	triangle(Point(20, 250, 255), Point(200, 200, 0, 255), Point(100, 100, 0, 0, 255));
 	SDL_UnlockSurface(buffer);
 	SDL_Flip(buffer);
-
-	/*	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_COLOR_ARRAY);
-
-		for (int i=0; i < 1; i++)
-		{
-		cout << "drawing cube " << i << " at " << (i * width) / 10 + 5 << endl;
-	//drawCube(cube, (i * width) / 10 + 5, 20);
-	drawCube(cube, i);
-	}
-
-	angle += elapsedTime * 100;
-
-	glDisableClientState(GL_COLOR_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
-
-	// Flip the buffer for double buffering
-	SDL_GL_SwapBuffers();*/
 }
 
 void Core::handleEvents()
@@ -305,16 +298,16 @@ vector<Point> Core::clipLeft(vector<Point> polygon)
 			else // a == out and b == in
 			{
 				a.y += ((double)(dy / dx)) * (double)(minX - a.x);
+				double oldX = a.x;
 				a.x = minX;
-//				a.r = something;
-//				a.g = something;
-//				a.b = something;
 
-				// get dx and dy
-				// set r, g, and b to the x_incs * the difference between the old x and y and the new x and y.
 				double r_inc = (double) (b.r - a.r) / dy;
 				double g_inc = (double) (b.g - a.g) / dy;
 				double b_inc = (double) (b.b - a.b) / dy;
+
+				a.r += r_inc * (oldX - a.x);
+				a.g += g_inc * (oldX - a.x);
+				a.b += b_inc * (oldX - a.x);
 
 				result.insert(result.begin(), a);
 			}
@@ -466,6 +459,7 @@ vector<Point> Core::clip(vector<Point> polygon)
 
 void Core::drawPolygon(vector<Point> polygon)
 {
+
 	vector<Point> clipped = clip(polygon);
 	vector<Point> decomposed = decompose(clipped);
 
