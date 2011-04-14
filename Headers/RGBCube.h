@@ -11,6 +11,8 @@
  * This class has been designed with a minimal style in mind.
  */
 #include "Primitives.h"
+#include "Transformation.h"
+
 class Core
 {
 	/** Width and height of the rendering window. */
@@ -29,6 +31,8 @@ class Core
 	Cube cube;
 
 	Mesh mesh;
+
+	Mat4 * projection, * modelview;
 
 	/** Mainloop control toggle */
 	bool running;

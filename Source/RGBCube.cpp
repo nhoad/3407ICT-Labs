@@ -137,23 +137,27 @@ void Core::preprocess()
 
 	glEnable(GL_DEPTH_TEST);
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
+	// load identity matrix
+	projection = new Mat4();
 
+	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 20.0);
+	(*projection) = Mat4::mul((*projection), perspectiveMatrix);
 	//gluPerspective(45.0, ((float)width / height), 1.0, 20.0);
-	//glMultMatrixf(Mat4::perspectiveMatrix(45.0, ((float)width / height), 1.0, 20.0));
-	glFrustum(-1, 1, -1, 1, 1, 10);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
+	glMatrixMode(GL_PROJECTION);
+	glLoadMatrixf(*projection);
+
+	modelview = new Mat4();
 
 	Vec4 camera(0.0, 0.0, 3.5);
 	Vec4 target(0.0, 0.0, 0.0);
 	Vec4 up(0.0, 1.0, 0.0);
 
-	glMultMatrixf(Mat4::lookAt(camera, target, up));
+	(*modelview) = Mat4::mul((*modelview), Mat4::lookAt(camera, target, up));
 	//gluLookAt(0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf(*modelview);
 	glViewport(0, 0, width, height);
 
 }
