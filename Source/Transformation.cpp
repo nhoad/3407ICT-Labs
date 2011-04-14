@@ -76,6 +76,13 @@ Vec4 Vec4::operator*(const Vec4 & v) const
 	temp(2) = (*this)(0) * v(1) - (*this)(1) * v(0);
 	temp(3) = 0;
 
+	/*
+	cout << "this: " << endl << (*this) << endl;
+	cout << "* v: " << endl << v << endl;
+	cout << " = : " << temp << endl;
+	exit(0);
+	*/
+
 	return temp;
 }
 
@@ -268,7 +275,8 @@ Mat4 Mat4::lookAt(Vec4 & camera, Vec4 & target, Vec4 & up)
 	Mat4 trans = Mat4::translate(-camera(0), -camera(1), -camera(2));
 	Mat4 rot;
 
-	Vec4 forward = (target - camera).normalised();
+	//Vec4 forward = (target - camera).normalised();
+	Vec4 forward = (camera - target).normalised();
 	Vec4 left = (up * forward).normalised();
 	Vec4 upAxis = forward * left;
 
@@ -276,19 +284,6 @@ Mat4 Mat4::lookAt(Vec4 & camera, Vec4 & target, Vec4 & up)
 	rot(0, 0) = left(0); rot(0, 1) = upAxis(0); rot(2, 0) = forward(0);
 	rot(1, 0) = left(1); rot(1, 1) = upAxis(1); rot(2, 1) = forward(1);
 	rot(2, 0) = left(2); rot(2, 1) = upAxis(2); rot(2, 2) = forward(2);
-
-	cout << "camera" << endl << camera << endl;
-	cout << "target" << endl << target << endl;
-	cout << "up" << endl << up << endl;
-	cout << "forward (target - camera)" << endl << forward<< endl;
-	cout << "left" << endl << left<< endl;
-	cout << "upAxis" << endl << upAxis << endl;
-
-	cout << "rotational matrix" << endl;
-	cout << rot << endl;
-
-	cout << "translation matrix" << endl;
-	cout << trans << endl;
 
 	return Mat4::mul(rot, trans);
 }
