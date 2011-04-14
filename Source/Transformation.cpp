@@ -275,12 +275,10 @@ Mat4 Mat4::lookAt(Vec4 & camera, Vec4 & target, Vec4 & up)
 	Mat4 trans = Mat4::translate(-camera(0), -camera(1), -camera(2));
 	Mat4 rot;
 
-	//Vec4 forward = (target - camera).normalised();
 	Vec4 forward = (camera - target).normalised();
 	Vec4 left = (up * forward).normalised();
 	Vec4 upAxis = forward * left;
 
-	//rot(0, 0) = left(0); rot(0, 1) = upAxis(0); rot(2, 0) = forward(0);
 	rot(0, 0) = left(0); rot(0, 1) = upAxis(0); rot(2, 0) = forward(0);
 	rot(1, 0) = left(1); rot(1, 1) = upAxis(1); rot(2, 1) = forward(1);
 	rot(2, 0) = left(2); rot(2, 1) = upAxis(2); rot(2, 2) = forward(2);

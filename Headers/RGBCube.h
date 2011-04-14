@@ -22,13 +22,13 @@ class Core
 	/** The amount of time passed after each frame */
 	double elapsedTime;
 
-	float cameraX, cameraY, cameraZ;
-
 	float angle;
 
-	float cubeX, cubeY, yInc, xInc;
+	float yInc, xInc;
 
-	Mesh cube;
+	Cube cube;
+
+	Mesh mesh;
 
 	/** Mainloop control toggle */
 	bool running;
@@ -56,6 +56,6 @@ class Core
 	/** Handles user events. */
 	void handleEvents();
 
-	void drawCube(int i_x, int i_y);
+	void drawCube(Cube cube);
 
 };

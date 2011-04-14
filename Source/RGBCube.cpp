@@ -6,7 +6,7 @@
 #include "RGBCube.h"
 #include "ObjectLoader.h"
 #include "Transformation.h"
-#define round(x) (int) x + 0.5
+#define round(x) (int)( x + 0.5)
 
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
@@ -123,14 +123,17 @@ void Core::preprocess()
 
 	loader.read("Assets/Cube.obj");
 
-	cube = loader.object();
+	cube.mesh = loader.object();
+	//mesh = loader.object();
+	cube.scale = 0.125;
 
+	cube.x = 0;
+	cube.y = 0;
 	angle = 15.0;
-	cubeX = 0;
-	cubeY = 0;
+	cube.speed = 100;
 
-	xInc = 0.1;
-	yInc = ((float) width / height) / 10;
+	xInc = 1 / cube.speed;
+	yInc = ((float) width / height) / cube.speed;
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -143,43 +146,33 @@ void Core::preprocess()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	Vec4 camera(0.0, 0.0, 1.0);
+	Vec4 camera(0.0, 0.0, 3.5);
 	Vec4 target(0.0, 0.0, 0.0);
 	Vec4 up(0.0, 1.0, 0.0);
 
-	Vec4 v(3, 1, 2, 0);
-
-	cout << v << endl;
-	cout << v.length() << endl;
-	cout << v.normalised() << endl;
-
-//	exit(0);
-
 	glMultMatrixf(Mat4::lookAt(camera, target, up));
-	//gluLookAt(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	//gluLookAt(0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 
 	/*GLfloat values[16];
-	glGetFloatv(GL_MODELVIEW_MATRIX, values);
-	cout << "GOOD" << Mat4(values) << endl;
-	cout << "MINE" << Mat4::lookAt(camera, target, up) << endl;
-*/
+	glGetFloatv(GL_MODELVIEW_MATRIX, values); */
 	glViewport(0, 0, width, height);
 
 }
 
-void Core::drawCube(int i_x, int i_y)
+void Core::drawCube(Cube cube)
 {
-	float x = centreX(cube);
-	float y = centreY(cube);
-	float z = centreZ(cube);
+
+	float x = cube.centreX();
+	float y = cube.centreY();
+	float z = cube.centreZ();
 
 	glPushMatrix();
 
-	float scale = 0.125;
+	float scale = cube.scale;
 	float normScale = (scale * 2) / scale;
 
-	float curX = ((float) i_x / width) * normScale * 2 - normScale;
-	float curY = ((float) i_y / height) * normScale * 2 - normScale;
+	float curX = (cube.x / width) * normScale * 2 - normScale;
+	float curY = (cube.y / height) * normScale * 2 - normScale;
 
 	glMultMatrixf(Mat4::translate(curX, curY, -z));
 
@@ -191,13 +184,20 @@ void Core::drawCube(int i_x, int i_y)
 
 	glMultMatrixf(Mat4::translate(-x, -y, -z));
 
-	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0]);
-	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube[0].r);
+	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube.mesh[0]);
+	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube.mesh[0].r);
 
 	glDrawArrays(GL_QUADS, 0, 4);
 	glDrawArrays(GL_QUADS, 4, 8);
 	glDrawArrays(GL_QUADS, 8, 12);
 	glDrawArrays(GL_QUADS, 12, 16);
+
+	/*
+	drawPolygon(cube.getPoints(0, 4));
+	drawPolygon(cube.getPoints(4, 8));
+	drawPolygon(cube.getPoints(8, 12));
+	drawPolygon(cube.getPoints(12, 16));
+	*/
 
 	glPopMatrix();
 }
@@ -211,18 +211,18 @@ void Core::render()
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 
-	drawCube(round(cubeX), round(cubeY));
+	drawCube(cube);
 
 	angle += elapsedTime * 100;
 
-	cubeX += xInc;
-	cubeY += yInc;
-
-	if (cubeY >= height || cubeY < 0)
+	if (round(cube.y) >= height || round(cube.y) <= 0)
 		yInc = -yInc;
 
-	if (cubeX >= width || cubeX < 0)
+	if (round(cube.x) >= width || round(cube.x) <= 0)
 		xInc = -xInc;
+
+	cube.x += xInc;
+	cube.y += yInc;
 
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);

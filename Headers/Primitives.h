@@ -52,7 +52,18 @@ struct Vertex
 
 };
 
-float centreX(const Mesh & mesh);
-float centreY(const Mesh & mesh);
-float centreZ(const Mesh & mesh);
+struct Cube
+{
+	public:
+		Mesh mesh;
+		float x, y, scale;
+		float speed;
 
+		Cube();
+
+		float centreX();
+		float centreY();
+		float centreZ();
+
+		std::vector<Point> getPoints(const int start, const int end);
+};

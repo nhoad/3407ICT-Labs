@@ -8,7 +8,14 @@ using std::vector;
 
 #include "Primitives.h"
 
-float centreZ(const Mesh & mesh)
+Cube::Cube()
+{
+	x = 0;
+	y = 0;
+	scale = 1;
+}
+
+float Cube::centreZ()
 {
 	float minZ, maxZ;
 
@@ -26,7 +33,7 @@ float centreZ(const Mesh & mesh)
 	return (minZ + maxZ) / 2.0f;
 }
 
-float centreY(const Mesh & mesh)
+float Cube::centreY()
 {
 	float minY, maxY;
 
@@ -44,7 +51,7 @@ float centreY(const Mesh & mesh)
 	return (minY + maxY) / 2.0f;
 }
 
-float centreX(const Mesh & mesh)
+float Cube::centreX()
 {
 	float minX, maxX;
 
