@@ -105,18 +105,20 @@ void Assignment1::drawCube(Cube cube)
 
 	Mat4 model;
 
-	Mat4::mul(model, Mat4::translate(curX, curY, -z));
-	Mat4::mul(model, Mat4::scale(scale, scale, scale));
-	Mat4::mul(model, Mat4::rotateX(angle));
-	Mat4::mul(model, Mat4::rotateY(angle));
-	Mat4::mul(model, Mat4::rotateZ(angle));
+		Mat4::mul(model, Mat4::translate(curX, curY, -z));
+		Mat4::mul(model, Mat4::scale(scale, scale, scale));
+		Mat4::mul(model, Mat4::rotateX(angle));
+		Mat4::mul(model, Mat4::rotateY(angle));
+		Mat4::mul(model, Mat4::rotateZ(angle));
 
-	Mat4::mul(model, Mat4::translate(-x, -y, -z));
+		Mat4::mul(model, Mat4::translate(-x, -y, -z));
 
+	//Mat4 modelview = Mat4::mul(model, *view);
 	Mat4 modelview = Mat4::mul(model, *view);
 
-	//Mat4 modelview = Mat4::mul(*model, *view);
-	Mat4 modelViewPerspective = Mat4::mul(*projection, modelview);
+	Mat4 modelViewPerspective = Mat4::mul(modelview, *projection);
+
+	cout << modelViewPerspective << endl;
 
 	for (unsigned i=0; i < cube.faces.size(); i++)
 	{
@@ -129,8 +131,8 @@ void Assignment1::drawCube(Cube cube)
 			Vertex v = currentFace[j];
 
 			// get the NDC
-			//Vec4 vec = Mat4::mul(modelViewPerspective, Vec4(v(0), v(1), v(2), v(3)));
-			Vec4 vec(v(0), v(1), v(2), v(3));
+			Vec4 vec = Mat4::mul(modelViewPerspective, Vec4(v(0), v(1), v(2), v(3)));
+			//Vec4 vec(v(0), v(1), v(2), v(3));
 
 			// normalised x, y and z against w
 			vec(0) /= vec(3);
@@ -143,11 +145,11 @@ void Assignment1::drawCube(Cube cube)
 			cout << vec << endl;
 			cout << x << ' ' << y << endl;
 
-			int r = currentFace[i](4) * 255;
-			int g = currentFace[i](5) * 255;
-			int b = currentFace[i](6) * 255;
+			int r = v(4);
+			int g = v(5);
+			int b = v(6);
 
-			newFace.push_back(Vertex(x, y, vec(2), 0, r, g, b, 1));
+			newFace.push_back(Vertex(x, y, vec(2), vec(3), r, g, b, 1));
 		}
 
 		drawPolygon(newFace);
@@ -192,6 +194,15 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 
 void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 {
+
+	Vec4 AB = Vec4(a(0), a(1), a(2), 0) * Vec4(b(0), b(1), b(2), 0);
+	Vec4 BC = Vec4(b(0), b(1), b(2), 0) * Vec4(c(0), c(1), c(2), 0);
+
+	Vec4 cross = AB * BC;
+
+	if (((int) cross(2)) < 0)
+		return;
+
 	// first, we sort the vertices on the Y axis, using sort from algorithm library.
 	vector<Vertex> sorted;
 
@@ -323,19 +334,11 @@ vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
 
 void Assignment1::render()
 {
-	// Draw Objects here
+	SDL_FillRect(buffer, NULL, 0);
 
-    SDL_FillRect(buffer, NULL, 0);
-
-    SDL_LockSurface(buffer);
-    /////////////////////////////////////
-    // Draw objects here
-
+	SDL_LockSurface(buffer);
 	drawCube(cube);
-	moveCube(cube);
-
-    /////////////////////////////////////
-    SDL_UnlockSurface(buffer);
-    // Flip the buffers
-    SDL_Flip(buffer);
+	//	moveCube(cube);
+	SDL_UnlockSurface(buffer);
+	SDL_Flip(buffer);
 }

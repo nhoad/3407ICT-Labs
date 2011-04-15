@@ -76,7 +76,7 @@ void ObjectLoader::read(const string filename)
 			z = stringToType<float>(split_line[3]);
 
 			// add them in the order they were read in, so we can get the proper ordering later.
-			vertices.push_back(Vertex(x, y, z, 1.0, x, y, z, 1.0));
+			vertices.push_back(Vertex(x, y, z, 1.0, x * 255, y * 255, z * 255, 1.0));
 		}
 		else if (type == "vn")
 		{

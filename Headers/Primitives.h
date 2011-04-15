@@ -14,9 +14,6 @@ class Vertex
 {
 	float data[8];
 
-	float x, y, z, w;
-	float r, g, b, a;
-
 	public:
 	Vertex() { }
 
@@ -27,10 +24,12 @@ class Vertex
 		data[2] = z;
 		data[3] = w;
 
-		data[4] = x;
-		data[5] = y;
-		data[6] = z;
+		data[4] = r;
+		data[5] = g;
+		data[6] = b;
 		data[7] = a;
+
+//		std::cout << "constructor " << *this << std::endl;
 	}
 
 	float& operator()(int x);
