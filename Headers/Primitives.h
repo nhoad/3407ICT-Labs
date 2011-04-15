@@ -12,7 +12,6 @@ int compareOnY(Vertex a, Vertex b);
 
 class Vertex
 {
-
 	float data[8];
 
 	float x, y, z, w;
@@ -36,6 +35,7 @@ class Vertex
 
 	float& operator()(int x);
 	float operator()(int x) const;
+	friend std::ostream & operator<<(std::ostream & o, const Vertex & v);
 
 };
 

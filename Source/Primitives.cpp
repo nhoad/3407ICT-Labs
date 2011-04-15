@@ -8,6 +8,9 @@ using std::vector;
 
 #include "Primitives.h"
 
+#include <iostream>
+using std::ostream;
+
 Cube::Cube()
 {
 	x = 0;
@@ -65,4 +68,15 @@ float Vertex::operator()(int x) const
 float& Vertex::operator()(int x)
 {
 	return data[x];
+}
+
+ostream & operator<<(ostream & o, const Vertex & v)
+{
+	for (int i=0; i < 8; i++)
+	{
+		o.width(10);
+		o << v(i);
+	}
+
+	return o;
 }

@@ -63,7 +63,7 @@ class Assignment1 : public Core
 	 \param polygon the polygon to decompose.
 	 \return returns a vector of Vertexs that will be a multiple of three.
 	*/
-	std::vector<Vertex> decompose(std::vector<Vertex> polygon);
+	std::vector<Vertex> decompose(std::vector<Vertex> & polygon);
 
 	/**
 	 create a line between two vertices.

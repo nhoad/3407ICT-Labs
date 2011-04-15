@@ -11,6 +11,8 @@
 #include <algorithm>
 using std::sort;
 
+#include <cassert>
+
 #define round(x) (int)( x + 0.5)
 
 #if defined(__MACH__) && defined(__APPLE__)
@@ -69,7 +71,7 @@ void Assignment1::preprocess()
 	// load identity matrix
 	projection = new Mat4();
 
-	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 20.0);
+	Mat4 perspectiveMatrix = Mat4::perspectiveFrustum(45.0, ((float) width / height), 1.0, 20.0);
 	(*projection) = Mat4::mul((*projection), perspectiveMatrix);
 	//gluPerspective(45.0, ((float)width / height), 1.0, 20.0);
 
@@ -108,6 +110,8 @@ void Assignment1::drawCube(Cube cube)
 
 	(*modelview) = Mat4::mul(model, Mat4::lookAt(*camera, *target, *up));
 
+	cout << "model: " << model << endl;
+
 	Mat4 modelViewPerspective = Mat4::mul(*projection, *modelview);
 
 	for (unsigned i=0; i < cube.faces.size(); i++)
@@ -118,24 +122,20 @@ void Assignment1::drawCube(Cube cube)
 
 		for (unsigned j=0; j < currentFace.size(); j++)
 		{
+			// change each Vertex to a Vec4.
 			Vertex v = currentFace[j];
-
 			Vec4 vec(v(0), v(1), v(2), v(3));
-
 			vec4Face.push_back(vec);
-		}
 
-		// get the NDC
-		for (unsigned j=0; j < vec4Face.size(); j++)
-		{
-			Vec4 v = vec4Face[j];
-
-			v = Mat4::mul(modelViewPerspective, v);
+			// get the NDC
+			vec = Mat4::mul(modelViewPerspective, vec);
 
 			// normalised x, y and z against w
-			v(0) /= v(3);
+	/*		v(0) /= v(3);
 			v(1) /= v(3);
-			v(2) /= v(3);
+			v(2) /= v(3);*/
+
+			cout << v(3) << endl << endl;
 
 			int x = (v(0) + 1) * (width / 2);
 			int y = height - ((v(1) + 1) * (height / 2));
@@ -149,8 +149,6 @@ void Assignment1::drawCube(Cube cube)
 
 		drawPolygon(newFace);
 	}
-
-	cout << "after everything" << endl;
 
 	// multiply view (lookat) by the model to get modelview matrix
 	// multiply perspective by modelview to get your model view perspective matrix
@@ -306,11 +304,11 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 	}
 }
 
-vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
+vector<Vertex> Assignment1::decompose(vector<Vertex> & polygon)
 {
 	vector<Vertex> result;
 
-	cout << "polygon size: " << polygon.size() << endl;
+	assert(polygon.size() >= 3);
 
 	for (unsigned i=1; i < polygon.size() -1; i++)
 	{
@@ -319,14 +317,11 @@ vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
 		result.push_back(polygon[i+1]);
 	}
 
-	cout << "decomposed size: " << result.size() << endl;
-
 	return result;
 }
 
 void Assignment1::render()
 {
-	cout << "rednering!" << endl;
 	// Draw Objects here
 
     SDL_FillRect(buffer, NULL, 0);
