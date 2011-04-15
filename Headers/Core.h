@@ -136,8 +136,19 @@ class Core
 	*/
 	void triangle(Point a, Point b, Point c);
 
-	// TODO: Comment this properly.
+	/**
+		Draw a cube.
+
+		\param cube the cube to draw.
+	*/
 	void drawCube(Cube cube);
+
+	/**
+		move a cube.
+
+		\param cube the cube to move, according to global acceleration values.
+	*/
+	void moveCube(Cube & cube);
 
 	void putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);
 };

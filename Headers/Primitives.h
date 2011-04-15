@@ -5,22 +5,15 @@
 #pragma once
 class Vertex;
 
-typedef std::vector<Vertex> Mesh;
+typedef std::vector<Vertex> Face;
+typedef std::vector<Face> Mesh;
 
-class Point
+int compareOnY(Vertex a, Vertex b);
+
+class Vertex
 {
-	public:
-	int x, y, z;
-	Uint8 r, g, b;
 
-	Point(int x, int y, Uint8 r=0, Uint8 g=0, Uint8 b=0) : x(x), y(y), z(z), r(r), g(g), b(b) {}
-
-};
-
-int compareOnY(Point a, Point b);
-
-struct Vertex
-{
+	float data[8];
 
 	float x, y, z, w;
 	float r, g, b, a;
@@ -30,40 +23,65 @@ struct Vertex
 
 	Vertex(float x, float y, float z, float w, float r, float g, float b, float a)
 	{
-		this->x = x;
-		this->y = y;
-		this->z = z;
-		this->w = w;
+		data[0] = x;
+		data[1] = y;
+		data[2] = z;
+		data[3] = w;
 
-		this->r = x;
-		this->g = y;
-		this->b = z;
-		this->a = a;
+		data[4] = x;
+		data[5] = y;
+		data[6] = z;
+		data[7] = a;
 	}
 
-	friend std::ostream & operator<<(std::ostream & o, const Vertex v)
-	{
-		o << "x: " << v.x << std::endl;
-		o << "y: " << v.y << std::endl;
-		o << "z: " << v.z << std::endl;
-
-		return o;
-	}
+	float& operator()(int x);
+	float operator()(int x) const;
 
 };
 
-struct Cube
+class Cube
 {
+	private:
+		/**
+			Returns the centre point for an axis.
+
+			For centre point of x axis, use 0.
+			For centre point of y axis, use 1.
+			For centre point of z axis, use 2.
+
+			\param k the axis to get the centre point for.
+			\return centre point of axis k.
+		*/
+		float centre(int k);
+
 	public:
-		Mesh mesh;
+		Mesh faces;
+
 		float x, y, scale;
 		float speed;
 
 		Cube();
 
+
+		/**
+			return centre point of cube on the x axis.
+
+			\return x axis centroid.
+		*/
 		float centreX();
+
+		/**
+			return centre point of cube on the y axis.
+
+			\return y axis centroid.
+		*/
 		float centreY();
+
+		/**
+			return centre point of cube on the z axis.
+
+			\return z axis centroid.
+		*/
 		float centreZ();
 
-		std::vector<Point> getPoints(const int start, const int end);
 };

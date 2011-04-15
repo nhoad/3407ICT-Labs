@@ -3,10 +3,6 @@
 
 class Core
 {
-    int width, height;
-    bool running;
-    SDL_Surface* buffer;
-
 public:
     Core(int width=800, int height=600);
     virtual ~Core();
@@ -14,6 +10,11 @@ public:
     void start();
 
 protected:
+    int width, height;
+	 double elapsedTime;
+    bool running;
+    SDL_Surface* buffer;
+
     void initialise();
     void preprocess();
     void render();

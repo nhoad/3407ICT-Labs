@@ -15,76 +15,54 @@ Cube::Cube()
 	scale = 1;
 }
 
-float Cube::centreZ()
+float Cube::centre(int k)
 {
-	float minZ, maxZ;
+	float minK, maxK;
 
-	minZ = mesh[0].z;
-	maxZ = mesh[0].z;
+	minK = faces[0][0](k);
+	maxK = faces[0][0](k);
 
-	for (unsigned i=1; i < mesh.size(); i++)
+	for (unsigned i=0; i < faces.size(); i++)
 	{
-		if (mesh[i].z < minZ)
-			minZ = mesh[i].z;
+		for (unsigned j=0; j < faces[i].size(); j++)
+		{
+			if (faces[i][j](k) < minK)
+				minK = faces[i][j](k);
 
-		if (mesh[i].z > maxZ)
-			maxZ = mesh[i].z;
+			if (faces[i][j](k) > maxK)
+				maxK = faces[i][j](k);
+		}
 	}
-	return (minZ + maxZ) / 2.0f;
+
+	return (minK + maxK) / 2.0f;
 }
 
 float Cube::centreY()
 {
-	float minY, maxY;
+	return centre(1);
+}
 
-	minY = mesh[0].y;
-	maxY = mesh[0].y;
-
-	for (unsigned i=1; i < mesh.size(); i++)
-	{
-		if (mesh[i].y < minY)
-			minY = mesh[i].y;
-
-		if (mesh[i].y > maxY)
-			maxY = mesh[i].y;
-	}
-	return (minY + maxY) / 2.0f;
+float Cube::centreZ()
+{
+	return centre(2);
 }
 
 float Cube::centreX()
 {
-	float minX, maxX;
-
-	minX = mesh[0].x;
-	maxX = mesh[0].x;
-
-	for (unsigned i=1; i < mesh.size(); i++)
-	{
-		if (mesh[i].x < minX)
-			minX = mesh[i].x;
-
-		if (mesh[i].x > maxX)
-			maxX = mesh[i].x;
-	}
-	return (minX + maxX) / 2.0f;
+	return centre(0);
 }
 
-vector<Point> Cube::getPoints(const int start, const int end)
+int compareOnY(Vertex a, Vertex b)
 {
-	vector<Point> result;
-	for (int i=start; i < end; i++)
-	{
-		Uint8 r = mesh[i].r * 255;
-		Uint8 g = mesh[i].g * 255;
-		Uint8 b = mesh[i].b * 255;
-
-		result.push_back(Point(x, y, r, g, b));
-	}
-
-	return result;
+	return (a(1) < b(1));
 }
 
-int compareOnY(Point a, Point b)
+float Vertex::operator()(int x) const
 {
-	return (a.y < b.y);
+	return data[x];
+}
+
+float& Vertex::operator()(int x)
+{
+	return data[x];
 }

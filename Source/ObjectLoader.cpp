@@ -57,7 +57,7 @@ void ObjectLoader::read(const string filename)
 
 	float x, y, z;
 
-	Mesh vertices;
+	vector<Vertex> vertices;
 
 	vector<int> add_order;
 
@@ -75,7 +75,7 @@ void ObjectLoader::read(const string filename)
 			y = stringToType<float>(split_line[2]);
 			z = stringToType<float>(split_line[3]);
 
-			// we don't want to add them to the mesh just yet.
+			// add them in the order they were read in, so we can get the proper ordering later.
 			vertices.push_back(Vertex(x, y, z, 1.0, x, y, z, 1.0));
 		}
 		else if (type == "vn")
@@ -84,6 +84,7 @@ void ObjectLoader::read(const string filename)
 		}
 		else if (type == "f")
 		{
+			// get the sort order
 			for (unsigned i=1; i < split_line.size(); i++)
 			{
 				vector<string> split_face = tokenize(split_line[i], "/");
@@ -95,7 +96,16 @@ void ObjectLoader::read(const string filename)
 
 	}
 
-	for (unsigned i=0; i < add_order.size(); i++)
-		mesh.push_back(vertices[add_order[i]-1]);
+	for (unsigned i=0; i < add_order.size(); i+=4)
+	{
+		Face face;
+
+		face.push_back(vertices[add_order[i]-1]);
+		face.push_back(vertices[add_order[i+1]-1]);
+		face.push_back(vertices[add_order[i+2]-1]);
+		face.push_back(vertices[add_order[i+3]-1]);
+
+		mesh.push_back(face);
+	}
 
 }

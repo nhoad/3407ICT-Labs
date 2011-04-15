@@ -7,6 +7,8 @@
 #include <iostream>
 using namespace std;
 
+#include "HPTime.h"
+
 #if defined(__MACH__) && defined(__APPLE__)
     // Allow SDL main hack, because of the OS X Cocoa binding
 #else
@@ -39,9 +41,15 @@ void Core::start()
     // Setup and then enter main loop
     initialise();
     preprocess();
+
+	 Time t;
+	 t.start();
+
     while (running) {
         render();
         handleEvents();
+			elapsedTime = t.getSeconds();
+			t.start();
     }
 }
 
