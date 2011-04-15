@@ -105,16 +105,16 @@ void Assignment1::drawCube(Cube cube)
 
 	Mat4 model;
 
-		Mat4::mul(model, Mat4::translate(curX, curY, -z));
-		Mat4::mul(model, Mat4::scale(scale, scale, scale));
-		Mat4::mul(model, Mat4::rotateX(angle));
-		Mat4::mul(model, Mat4::rotateY(angle));
-		Mat4::mul(model, Mat4::rotateZ(angle));
+	//	model = Mat4::mul(model, Mat4::translate(curX, curY, -z));
+		model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
+		model = Mat4::mul(model, Mat4::rotateX(angle));
+		model = Mat4::mul(model, Mat4::rotateY(angle));
+		model = Mat4::mul(model, Mat4::rotateZ(angle));
 
-		Mat4::mul(model, Mat4::translate(-x, -y, -z));
+	//	model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
 
 	//Mat4 modelview = Mat4::mul(model, *view);
-	Mat4 modelview = Mat4::mul(model, *view);
+	Mat4 modelview = Mat4::mul(*view, model);
 
 	Mat4 modelViewPerspective = Mat4::mul(modelview, *projection);
 
@@ -200,8 +200,8 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 
 	Vec4 cross = AB * BC;
 
-	if (((int) cross(2)) < 0)
-		return;
+//	if (((int) cross(2)) < 0)
+//		return;
 
 	// first, we sort the vertices on the Y axis, using sort from algorithm library.
 	vector<Vertex> sorted;
@@ -255,6 +255,9 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 				r_edge.push_back(bc_edge[i]);
 		}
 	}
+
+	cout << "l_edge size and r_edge size: " << l_edge.size() << ' ' << r_edge.size() << endl;
+	assert(l_edge.size() == r_edge.size());
 
 	// now, let's paint it.
 	for (unsigned i=0; i < l_edge.size();i++)
@@ -322,6 +325,8 @@ vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
 {
 	vector<Vertex> result;
 
+
+
 	for (int i=1, max = polygon.size() -1; i < max; i++)
 	{
 		result.push_back(polygon[0]);
@@ -338,7 +343,7 @@ void Assignment1::render()
 
 	SDL_LockSurface(buffer);
 	drawCube(cube);
-	//	moveCube(cube);
+	moveCube(cube);
 	SDL_UnlockSurface(buffer);
 	SDL_Flip(buffer);
 }
