@@ -106,10 +106,10 @@ void Assignment1::drawCube(Cube cube)
 	Mat4 model;
 
 	//	model = Mat4::mul(model, Mat4::translate(curX, curY, -z));
-		model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
-		model = Mat4::mul(model, Mat4::rotateX(angle));
-		model = Mat4::mul(model, Mat4::rotateY(angle));
-		model = Mat4::mul(model, Mat4::rotateZ(angle));
+	//	model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
+	//	model = Mat4::mul(model, Mat4::rotateX(angle));
+	//	model = Mat4::mul(model, Mat4::rotateY(angle));
+	//	model = Mat4::mul(model, Mat4::rotateZ(angle));
 
 	//	model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
 

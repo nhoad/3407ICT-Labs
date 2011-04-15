@@ -5,7 +5,7 @@
  */
 #include "Transformation.h"
 
-#define PI 3.1415
+#define PI 3.14159265
 #include <iostream>
 using std::cout;
 using std::endl;
