@@ -41,6 +41,7 @@ using namespace std;
 ///
 int main(int argc, char* argv[])
 {
+
 	Assignment1 example;
 	example.start();
 	return 0;
@@ -149,6 +150,8 @@ void Assignment1::drawCube(Cube cube)
 		drawPolygon(newFace);
 	}
 
+	cout << "after everything" << endl;
+
 	// multiply view (lookat) by the model to get modelview matrix
 	// multiply perspective by modelview to get your model view perspective matrix
 
@@ -179,7 +182,7 @@ void Assignment1::moveCube(Cube & cube)
 
 void Assignment1::drawPolygon(vector<Vertex> polygon)
 {
-	vector<Vertex> clipped = Clipper::clip(polygon);
+	vector<Vertex> clipped = Clipper::clip(polygon, width, height);
 	vector<Vertex> decomposed = decompose(clipped);
 
 	for (unsigned i = 0; i < decomposed.size() -2; i+=3)
@@ -211,7 +214,7 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 	r_edge = ac_edge;
 
 	// find the left and right edges by comparing x values.
-	if (b.x < c.x)
+	if (b(0) < c(0))
 	{
 
 		if (l_edge.size() < r_edge.size())
@@ -250,26 +253,24 @@ vector<Vertex> Assignment1::makeLine(Vertex a, Vertex b)
 {
 	vector<Vertex> result;
 
-	// we want to x as a float or it won't work!
-	double x = a.x;
+	double x = a(0);
 
-	// store colours for same reason
-	double red = a.r;
-	double green = a.g;
-	double blue = a.b;
+	double red = a(4);
+	double green = a(5);
+	double blue = a(6);
 
-	double dy = b.y - a.y;
-	double dx = b.x - a.x;
+	double dy = b(1) - a(1);
+	double dx = b(0) - a(0);
 
 	double slope = dy / dx;
 
-	double r_inc = (double) (b.r - a.r) / dy;
-	double g_inc = (double) (b.g - a.g) / dy;
-	double b_inc = (double) (b.b - a.b) / dy;
+	double r_inc = (double) (b(4) - a(4)) / dy;
+	double g_inc = (double) (b(5) - a(5)) / dy;
+	double b_inc = (double) (b(6) - a(6)) / dy;
 
-	for (; a.y < b.y; a.y++)
+	for (int y = round(a(1)); y < b(1); y++)
 	{
-		result.push_back(Vertex(round(x), a.y, round(red), round(green), round(blue)));
+		result.push_back(Vertex(round(x), y, 0, 0, round(red), round(green), round(blue), 1));
 
 		red += r_inc;
 		green += g_inc;
@@ -281,22 +282,23 @@ vector<Vertex> Assignment1::makeLine(Vertex a, Vertex b)
 
 void Assignment1::scanLine(Vertex a, Vertex b)
 {
-	double red = a.r;
-	double green = a.g;
-	double blue = a.b;
-	double dx = b.x - a.x;
+	double red = a(4);
+	double green = a(5);
+	double blue = a(6);
+	double dx = b(0) - a(0);
 
-	if (a.x > b.x)
+	if (a(0) > b(0))
 		swap<Vertex>(a, b);
 
-	double r_inc = (double) (b.r - a.r) / dx;
-	double g_inc = (double) (b.g - a.g) / dx;
-	double b_inc = (double) (b.b - a.b) / dx;
+	double r_inc = (double) (b(4) - a(4)) / dx;
+	double g_inc = (double) (b(5) - a(5)) / dx;
+	double b_inc = (double) (b(6) - a(6)) / dx;
 
-	while (a.x <= b.x)
+	int x = a(0);
+	while (x <= b(0))
 	{
-		putpixel(a.x, a.y, round(red), round(green), round(blue));
-		a.x++;
+		putpixel(x, a(1), round(red), round(green), round(blue));
+		x++;
 
 		red += r_inc;
 		blue += b_inc;
@@ -304,8 +306,27 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 	}
 }
 
+vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
+{
+	vector<Vertex> result;
+
+	cout << "polygon size: " << polygon.size() << endl;
+
+	for (unsigned i=1; i < polygon.size() -1; i++)
+	{
+		result.push_back(polygon[0]);
+		result.push_back(polygon[i]);
+		result.push_back(polygon[i+1]);
+	}
+
+	cout << "decomposed size: " << result.size() << endl;
+
+	return result;
+}
+
 void Assignment1::render()
 {
+	cout << "rednering!" << endl;
 	// Draw Objects here
 
     SDL_FillRect(buffer, NULL, 0);

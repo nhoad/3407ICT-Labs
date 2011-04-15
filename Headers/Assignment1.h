@@ -66,6 +66,13 @@ class Assignment1 : public Core
 	std::vector<Vertex> decompose(std::vector<Vertex> polygon);
 
 	/**
+	 create a line between two vertices.
+	 \param a the first vertice to draw from
+	 \param b the second vertice to draw to.
+	*/
+	std::vector<Vertex> makeLine(Vertex a, Vertex b);
+
+	/**
 	 scan line algorithm for polygon filling.
 	 \param a the first point to draw from
 	 \param b the second point to draw to.

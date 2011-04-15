@@ -16,8 +16,8 @@ protected:
     SDL_Surface* buffer;
 
     void initialise();
-    void preprocess();
-    void render();
+    virtual void preprocess();
+    virtual void render();
     void handleEvents();
     void putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);
 };

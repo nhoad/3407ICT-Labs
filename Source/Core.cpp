@@ -36,16 +36,6 @@ using std::sort;
 using namespace std;
 
 ///
-/// Program Entry
-///
-int main(int argc, char* argv[])
-{
-	Core example;
-	example.start();
-	return 0;
-}
-
-///
 /// Constructors and Destructors
 ///
 Core::Core(int width, int height, bool fullscreen) : elapsedTime(0), running(true)
