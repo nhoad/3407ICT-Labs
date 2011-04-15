@@ -49,6 +49,12 @@ int main(int argc, char* argv[])
 	return 0;
 }
 
+Assignment1::~Assignment1()
+{
+	delete projection;
+	delete view;
+}
+
 void Assignment1::preprocess()
 {
 	// build the cube
@@ -71,18 +77,18 @@ void Assignment1::preprocess()
 	// load identity matrix
 	projection = new Mat4();
 
-	Mat4 perspectiveMatrix = Mat4::perspectiveFrustum(45.0, ((float) width / height), 1.0, 20.0);
+	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 20.0);
 	(*projection) = Mat4::mul((*projection), perspectiveMatrix);
-	//gluPerspective(45.0, ((float)width / height), 1.0, 20.0);
 
-	modelview = new Mat4();
+	view = new Mat4();
 
-	camera = new Vec4(0.0, 0.0, 3.5);
-	target = new Vec4(0.0, 0.0, 0.0);
-	up = new Vec4(0.0, 1.0, 0.0);
+	Vec4 camera(0.0, 0.0, 3.5);
+	Vec4 target(0.0, 0.0, 0.0);
+	Vec4 up(0.0, 1.0, 0.0);
+
+	*view = Mat4::lookAt(camera, target, up);
 
 	//(*modelview) = Mat4::mul((*modelview), Mat4::lookAt(*camera, *target, *up));
-	//gluLookAt(0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 }
 
 void Assignment1::drawCube(Cube cube)
@@ -101,50 +107,47 @@ void Assignment1::drawCube(Cube cube)
 
 	Mat4::mul(model, Mat4::translate(curX, curY, -z));
 	Mat4::mul(model, Mat4::scale(scale, scale, scale));
-
 	Mat4::mul(model, Mat4::rotateX(angle));
 	Mat4::mul(model, Mat4::rotateY(angle));
 	Mat4::mul(model, Mat4::rotateZ(angle));
 
 	Mat4::mul(model, Mat4::translate(-x, -y, -z));
 
-	(*modelview) = Mat4::mul(model, Mat4::lookAt(*camera, *target, *up));
+	Mat4 modelview = Mat4::mul(model, *view);
 
-	cout << "model: " << model << endl;
-
-	Mat4 modelViewPerspective = Mat4::mul(*projection, *modelview);
+	//Mat4 modelview = Mat4::mul(*model, *view);
+	Mat4 modelViewPerspective = Mat4::mul(*projection, modelview);
 
 	for (unsigned i=0; i < cube.faces.size(); i++)
 	{
 		Face currentFace = cube.faces[i];
 		Face newFace;
-		vector<Vec4> vec4Face;
 
 		for (unsigned j=0; j < currentFace.size(); j++)
 		{
 			// change each Vertex to a Vec4.
 			Vertex v = currentFace[j];
-			Vec4 vec(v(0), v(1), v(2), v(3));
-			vec4Face.push_back(vec);
 
 			// get the NDC
-			vec = Mat4::mul(modelViewPerspective, vec);
+			//Vec4 vec = Mat4::mul(modelViewPerspective, Vec4(v(0), v(1), v(2), v(3)));
+			Vec4 vec(v(0), v(1), v(2), v(3));
 
 			// normalised x, y and z against w
-	/*		v(0) /= v(3);
-			v(1) /= v(3);
-			v(2) /= v(3);*/
+			vec(0) /= vec(3);
+			vec(1) /= vec(3);
+			vec(2) /= vec(3);
 
-			cout << v(3) << endl << endl;
+			int x = (vec(0) + 1) * (width / 2);
+			int y = height - ((vec(1) + 1) * (height / 2));
 
-			int x = (v(0) + 1) * (width / 2);
-			int y = height - ((v(1) + 1) * (height / 2));
+			cout << vec << endl;
+			cout << x << ' ' << y << endl;
 
 			int r = currentFace[i](4) * 255;
 			int g = currentFace[i](5) * 255;
 			int b = currentFace[i](6) * 255;
 
-			newFace.push_back(Vertex(x, y, 0, 0, r, g, b, 1));
+			newFace.push_back(Vertex(x, y, vec(2), 0, r, g, b, 1));
 		}
 
 		drawPolygon(newFace);
@@ -304,13 +307,11 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 	}
 }
 
-vector<Vertex> Assignment1::decompose(vector<Vertex> & polygon)
+vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
 {
 	vector<Vertex> result;
 
-	assert(polygon.size() >= 3);
-
-	for (unsigned i=1; i < polygon.size() -1; i++)
+	for (int i=1, max = polygon.size() -1; i < max; i++)
 	{
 		result.push_back(polygon[0]);
 		result.push_back(polygon[i]);
