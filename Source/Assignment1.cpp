@@ -63,7 +63,7 @@ void Assignment1::preprocess()
 
 	cube.faces = loader.object();
 	//mesh = loader.object();
-	cube.scale = 0.5;
+	cube.scale = 0.125;
 
 	cube.x = 0;
 	cube.y = 0;
@@ -89,24 +89,23 @@ void Assignment1::drawCube(Cube cube)
 	float scale = cube.scale;
 	float normScale = (scale * 2) / scale;
 
-//	float curX = (cube.x / width) * normScale * 2 - normScale;
-//	float curY = (cube.y / height) * normScale * 2 - normScale;
+	float curX = (cube.x / width) * normScale * 2 - normScale;
+	float curY = (cube.y / height) * normScale * 2 - normScale;
 
 	Mat4 model;
 
-	//model = Mat4::mul(model, Mat4::translate(curX, curY, z));
-	model = model * Mat4::translate(0, 0, 0);
-	//model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
-	//model = Mat4::mul(model, Mat4::rotateX(angle));
-	//model = Mat4::mul(model, Mat4::rotateY(angle));
-	//model = Mat4::mul(model, Mat4::rotateZ(angle));
+//	model = Mat4::mul(model, Mat4::translate(curX, curY, z));
+	model = model * Mat4::scale(scale, scale, scale);
+	model = model * Mat4::rotateX(angle);
+	model = model * Mat4::rotateY(angle);
+	model = model * Mat4::rotateZ(angle);
 
-	//model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
+	model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
 
-	Vec4 camera(1.0, 1.0, -1.0);
-	//Vec4 target(cube.x, cube.y, cube.y);
-	Vec4 target(0, 0, 0);
-	Vec4 up(0.0, 0.0, 1.0);
+	Vec4 camera(-1.0, 10.0, 100.0);
+	Vec4 target(cube.x, cube.y, cube.y);
+	//Vec4 target(0, 0, 0);
+	Vec4 up(0.0, -1.0, 0.0);
 
 	Mat4 view = Mat4::lookAt(camera, target, up);
 
@@ -114,20 +113,24 @@ void Assignment1::drawCube(Cube cube)
 	// FUCKING HA. This renders a perfect square. This means my view matrix is fucked!
 	//Mat4 modelViewPerspective = model * (*projection);
 
-	for (unsigned i=0; i < cube.faces.size(); i++)
-	//for (unsigned i=0; i < 1; i++)
+	for (int i=0; i < cube.faces.size(); i++)
+	//for (unsigned i=1; i < 2; i++)
 	{
 		Face currentFace = cube.faces[i];
 		Face newFace;
 
-		for (unsigned j=0; j < currentFace.size(); j++)
+		for (int j=0; j < currentFace.size(); j++)
 		{
 			// change each Vertex to a Vec4.
 			Vertex v = currentFace[j];
 
 			// get the NDC
 			Vec4 vec = Mat4::mul(modelViewPerspective, Vec4(v(0), v(1), v(2), v(3)));
-			//Vec4 vec(v(0), v(1), v(2), v(3));
+
+			if (vec(3) == 0)
+				vec(3) = -2.00401;
+			else
+				cout << "what the fuck? " << vec(3) << endl;
 
 			// normalised x, y and z against w
 			vec(0) /= vec(3);
@@ -144,6 +147,11 @@ void Assignment1::drawCube(Cube cube)
 			newFace.push_back(Vertex(x, y, vec(2), vec(3), r, g, b, 1));
 		}
 
+/*		cout << "start" << endl;
+		for (int b=0; b < newFace.size(); b++)
+			cout << newFace[b] << endl;
+		cout << "end" << endl;
+*/
 		drawPolygon(newFace);
 	}
 
@@ -183,12 +191,10 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 	if (decomposed.size() == 0)
 		return;
 
-	cout << "decomposed size: " << decomposed.size() << endl;
 	assert(decomposed.size() % 3 == 0);
 
 	for (int i = 0; i < decomposed.size() -2; i+=3)
 	{
-		cout << "wassup!" << endl;
 		//SDL_LockSurface(buffer);
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
 		//sleep(1);
@@ -200,14 +206,20 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 
 void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 {
-	Vec4 AB = Vec4(a(0), a(1), a(2), 0) * Vec4(b(0), b(1), b(2), 0);
+/*	Vec4 AB = Vec4(a(0), a(1), a(2), 0) * Vec4(b(0), b(1), b(2), 0);
 	Vec4 BC = Vec4(b(0), b(1), b(2), 0) * Vec4(c(0), c(1), c(2), 0);
 
 	Vec4 cross = AB * BC;
-
+*/
 //	if (((int) cross(2)) < 0)
 //		return;
 
+/*	cout << "drawing a triangle with these three points: " << endl;
+	cout << a << endl;
+	cout << b << endl;
+	cout << c << endl;
+	cout << "end" << endl << endl;
+*/
 	// first, we sort the vertices on the Y axis, using sort from algorithm library.
 	vector<Vertex> sorted;
 
@@ -261,8 +273,6 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 		}
 	}
 
-	cout << "l_edge.size(): " << l_edge.size() << endl;
-	cout << "r_edge.size(): " << r_edge.size() << endl;
 	assert(l_edge.size() == r_edge.size());
 
 	// now, let's paint it.
@@ -289,7 +299,9 @@ vector<Vertex> Assignment1::makeLine(Vertex a, Vertex b)
 	double g_inc = (double) (b(5) - a(5)) / dy;
 	double b_inc = (double) (b(6) - a(6)) / dy;
 
-	for (int y = round(a(1)); y < round(b(1)); y++)
+	int max = round(b(1));
+
+	for (int y = round(a(1)); y < max; y++)
 	{
 		result.push_back(Vertex(round(x), y, 0, 0, round(red), round(green), round(blue), 1));
 

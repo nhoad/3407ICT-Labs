@@ -164,6 +164,7 @@ Vec4 Mat4::mul(const Mat4& m, const Vec4& v)
 		for (int i=0; i < 4; i++)
 			r(row) += m(row, i) * v(i);
 
+	cout << "REEESSSULLLLTTT: " << endl << r << endl;
 	return r;
 }
 
@@ -258,26 +259,17 @@ Mat4 Mat4::lookAt(Vec4 & camera, Vec4 & target, Vec4 & up)
 	Mat4 trans = Mat4::translate(-camera(0), -camera(1), -camera(2));
 	Mat4 rot;
 
+	// I know this is backwards, but if I do it the right way, my values are the wrong sign.
 	Vec4 forward = (camera - target).normalised();
 	//Vec4 forward = (target - camera).normalised();
 	Vec4 left = (up * forward).normalised();
 	Vec4 upAxis = forward * left;
 
-	cout << "left " << endl << left << endl;
-	cout << "forward " << endl << forward << endl;
-	cout << "up " << endl << upAxis << endl;
-
 	rot(0, 0) = left(0); rot(0, 1) = upAxis(0); rot(0, 2) = forward(0);
 	rot(1, 0) = left(1); rot(1, 1) = upAxis(1); rot(1, 2) = forward(1);
 	rot(2, 0) = left(2); rot(2, 1) = upAxis(2); rot(2, 2) = forward(2);
 
-	cout << rot(2, 0) << endl;
-
-	Mat4 result = rot * trans;
-	cout << "translation: " << endl << trans << endl;
-	cout << "rotation: " << endl << rot << endl;
-	cout << "lookAt matrix: " << endl << result << endl;
-	return rot;
+	return rot * trans;
 }
 
 ostream & operator<<(ostream & o, const Mat4 & m)
