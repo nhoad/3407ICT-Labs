@@ -77,7 +77,7 @@ void Assignment1::preprocess()
 	// load identity matrix
 	projection = new Mat4();
 
-	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 20.0);
+	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 10.0, 200.0);
 	(*projection) = Mat4::mul((*projection), perspectiveMatrix);
 
 	view = new Mat4();
@@ -103,15 +103,18 @@ void Assignment1::drawCube(Cube cube)
 //	float curX = (cube.x / width) * normScale * 2 - normScale;
 //	float curY = (cube.y / height) * normScale * 2 - normScale;
 
+	float curX = cube.x;
+	float curY = cube.y;
+
 	Mat4 model;
 
 	//model = Mat4::mul(model, Mat4::translate(curX, curY, -z));
 	//model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
-	//model = Mat4::mul(model, Mat4::rotateX(angle));
-	//model = Mat4::mul(model, Mat4::rotateY(angle));
-	//model = Mat4::mul(model, Mat4::rotateZ(angle));
+	model = Mat4::mul(model, Mat4::rotateX(angle));
+	model = Mat4::mul(model, Mat4::rotateY(angle));
+	model = Mat4::mul(model, Mat4::rotateZ(angle));
 
-	//	model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
+	//model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
 
 	Mat4 modelview = model * (*view);
 
