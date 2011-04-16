@@ -310,11 +310,11 @@ vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
 {
 	vector<Vertex> result;
 
-	for (int i=0, max = polygon.size() -2; i < max; i++)
+	for (int i=1, max = polygon.size() -1; i < max; i++)
 	{
+		result.push_back(polygon[0]);
 		result.push_back(polygon[i]);
 		result.push_back(polygon[i+1]);
-		result.push_back(polygon[i+2]);
 	}
 
 	return result;
