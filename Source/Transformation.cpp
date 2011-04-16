@@ -88,10 +88,10 @@ Vec4 Vec4::operator*(const Vec4 & v) const
 
 Vec4 Vec4::operator-(const Vec4 & v) const
 {
-	Vec4 temp = (*this);
+	Vec4 temp;
 
 	for (int i=0; i < 4; i++)
-		temp(i) -= v(i);
+		temp(i) = (*this)(i) - v(i);
 
 	return temp;
 }
@@ -235,28 +235,6 @@ Mat4 Mat4::scale(float x, float y, float z)
 	return r;
 }
 
-Mat4 Mat4::perspectiveFrustum(float fieldOfView, float aspectRatio, float n, float f)
-{
-	Mat4 m(0.0);
-
-	const float t = n * tan(fieldOfView * (PI / 360.0));
-	const float b = -t;
-	const float r = t * aspectRatio;
-	const float l = -r;
-
-	m(0,0) = (2.0 * n) / (r - l);
-	m(1,1) = (2.0 * n) / (t - b);
-	m(2,2) = -(f + n) / (f - n);
-	m(3,2) = -2 * f * n / (f - n);
-
-	m(2,0) = (r + l) / (r - l);
-	m(2,1) = (t + b) / (t - b);
-
-	m(2,3) = -1.0;
-
-	return m;
-}
-
 Mat4 Mat4::perspectiveMatrix(float fieldOfView, float aspectRatio, float n, float f)
 {
 	Mat4 m(0.0);
@@ -281,6 +259,7 @@ Mat4 Mat4::lookAt(Vec4 & camera, Vec4 & target, Vec4 & up)
 	Mat4 rot;
 
 	Vec4 forward = (camera - target).normalised();
+	//Vec4 forward = (target - camera).normalised();
 	Vec4 left = (up * forward).normalised();
 	Vec4 upAxis = forward * left;
 
@@ -288,14 +267,18 @@ Mat4 Mat4::lookAt(Vec4 & camera, Vec4 & target, Vec4 & up)
 	cout << "forward " << endl << forward << endl;
 	cout << "up " << endl << upAxis << endl;
 
-	rot(0, 0) = left(0); rot(0, 1) = upAxis(0); rot(2, 0) = forward(0);
-	rot(1, 0) = left(1); rot(1, 1) = upAxis(1); rot(2, 1) = forward(1);
+	rot(0, 0) = left(0); rot(0, 1) = upAxis(0); rot(0, 2) = forward(0);
+	rot(1, 0) = left(1); rot(1, 1) = upAxis(1); rot(1, 2) = forward(1);
 	rot(2, 0) = left(2); rot(2, 1) = upAxis(2); rot(2, 2) = forward(2);
-	rot(3, 0) = 0;
+
+	rot(2, 0) = 5;
+	cout << "what is uuup: " << forward(0) << endl;
+	cout << rot(2, 0) << endl;
 
 	Mat4 result = rot * trans;
-
-	cout << result << endl;
+	cout << "translation: " << endl << trans << endl;
+	cout << "rotation: " << endl << rot << endl;
+	cout << "lookAt matrix: " << endl << result << endl;
 	return rot;
 }
 

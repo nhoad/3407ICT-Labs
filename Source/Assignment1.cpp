@@ -95,7 +95,7 @@ void Assignment1::drawCube(Cube cube)
 	Mat4 model;
 
 	//model = Mat4::mul(model, Mat4::translate(curX, curY, z));
-	model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
+	//model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
 	//model = Mat4::mul(model, Mat4::rotateX(angle));
 	//model = Mat4::mul(model, Mat4::rotateY(angle));
 	//model = Mat4::mul(model, Mat4::rotateZ(angle));
@@ -110,6 +110,7 @@ void Assignment1::drawCube(Cube cube)
 	Mat4 view = Mat4::lookAt(camera, target, up);
 
 	exit(0);
+
 	//Mat4 modelViewPerspective = model * view * (*projection);
 	// FUCKING HA. This renders a perfect square. This means my view matrix is fucked!
 	Mat4 modelViewPerspective = model * (*projection);
@@ -179,6 +180,10 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 {
 	vector<Vertex> clipped = Clipper::clip(polygon, width, height);
 	vector<Vertex> decomposed = decompose(clipped);
+
+	cout << "decomposed size: " << decomposed.size() << endl;
+	assert(decomposed.size() > 0);
+	assert(decomposed.size() % 3 == 0);
 
 	for (unsigned i = 0; i < decomposed.size() -2; i+=3)
 	{
