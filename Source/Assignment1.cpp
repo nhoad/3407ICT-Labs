@@ -96,21 +96,24 @@ void Assignment1::drawCube(Cube cube)
 
 	//model = Mat4::mul(model, Mat4::translate(curX, curY, z));
 	model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
-	model = Mat4::mul(model, Mat4::rotateX(angle));
-	model = Mat4::mul(model, Mat4::rotateY(angle));
-	model = Mat4::mul(model, Mat4::rotateZ(angle));
+	//model = Mat4::mul(model, Mat4::rotateX(angle));
+	//model = Mat4::mul(model, Mat4::rotateY(angle));
+	//model = Mat4::mul(model, Mat4::rotateZ(angle));
 
 	//model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
 
 	Vec4 camera(1.0, 1.0, -1.0);
-	Vec4 target(cube.x, cube.y, cube.y);
-	//Vec4 target(0, 0, 0);
+	//Vec4 target(cube.x, cube.y, cube.y);
+	Vec4 target(0, 0, 0);
 	Vec4 up(0.0, 0.0, 1.0);
 
 	Mat4 view = Mat4::lookAt(camera, target, up);
-	Mat4 modelViewPerspective = model * view * (*projection);
+	//Mat4 modelViewPerspective = model * view * (*projection);
+	// FUCKING HA. This renders a perfect square. This means my view matrix is fucked!
+	Mat4 modelViewPerspective = model * (*projection);
 
-	for (unsigned i=0; i < cube.faces.size(); i++)
+	//for (unsigned i=0; i < cube.faces.size(); i++)
+	for (unsigned i=0; i < 1; i++)
 	{
 		Face currentFace = cube.faces[i];
 		Face newFace;
