@@ -52,7 +52,6 @@ int main(int argc, char* argv[])
 Assignment1::~Assignment1()
 {
 	delete projection;
-	delete view;
 }
 
 void Assignment1::preprocess()
@@ -64,7 +63,7 @@ void Assignment1::preprocess()
 
 	cube.faces = loader.object();
 	//mesh = loader.object();
-	cube.scale = 0.125;
+	cube.scale = 0.5;
 
 	cube.x = 0;
 	cube.y = 0;
@@ -77,18 +76,8 @@ void Assignment1::preprocess()
 	// load identity matrix
 	projection = new Mat4();
 
-	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 10.0, 200.0);
+	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 500.0);
 	(*projection) = Mat4::mul((*projection), perspectiveMatrix);
-
-	view = new Mat4();
-
-	Vec4 camera(0.0, 0.0, 3.5);
-	Vec4 target(0.0, 0.0, 0.0);
-	Vec4 up(0.0, 1.0, 0.0);
-
-	*view = Mat4::lookAt(camera, target, up);
-
-	//(*modelview) = Mat4::mul((*modelview), Mat4::lookAt(*camera, *target, *up));
 }
 
 void Assignment1::drawCube(Cube cube)
@@ -103,32 +92,23 @@ void Assignment1::drawCube(Cube cube)
 //	float curX = (cube.x / width) * normScale * 2 - normScale;
 //	float curY = (cube.y / height) * normScale * 2 - normScale;
 
-	float curX = cube.x;
-	float curY = cube.y;
-
 	Mat4 model;
 
-	//model = Mat4::mul(model, Mat4::translate(curX, curY, -z));
-	//model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
+	//model = Mat4::mul(model, Mat4::translate(curX, curY, z));
+	model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
 	model = Mat4::mul(model, Mat4::rotateX(angle));
 	model = Mat4::mul(model, Mat4::rotateY(angle));
 	model = Mat4::mul(model, Mat4::rotateZ(angle));
 
 	//model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
 
-	Mat4 modelview = model * (*view);
+	Vec4 camera(1.0, 1.0, -1.0);
+	Vec4 target(cube.x, cube.y, cube.y);
+	//Vec4 target(0, 0, 0);
+	Vec4 up(0.0, 0.0, 1.0);
 
-	cout << "possible configurations: " << endl;
-	cout << "model * view" << model * (*view) << endl;
-	cout << "view * model" << (*view) * model << endl;
-	cout << endl;
-	cout << "modelview * projection" << modelview * (*projection) << endl;
-	cout << "projection * modelview" << (*projection) * modelview << endl;
-	cout << "straight up g" << (*projection) * model * (*view) << endl;
-
-	Mat4 modelViewPerspective = modelview * (*projection);
-
-	cout << "modelViewPerspective before: " << endl << modelViewPerspective << endl;
+	Mat4 view = Mat4::lookAt(camera, target, up);
+	Mat4 modelViewPerspective = model * view * (*projection);
 
 	for (unsigned i=0; i < cube.faces.size(); i++)
 	{
@@ -161,7 +141,6 @@ void Assignment1::drawCube(Cube cube)
 
 		drawPolygon(newFace);
 	}
-	cout << "modelViewPerspective after: " << endl << modelViewPerspective << endl;
 
 	// multiply view (lookat) by the model to get modelview matrix
 	// multiply perspective by modelview to get your model view perspective matrix
@@ -202,7 +181,6 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 
 void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 {
-
 	Vec4 AB = Vec4(a(0), a(1), a(2), 0) * Vec4(b(0), b(1), b(2), 0);
 	Vec4 BC = Vec4(b(0), b(1), b(2), 0) * Vec4(c(0), c(1), c(2), 0);
 

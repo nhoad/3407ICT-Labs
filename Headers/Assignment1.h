@@ -22,7 +22,7 @@ class Assignment1 : public Core
 
 	Cube cube;
 
-	Mat4 * projection, * view;
+	Mat4 * projection;
 
 	public:
 	virtual ~Assignment1();

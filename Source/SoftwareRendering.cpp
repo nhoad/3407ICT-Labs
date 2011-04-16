@@ -40,7 +40,6 @@ void Core::start()
 	t.start();
 
 	while (running) {
-		cout << "asdf " << endl;
 		render();
 		handleEvents();
 		elapsedTime = t.getSeconds();
