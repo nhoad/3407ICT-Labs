@@ -271,8 +271,6 @@ Mat4 Mat4::lookAt(Vec4 & camera, Vec4 & target, Vec4 & up)
 	rot(1, 0) = left(1); rot(1, 1) = upAxis(1); rot(1, 2) = forward(1);
 	rot(2, 0) = left(2); rot(2, 1) = upAxis(2); rot(2, 2) = forward(2);
 
-	rot(2, 0) = 5;
-	cout << "what is uuup: " << forward(0) << endl;
 	cout << rot(2, 0) << endl;
 
 	Mat4 result = rot * trans;

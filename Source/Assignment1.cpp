@@ -95,6 +95,7 @@ void Assignment1::drawCube(Cube cube)
 	Mat4 model;
 
 	//model = Mat4::mul(model, Mat4::translate(curX, curY, z));
+	model = model * Mat4::translate(0, 0, 0);
 	//model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
 	//model = Mat4::mul(model, Mat4::rotateX(angle));
 	//model = Mat4::mul(model, Mat4::rotateY(angle));
@@ -109,14 +110,12 @@ void Assignment1::drawCube(Cube cube)
 
 	Mat4 view = Mat4::lookAt(camera, target, up);
 
-	exit(0);
-
-	//Mat4 modelViewPerspective = model * view * (*projection);
+	Mat4 modelViewPerspective = model * view * (*projection);
 	// FUCKING HA. This renders a perfect square. This means my view matrix is fucked!
-	Mat4 modelViewPerspective = model * (*projection);
+	//Mat4 modelViewPerspective = model * (*projection);
 
-	//for (unsigned i=0; i < cube.faces.size(); i++)
-	for (unsigned i=0; i < 1; i++)
+	for (unsigned i=0; i < cube.faces.size(); i++)
+	//for (unsigned i=0; i < 1; i++)
 	{
 		Face currentFace = cube.faces[i];
 		Face newFace;
@@ -181,17 +180,20 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 	vector<Vertex> clipped = Clipper::clip(polygon, width, height);
 	vector<Vertex> decomposed = decompose(clipped);
 
+	if (decomposed.size() == 0)
+		return;
+
 	cout << "decomposed size: " << decomposed.size() << endl;
-	assert(decomposed.size() > 0);
 	assert(decomposed.size() % 3 == 0);
 
-	for (unsigned i = 0; i < decomposed.size() -2; i+=3)
+	for (int i = 0; i < decomposed.size() -2; i+=3)
 	{
-		SDL_LockSurface(buffer);
+		cout << "wassup!" << endl;
+		//SDL_LockSurface(buffer);
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
-		sleep(1);
-		SDL_UnlockSurface(buffer);
-		SDL_Flip(buffer);
+		//sleep(1);
+		//SDL_UnlockSurface(buffer);
+		//SDL_Flip(buffer);
 
 	}
 }
@@ -228,7 +230,7 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 	l_edge = ab_edge;
 	r_edge = ac_edge;
 
-	// find the left and right edges by comparing x values.
+	// build the left and right edges by comparing x values.
 	if (b(0) < c(0))
 	{
 
@@ -259,6 +261,8 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 		}
 	}
 
+	cout << "l_edge.size(): " << l_edge.size() << endl;
+	cout << "r_edge.size(): " << r_edge.size() << endl;
 	assert(l_edge.size() == r_edge.size());
 
 	// now, let's paint it.
@@ -285,7 +289,7 @@ vector<Vertex> Assignment1::makeLine(Vertex a, Vertex b)
 	double g_inc = (double) (b(5) - a(5)) / dy;
 	double b_inc = (double) (b(6) - a(6)) / dy;
 
-	for (int y = round(a(1)); y < b(1); y++)
+	for (int y = round(a(1)); y < round(b(1)); y++)
 	{
 		result.push_back(Vertex(round(x), y, 0, 0, round(red), round(green), round(blue), 1));
 
@@ -312,7 +316,7 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 	double b_inc = (double) (b(6) - a(6)) / dx;
 
 	int x = a(0);
-	while (x <= b(0))
+	while (x < b(0))
 	{
 		putpixel(x, a(1), round(red), round(green), round(blue));
 		x++;
@@ -341,10 +345,9 @@ void Assignment1::render()
 {
 	SDL_FillRect(buffer, NULL, 0);
 
-//	SDL_LockSurface(buffer);
+	SDL_LockSurface(buffer);
 	drawCube(cube);
 	moveCube(cube);
-//	SDL_LockSurface(buffer);
-//	SDL_UnlockSurface(buffer);
-//	SDL_Flip(buffer);
+	SDL_UnlockSurface(buffer);
+	SDL_Flip(buffer);
 }
