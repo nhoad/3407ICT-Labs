@@ -16,6 +16,7 @@ class Mat4
 		float& operator()(int x, int y);
 		float operator()(int x, int y) const;
 		Mat4& operator=(const Mat4& m);
+		Mat4 operator*(const Mat4& m);
 		operator float*();
 		friend std::ostream & operator<<(std::ostream & o, const Mat4 & m);
 

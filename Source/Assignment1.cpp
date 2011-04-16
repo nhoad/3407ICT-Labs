@@ -100,25 +100,32 @@ void Assignment1::drawCube(Cube cube)
 	float scale = cube.scale;
 	float normScale = (scale * 2) / scale;
 
-	float curX = (cube.x / width) * normScale * 2 - normScale;
-	float curY = (cube.y / height) * normScale * 2 - normScale;
+//	float curX = (cube.x / width) * normScale * 2 - normScale;
+//	float curY = (cube.y / height) * normScale * 2 - normScale;
 
 	Mat4 model;
 
-	//	model = Mat4::mul(model, Mat4::translate(curX, curY, -z));
-	//	model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
-	//	model = Mat4::mul(model, Mat4::rotateX(angle));
-	//	model = Mat4::mul(model, Mat4::rotateY(angle));
-	//	model = Mat4::mul(model, Mat4::rotateZ(angle));
+	//model = Mat4::mul(model, Mat4::translate(curX, curY, -z));
+	//model = Mat4::mul(model, Mat4::scale(scale, scale, scale));
+	//model = Mat4::mul(model, Mat4::rotateX(angle));
+	//model = Mat4::mul(model, Mat4::rotateY(angle));
+	//model = Mat4::mul(model, Mat4::rotateZ(angle));
 
 	//	model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
 
-	//Mat4 modelview = Mat4::mul(model, *view);
-	Mat4 modelview = Mat4::mul(*view, model);
+	Mat4 modelview = model * (*view);
 
-	Mat4 modelViewPerspective = Mat4::mul(modelview, *projection);
+	cout << "possible configurations: " << endl;
+	cout << "model * view" << model * (*view) << endl;
+	cout << "view * model" << (*view) * model << endl;
+	cout << endl;
+	cout << "modelview * projection" << modelview * (*projection) << endl;
+	cout << "projection * modelview" << (*projection) * modelview << endl;
+	cout << "straight up g" << (*projection) * model * (*view) << endl;
 
-	cout << modelViewPerspective << endl;
+	Mat4 modelViewPerspective = modelview * (*projection);
+
+	cout << "modelViewPerspective before: " << endl << modelViewPerspective << endl;
 
 	for (unsigned i=0; i < cube.faces.size(); i++)
 	{
@@ -142,9 +149,6 @@ void Assignment1::drawCube(Cube cube)
 			int x = (vec(0) + 1) * (width / 2);
 			int y = height - ((vec(1) + 1) * (height / 2));
 
-			cout << vec << endl;
-			cout << x << ' ' << y << endl;
-
 			int r = v(4);
 			int g = v(5);
 			int b = v(6);
@@ -154,6 +158,7 @@ void Assignment1::drawCube(Cube cube)
 
 		drawPolygon(newFace);
 	}
+	cout << "modelViewPerspective after: " << endl << modelViewPerspective << endl;
 
 	// multiply view (lookat) by the model to get modelview matrix
 	// multiply perspective by modelview to get your model view perspective matrix
@@ -256,7 +261,6 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 		}
 	}
 
-	cout << "l_edge size and r_edge size: " << l_edge.size() << ' ' << r_edge.size() << endl;
 	assert(l_edge.size() == r_edge.size());
 
 	// now, let's paint it.
@@ -325,13 +329,11 @@ vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
 {
 	vector<Vertex> result;
 
-
-
-	for (int i=1, max = polygon.size() -1; i < max; i++)
+	for (int i=0, max = polygon.size() -2; i < max; i++)
 	{
-		result.push_back(polygon[0]);
 		result.push_back(polygon[i]);
 		result.push_back(polygon[i+1]);
+		result.push_back(polygon[i+2]);
 	}
 
 	return result;

@@ -141,6 +141,11 @@ Mat4& Mat4::operator=(const Mat4& m)
 
 }
 
+Mat4 Mat4::operator*(const Mat4& m)
+{
+	return Mat4::mul(*this, m);
+}
+
 Mat4 Mat4::mul(const Mat4& m, const Mat4& n)
 {
 	Mat4 r(0.0);
@@ -300,3 +305,27 @@ ostream & operator<<(ostream & o, const Mat4 & m)
 
 	return o;
 }
+
+#if TEST
+int main(void)
+{
+	Mat4 a, b;
+
+	a(0, 0) = 1;	a(1, 0) = 3;	a(2, 0) = 4;	a(3, 0) = 0;
+	a(0, 1) = 0;	a(1, 1) = 1;	a(2, 1) = 1;	a(3, 1) = 0;
+	a(0, 2) = 0;	a(1, 2) = 0;	a(2, 2) = 41;	a(3, 2) = 15;
+	a(0, 3) = 0;	a(1, 3) = 1;	a(2, 3) = -3.5;	a(3, 3) = 1;
+
+	b(0, 0) = 0.965926;	b(1, 0) = -.258819;	b(2, 0) = 4;	b(3, 0) = 0;
+	b(0, 1) = 0;	b(1, 1) = 1;	b(2, 1) = 1;	b(3, 1) = 0;
+	b(0, 2) = 0;	b(1, 2) = 0;	b(2, 2) = 41;	b(3, 2) = 15;
+	b(0, 3) = 0;	b(1, 3) = 1;	b(2, 3) = -3.5;	b(3, 3) = 1;
+
+	cout << a << endl;
+	cout << b << endl;
+
+	cout << Mat4::mul(a, b) << endl;
+	cout << Mat4::mul(b, a) << endl;
+
+}
+#endif
