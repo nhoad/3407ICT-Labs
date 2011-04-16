@@ -108,6 +108,8 @@ void Assignment1::drawCube(Cube cube)
 	Vec4 up(0.0, 0.0, 1.0);
 
 	Mat4 view = Mat4::lookAt(camera, target, up);
+
+	exit(0);
 	//Mat4 modelViewPerspective = model * view * (*projection);
 	// FUCKING HA. This renders a perfect square. This means my view matrix is fucked!
 	Mat4 modelViewPerspective = model * (*projection);
@@ -179,7 +181,14 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 	vector<Vertex> decomposed = decompose(clipped);
 
 	for (unsigned i = 0; i < decomposed.size() -2; i+=3)
+	{
+		SDL_LockSurface(buffer);
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
+		sleep(1);
+		SDL_UnlockSurface(buffer);
+		SDL_Flip(buffer);
+
+	}
 }
 
 void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
@@ -327,9 +336,10 @@ void Assignment1::render()
 {
 	SDL_FillRect(buffer, NULL, 0);
 
-	SDL_LockSurface(buffer);
+//	SDL_LockSurface(buffer);
 	drawCube(cube);
 	moveCube(cube);
-	SDL_UnlockSurface(buffer);
-	SDL_Flip(buffer);
+//	SDL_LockSurface(buffer);
+//	SDL_UnlockSurface(buffer);
+//	SDL_Flip(buffer);
 }

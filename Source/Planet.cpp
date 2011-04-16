@@ -7,6 +7,8 @@
 #include <cmath>
 #define PI 3.1415
 
+#include "Transformation.h"
+
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
 #else
@@ -116,6 +118,16 @@ void Core::preprocess()
 {
 	// Define or load objects here
 	angle = 0;
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(1.0, 1.0, -1.0, 0, 0, 0, 0, 0, 1);
+
+	GLfloat values[16];
+	glGetFloatv(GL_MODELVIEW_MATRIX, values);
+	cout << Mat4(values) << endl;
+
+	exit(0);
 }
 
 void Core::planet(double r)

@@ -171,9 +171,9 @@ Mat4 Mat4::translate(float x, float y, float z)
 {
 	Mat4 r;
 
-	r(3, 0) = x;
-	r(3, 1) = y;
-	r(3, 2) = z;
+	r(0, 3) = x;
+	r(1, 3) = y;
+	r(2, 3) = z;
 
 	return r;
 }
@@ -284,11 +284,19 @@ Mat4 Mat4::lookAt(Vec4 & camera, Vec4 & target, Vec4 & up)
 	Vec4 left = (up * forward).normalised();
 	Vec4 upAxis = forward * left;
 
+	cout << "left " << endl << left << endl;
+	cout << "forward " << endl << forward << endl;
+	cout << "up " << endl << upAxis << endl;
+
 	rot(0, 0) = left(0); rot(0, 1) = upAxis(0); rot(2, 0) = forward(0);
 	rot(1, 0) = left(1); rot(1, 1) = upAxis(1); rot(2, 1) = forward(1);
 	rot(2, 0) = left(2); rot(2, 1) = upAxis(2); rot(2, 2) = forward(2);
+	rot(3, 0) = 0;
 
-	return Mat4::mul(rot, trans);
+	Mat4 result = rot * trans;
+
+	cout << result << endl;
+	return rot;
 }
 
 ostream & operator<<(ostream & o, const Mat4 & m)
@@ -299,7 +307,7 @@ ostream & operator<<(ostream & o, const Mat4 & m)
 			o << endl;
 
 		o.width(10);
-		o <<  m(0, y) << "  ";
+		o << m(0, y);
 
 	}
 
