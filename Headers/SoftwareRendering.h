@@ -18,6 +18,6 @@ protected:
     void initialise();
     virtual void preprocess();
     virtual void render();
-    void handleEvents();
+    virtual void handleEvents();
     void putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);
 };

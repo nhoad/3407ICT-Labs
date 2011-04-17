@@ -78,6 +78,9 @@ void Assignment1::preprocess()
 
 	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 500.0);
 	(*projection) = Mat4::mul((*projection), perspectiveMatrix);
+
+	increaseScale = false;
+	decreaseScale = false;
 }
 
 void Assignment1::drawCube(Cube cube)
@@ -127,8 +130,6 @@ void Assignment1::drawCube(Cube cube)
 			// get the NDC
 			Vec4 vec = Mat4::mul(modelViewPerspective, tmp);
 
-			cout << v << endl << tmp << endl << vec << endl;
-
 			// normalised x, y and z against w
 			vec(0) /= vec(3);
 			vec(1) /= vec(3);
@@ -174,6 +175,11 @@ void Assignment1::moveCube(Cube & cube)
 
 	cube.x += xInc;
 	cube.y += yInc;
+
+	if (increaseScale)
+		cube.scale += 0.01;
+	else if (decreaseScale)
+		cube.scale -= 0.01;
 }
 
 void Assignment1::drawPolygon(vector<Vertex> polygon)
@@ -317,6 +323,43 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 		blue += b_inc;
 		green += g_inc;
 	}
+}
+
+void Assignment1::handleEvents()
+{
+	SDL_Event e;
+
+	while (SDL_PollEvent(&e))
+	{
+		if (e.type == SDL_QUIT)
+		{
+			running = false;
+			return;
+		}
+
+		switch (e.key.keysym.sym)
+		{
+			case SDLK_ESCAPE:
+				running = false;
+				break;
+			case SDLK_KP_PLUS:
+			{
+				switch (e.type)
+				{
+					case SDL_KEYUP:
+						cout << "disable scaling" << endl;
+						break;
+					default:
+						break;
+				}
+			}
+			default:
+				break;
+
+		}
+	}
+
+
 }
 
 vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)

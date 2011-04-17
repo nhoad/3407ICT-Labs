@@ -24,6 +24,8 @@ class Assignment1 : public Core
 
 	Mat4 * projection;
 
+	bool increaseScale, decreaseScale;
+
 	public:
 	virtual ~Assignment1();
 
