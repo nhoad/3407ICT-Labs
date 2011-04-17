@@ -68,7 +68,7 @@ void Assignment1::preprocess()
 	cube.x = 0;
 	cube.y = 0;
 	angle = 15.0;
-	cube.speed = 10;
+	cube.speed = 0.1;
 
 	xInc = 1 / cube.speed;
 	yInc = ((float) width / height) / cube.speed;
@@ -92,16 +92,17 @@ void Assignment1::drawCube(Cube cube)
 	float curX = (cube.x / width) * normScale * 2 - normScale;
 	float curY = (cube.y / height) * normScale * 2 - normScale;
 
+//	float curX = cube.x;
+//	float curY = cube.y;
 	Mat4 model;
 
 	model = Mat4::mul(model, Mat4::translate(curX, curY, z));
 	model = model * Mat4::scale(scale, scale, scale);
-	model = model * Mat4::rotateX(angle);
+	/*model = model * Mat4::rotateX(angle);
 	model = model * Mat4::rotateY(angle);
-	model = model * Mat4::rotateZ(angle);
+	model = model * Mat4::rotateZ(angle);*/
 
-//	model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
-
+	model = model * Mat4::translate(-x, -y, -z);
 
 	Vec4 camera(0.0, 0.0, 1.0);
 	//Vec4 target(cube.x, cube.y, cube.y);
@@ -111,10 +112,8 @@ void Assignment1::drawCube(Cube cube)
 	Mat4 view = Mat4::lookAt(camera, target, up);
 
 	Mat4 modelViewPerspective = model * view * (*projection);
-	//Mat4 modelViewPerspective = model * (*projection);
 
 	for (int i=0; i < cube.faces.size(); i++)
-	//for (unsigned i=3; i < 4; i++)
 	{
 		Face currentFace = cube.faces[i];
 		Face newFace;
@@ -135,8 +134,7 @@ void Assignment1::drawCube(Cube cube)
 			vec(1) /= vec(3);
 			vec(2) /= vec(3);
 
-//			cout << "after normalisation " << endl << vec << endl;
-
+			// work out actual screen coordinates
 			int x = (vec(0) + 1) * (width / 2);
 			int y = height - ((vec(1) + 1) * (height / 2));
 
@@ -146,13 +144,6 @@ void Assignment1::drawCube(Cube cube)
 
 			newFace.push_back(Vertex(x, y, vec(2), vec(3), r, g, b, 1));
 		}
-
-/*		cout << "start" << endl;
-		for (int b=0; b < newFace.size(); b++)
-			cout << newFace[b] << endl;
-		cout << "end" << endl;
-*/
-
 
 		drawPolygon(newFace);
 	}
@@ -196,14 +187,7 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 	assert(decomposed.size() % 3 == 0);
 
 	for (int i = 0; i < decomposed.size() -2; i+=3)
-	{
-	//	SDL_LockSurface(buffer);
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
-		/*sleep(1);
-		SDL_UnlockSurface(buffer);
-		SDL_Flip(buffer);
-*/
-	}
 }
 
 void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
@@ -215,12 +199,6 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 
 	if (z <= 0)
 		return;
-
-	cout << "drawing a triangle with these three points: " << endl;
-	cout << a << endl;
-	cout << b << endl;
-	cout << c << endl;
-	cout << "end" << endl << endl;
 
 	// first, we sort the vertices on the Y axis, using sort from algorithm library.
 	vector<Vertex> sorted;

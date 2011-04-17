@@ -171,10 +171,15 @@ Mat4 Mat4::translate(float x, float y, float z)
 {
 	Mat4 r;
 
+	r(3, 0) = x;
+	r(3, 1) = y;
+	r(3, 2) = z;
+
+/*
 	r(0, 3) = x;
 	r(1, 3) = y;
 	r(2, 3) = z;
-
+*/
 	return r;
 }
 
