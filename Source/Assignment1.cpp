@@ -208,13 +208,13 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 
 void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 {
-/*	Vec4 AB = Vec4(a(0), a(1), a(2), 0) * Vec4(b(0), b(1), b(2), 0);
-	Vec4 BC = Vec4(b(0), b(1), b(2), 0) * Vec4(c(0), c(1), c(2), 0);
+	float x0=a(0), x1=b(0), x2=c(0);
+	float y0=a(1), y1=b(1), y2=c(1);
 
-	Vec4 cross = AB * BC;
-*/
-//	if (((int) cross(2)) < 0)
-//		return;
+	int z = round((x1-x0)*(y2-y0)-(y1-y0)*(x2-x0));
+
+	if (z <= 0)
+		return;
 
 	cout << "drawing a triangle with these three points: " << endl;
 	cout << a << endl;
