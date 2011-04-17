@@ -63,11 +63,13 @@ void Assignment1::preprocess()
 
 	cube.faces = loader.object();
 	//mesh = loader.object();
-	cube.scale = 0.125;
+	cube.scale = 0.5;
 
 	cube.x = 0;
 	cube.y = 0;
-	angle = 15.0;
+	angleX = 0.0;
+	angleY = 0.0;
+	angleZ = 0.0;
 	cube.speed = 0.1;
 
 	xInc = 1 / cube.speed;
@@ -77,10 +79,15 @@ void Assignment1::preprocess()
 	projection = new Mat4();
 
 	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 500.0);
-	(*projection) = Mat4::mul((*projection), perspectiveMatrix);
+	(*projection) = *projection * perspectiveMatrix;
 
 	increaseScale = false;
 	decreaseScale = false;
+	dynamic = false;
+
+	rotateX = false;
+	rotateY = false;
+	rotateZ = false;
 }
 
 void Assignment1::drawCube(Cube cube)
@@ -95,17 +102,17 @@ void Assignment1::drawCube(Cube cube)
 	float curX = (cube.x / width) * normScale * 2 - normScale;
 	float curY = (cube.y / height) * normScale * 2 - normScale;
 
-//	float curX = cube.x;
-//	float curY = cube.y;
 	Mat4 model;
 
-	model = Mat4::mul(model, Mat4::translate(curX, curY, z));
-	model = model * Mat4::scale(scale, scale, scale);
-	/*model = model * Mat4::rotateX(angle);
-	model = model * Mat4::rotateY(angle);
-	model = model * Mat4::rotateZ(angle);*/
+	//model = model * Mat4::translate(curX, curY, z);
 
-	model = model * Mat4::translate(-x, -y, -z);
+	model = model * Mat4::scale(scale, scale, scale);
+
+	model = model * Mat4::rotateX(angleX);
+	model = model * Mat4::rotateY(angleY);
+	model = model * Mat4::rotateZ(angleZ);
+
+	//model = model * Mat4::translate(-x, -y, -z);
 
 	Vec4 camera(0.0, 0.0, 1.0);
 	//Vec4 target(cube.x, cube.y, cube.y);
@@ -165,8 +172,6 @@ void Assignment1::drawCube(Cube cube)
 
 void Assignment1::moveCube(Cube & cube)
 {
-	angle += elapsedTime * 100;
-
 	if (cube.y >= height || cube.y < 0)
 		yInc = -yInc;
 
@@ -176,12 +181,48 @@ void Assignment1::moveCube(Cube & cube)
 	cube.x += xInc;
 	cube.y += yInc;
 
-	if (increaseScale)
+	if (dynamic)
+	{
+		if (increaseScale)
+			cube.scale += 0.01;
+		else
+			cube.scale -= 0.01;
+
+		if (cube.scale >= 1)
+		{
+			increaseScale = false;
+			decreaseScale = true;
+		}
+		else if (cube.scale <= 0.1)
+		{
+			increaseScale = true;
+			decreaseScale = false;
+		}
+
+		angleX += 0.1;
+		angleY += 0.1;
+		angleZ += 0.1;
+	}
+
+	else if (increaseScale)
 		cube.scale += 0.01;
 	else if (decreaseScale)
 		cube.scale -= 0.01;
 
-	cout << cube.scale << endl;
+	if (cube.scale >= 1.0)
+		cube.scale = 1.0;
+
+	if (cube.scale <= 0.1)
+		cube.scale = 0.1;
+
+	if (rotateX)
+		angleX += 0.1;
+
+	if (rotateY)
+		angleY += 0.1;
+
+	if (rotateZ)
+		angleZ += 0.1;
 }
 
 void Assignment1::drawPolygon(vector<Vertex> polygon)
@@ -341,8 +382,29 @@ void Assignment1::handleEvents()
 
 		switch (e.key.keysym.sym)
 		{
+			case SDLK_SPACE:
+				rotateX = true;
+				rotateY = true;
+				rotateZ = true;
+				dynamic = true;
+				decreaseScale = true;
+				break;
 			case SDLK_ESCAPE:
 				running = false;
+				break;
+			case SDLK_KP5:
+				angleX = 0;
+				angleY = 0;
+				angleZ = 0;
+				break;
+			case SDLK_KP7:
+				rotateX = !rotateX;
+				break;
+			case SDLK_KP8:
+				rotateY = !rotateY;
+				break;
+			case SDLK_KP9:
+				rotateZ = !rotateZ;
 				break;
 			case SDLK_KP_MINUS:
 			{

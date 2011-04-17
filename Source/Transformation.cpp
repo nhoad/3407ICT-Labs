@@ -196,7 +196,6 @@ Mat4 Mat4::rotateX(float degree)
 	r(2, 1) = -s; r(2, 2) = c;
 
 	return r;
-
 }
 
 Mat4 Mat4::rotateY(float degree)

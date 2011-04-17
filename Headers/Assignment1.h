@@ -17,14 +17,14 @@
 
 class Assignment1 : public Core
 {
-	float angle;
+	float angleX, angleY, angleZ;
 	float yInc, xInc;
 
 	Cube cube;
 
 	Mat4 * projection;
 
-	bool increaseScale, decreaseScale;
+	bool increaseScale, decreaseScale, dynamic, rotateX, rotateY, rotateZ;
 
 	public:
 	virtual ~Assignment1();
