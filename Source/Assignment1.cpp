@@ -94,14 +94,15 @@ void Assignment1::drawCube(Cube cube)
 
 	Mat4 model;
 
-//	model = Mat4::mul(model, Mat4::translate(curX, curY, z));
+	model = Mat4::mul(model, Mat4::translate(curX, curY, z));
 	model = model * Mat4::scale(scale, scale, scale);
-/*	model = model * Mat4::rotateX(angle);
+	model = model * Mat4::rotateX(angle);
 	model = model * Mat4::rotateY(angle);
 	model = model * Mat4::rotateZ(angle);
 
-	model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
-*/
+//	model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
+
+
 	Vec4 camera(0.0, 0.0, 1.0);
 	//Vec4 target(cube.x, cube.y, cube.y);
 	Vec4 target(0, 0, 0);
@@ -112,8 +113,8 @@ void Assignment1::drawCube(Cube cube)
 	Mat4 modelViewPerspective = model * view * (*projection);
 	//Mat4 modelViewPerspective = model * (*projection);
 
-	//for (int i=0; i < cube.faces.size(); i++)
-	for (unsigned i=5; i < 6; i++)
+	for (int i=0; i < cube.faces.size(); i++)
+	//for (unsigned i=3; i < 4; i++)
 	{
 		Face currentFace = cube.faces[i];
 		Face newFace;
@@ -122,17 +123,19 @@ void Assignment1::drawCube(Cube cube)
 		{
 			Vertex v = currentFace[j];
 
-			// get the NDC
-			Vec4 vec = Mat4::mul(modelViewPerspective, Vec4(v(0), v(1), v(2), v(3)));
+			Vec4 tmp(v(0), v(1), v(2), v(3));
 
-			cout << "before normalisation " << endl << vec << endl;
+			// get the NDC
+			Vec4 vec = Mat4::mul(modelViewPerspective, tmp);
+
+			cout << v << endl << tmp << endl << vec << endl;
 
 			// normalised x, y and z against w
 			vec(0) /= vec(3);
 			vec(1) /= vec(3);
 			vec(2) /= vec(3);
 
-			cout << "after normalisation " << endl << vec << endl;
+//			cout << "after normalisation " << endl << vec << endl;
 
 			int x = (vec(0) + 1) * (width / 2);
 			int y = height - ((vec(1) + 1) * (height / 2));
@@ -149,6 +152,8 @@ void Assignment1::drawCube(Cube cube)
 			cout << newFace[b] << endl;
 		cout << "end" << endl;
 */
+
+
 		drawPolygon(newFace);
 	}
 
@@ -192,12 +197,12 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 
 	for (int i = 0; i < decomposed.size() -2; i+=3)
 	{
-		//SDL_LockSurface(buffer);
+	//	SDL_LockSurface(buffer);
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
-		//sleep(1);
-		//SDL_UnlockSurface(buffer);
-		//SDL_Flip(buffer);
-
+		/*sleep(1);
+		SDL_UnlockSurface(buffer);
+		SDL_Flip(buffer);
+*/
 	}
 }
 
