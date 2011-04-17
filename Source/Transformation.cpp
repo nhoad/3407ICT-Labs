@@ -164,6 +164,7 @@ Vec4 Mat4::mul(const Mat4& m, const Vec4& v)
 		for (int j=0; j < 4; j++)
 			r(i) += m(j, i) * v(j);
 
+	cout << "RESULT: " << r << endl;
 	return r;
 }
 

@@ -96,41 +96,43 @@ void Assignment1::drawCube(Cube cube)
 
 //	model = Mat4::mul(model, Mat4::translate(curX, curY, z));
 	model = model * Mat4::scale(scale, scale, scale);
-	model = model * Mat4::rotateX(angle);
+/*	model = model * Mat4::rotateX(angle);
 	model = model * Mat4::rotateY(angle);
 	model = model * Mat4::rotateZ(angle);
 
 	model = Mat4::mul(model, Mat4::translate(-x, -y, -z));
-
-	Vec4 camera(-1.0, 10.0, 100.0);
-	Vec4 target(cube.x, cube.y, cube.y);
-	//Vec4 target(0, 0, 0);
+*/
+	Vec4 camera(0.0, 0.0, 1.0);
+	//Vec4 target(cube.x, cube.y, cube.y);
+	Vec4 target(0, 0, 0);
 	Vec4 up(0.0, -1.0, 0.0);
 
 	Mat4 view = Mat4::lookAt(camera, target, up);
 
 	Mat4 modelViewPerspective = model * view * (*projection);
-	// FUCKING HA. This renders a perfect square. This means my view matrix is fucked!
 	//Mat4 modelViewPerspective = model * (*projection);
 
-	for (int i=0; i < cube.faces.size(); i++)
-	//for (unsigned i=1; i < 2; i++)
+	//for (int i=0; i < cube.faces.size(); i++)
+	for (unsigned i=5; i < 6; i++)
 	{
 		Face currentFace = cube.faces[i];
 		Face newFace;
 
 		for (int j=0; j < currentFace.size(); j++)
 		{
-			// change each Vertex to a Vec4.
 			Vertex v = currentFace[j];
 
 			// get the NDC
 			Vec4 vec = Mat4::mul(modelViewPerspective, Vec4(v(0), v(1), v(2), v(3)));
 
+			cout << "before normalisation " << endl << vec << endl;
+
 			// normalised x, y and z against w
 			vec(0) /= vec(3);
 			vec(1) /= vec(3);
 			vec(2) /= vec(3);
+
+			cout << "after normalisation " << endl << vec << endl;
 
 			int x = (vec(0) + 1) * (width / 2);
 			int y = height - ((vec(1) + 1) * (height / 2));
