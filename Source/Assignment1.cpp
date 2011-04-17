@@ -180,6 +180,8 @@ void Assignment1::moveCube(Cube & cube)
 		cube.scale += 0.01;
 	else if (decreaseScale)
 		cube.scale -= 0.01;
+
+	cout << cube.scale << endl;
 }
 
 void Assignment1::drawPolygon(vector<Vertex> polygon)
@@ -342,13 +344,29 @@ void Assignment1::handleEvents()
 			case SDLK_ESCAPE:
 				running = false;
 				break;
+			case SDLK_KP_MINUS:
+			{
+				switch (e.type)
+				{
+					case SDL_KEYUP:
+						decreaseScale = false;
+						break;
+					case SDL_KEYDOWN:
+						decreaseScale = true;
+					default:
+						break;
+				}
+				break;
+			}
 			case SDLK_KP_PLUS:
 			{
 				switch (e.type)
 				{
 					case SDL_KEYUP:
-						cout << "disable scaling" << endl;
+						increaseScale = false;
 						break;
+					case SDL_KEYDOWN:
+						increaseScale = true;
 					default:
 						break;
 				}
