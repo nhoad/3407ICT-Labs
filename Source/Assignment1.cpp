@@ -75,10 +75,13 @@ void Assignment1::preprocess()
 	xInc = 1 / cube.speed;
 	yInc = ((float) width / height) / cube.speed;
 
+	xInc = 1;
+	yInc = 0;
+
 	// load identity matrix
 	projection = new Mat4();
 
-	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 500.0);
+	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 5.0);
 	(*projection) = *projection * perspectiveMatrix;
 
 	increaseScale = false;
@@ -109,7 +112,8 @@ void Assignment1::drawCube(Cube cube)
 
 	Mat4 model;
 
-	model = model * Mat4::translate(-1, -1, z);
+overload operator*=
+	model = model * Mat4::translate(curX, curY, z);
 
 	model = model * Mat4::scale(scale, scale, scale);
 
@@ -119,7 +123,7 @@ void Assignment1::drawCube(Cube cube)
 
 	//model = model * Mat4::translate(-x, -y, -z);
 
-	Vec4 camera(0.0, 0.0, 1.0);
+	Vec4 camera(0.0, 0.0, 0.5);
 	//Vec4 target(cube.x, cube.y, cube.y);
 	Vec4 target(0, 0, 0);
 	Vec4 up(0.0, -1.0, 0.0);
@@ -177,12 +181,6 @@ void Assignment1::drawCube(Cube cube)
 
 void Assignment1::moveCube(Cube & cube)
 {
-	if (cube.y >= height || cube.y < 0)
-		yInc = -yInc;
-
-	if (cube.x >= width || cube.x < 0)
-		xInc = -xInc;
-
 	cube.x += xInc;
 	cube.y += yInc;
 
@@ -387,6 +385,39 @@ void Assignment1::handleEvents()
 
 		switch (e.key.keysym.sym)
 		{
+			case SDLK_DOWN:
+			{
+				if (e.type == SDL_KEYUP)
+					yInc = 0;
+				else
+					yInc = 1;
+				break;
+			}
+			case SDLK_UP:
+			{
+				if (e.type == SDL_KEYUP)
+					yInc = 0;
+				else
+					yInc = -1;
+				break;
+			}
+			case SDLK_RIGHT:
+			{
+				if (e.type == SDL_KEYUP)
+					xInc = 0;
+				else
+					xInc = -1;
+				break;
+			}
+			case SDLK_LEFT:
+			{
+				if (e.type == SDL_KEYUP)
+					xInc = 0;
+				else
+					xInc = 1;
+				break;
+			}
+			break;
 			case SDLK_SPACE:
 				if (e.type == SDL_KEYUP)
 				{
