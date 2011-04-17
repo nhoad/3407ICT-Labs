@@ -8,6 +8,7 @@
 using namespace std;
 
 #include "HPTime.h"
+#include "SDL_ttf.h"
 
 #if defined(__MACH__) && defined(__APPLE__)
 // Allow SDL main hack, because of the OS X Cocoa binding
@@ -63,6 +64,14 @@ void Core::initialise()
 		cerr << SDL_GetError() << endl;
 		SDL_Quit();
 	}
+
+	if (TTF_Init() < 0)
+	{
+		cerr << TTF_GetError() << endl;
+		TTF_Quit();
+		SDL_Quit();
+	}
+
 }
 
 void Core::preprocess()
@@ -78,8 +87,6 @@ void Core::render()
 	SDL_LockSurface(buffer);
 	/////////////////////////////////////
 	// Draw objects here
-
-	cout << "I do nothing!" << endl;
 
 	/////////////////////////////////////
 	SDL_UnlockSurface(buffer);

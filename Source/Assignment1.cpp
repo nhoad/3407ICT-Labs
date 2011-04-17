@@ -88,6 +88,11 @@ void Assignment1::preprocess()
 	rotateX = false;
 	rotateY = false;
 	rotateZ = false;
+
+	font = TTF_OpenFont("Assets/calibri.ttf", 12);
+
+	if (!font)
+		cerr << "could not load font!" << endl;
 }
 
 void Assignment1::drawCube(Cube cube)
@@ -104,7 +109,7 @@ void Assignment1::drawCube(Cube cube)
 
 	Mat4 model;
 
-	//model = model * Mat4::translate(curX, curY, z);
+	model = model * Mat4::translate(-1, -1, z);
 
 	model = model * Mat4::scale(scale, scale, scale);
 
@@ -383,11 +388,26 @@ void Assignment1::handleEvents()
 		switch (e.key.keysym.sym)
 		{
 			case SDLK_SPACE:
-				rotateX = true;
-				rotateY = true;
-				rotateZ = true;
-				dynamic = true;
-				decreaseScale = true;
+				if (e.type == SDL_KEYUP)
+				{
+					if (dynamic)
+					{
+						rotateX = false;
+						rotateY = false;
+						rotateZ = false;
+						dynamic = false;
+						decreaseScale = false;
+						increaseScale = false;
+					}
+					else
+					{
+						rotateX = true;
+						rotateY = true;
+						rotateZ = true;
+						dynamic = true;
+						decreaseScale = true;
+					}
+				}
 				break;
 			case SDLK_ESCAPE:
 				running = false;
@@ -396,6 +416,13 @@ void Assignment1::handleEvents()
 				angleX = 0;
 				angleY = 0;
 				angleZ = 0;
+				rotateX = false;
+				rotateY = false;
+				rotateZ = false;
+				dynamic = false;
+				cube.scale = 0.5;
+				decreaseScale = false;
+				increaseScale = false;
 				break;
 			case SDLK_KP7:
 				rotateX = !rotateX;
@@ -442,6 +469,23 @@ void Assignment1::handleEvents()
 
 }
 
+void Assignment1::drawText(const char * text, int x, int y)
+{
+	SDL_Color color = {255, 255, 255, 255};
+	SDL_Surface * text_buffer = TTF_RenderText_Solid(font, text, color);
+
+	if (text_buffer)
+	{
+		SDL_Rect pos = {x, y, 0, 0};
+		SDL_BlitSurface(text_buffer, 0, buffer, &pos);
+		SDL_FreeSurface(text_buffer);
+	}
+	else
+	{
+		cerr << text << " failed to render." << endl;
+	}
+}
+
 vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
 {
 	vector<Vertex> result;
@@ -463,6 +507,14 @@ void Assignment1::render()
 	SDL_LockSurface(buffer);
 	drawCube(cube);
 	moveCube(cube);
+
 	SDL_UnlockSurface(buffer);
+	drawText("Instructions:", 10, 10);
+	drawText("Spacebar: Enable/Disable Magic mode!", 20, 25);
+	drawText("KeyPad 5: Reset to defaults.", 20, 40);
+	drawText("KeyPad 7: Rotation on X axis", 20, 55);
+	drawText("KeyPad 8: Rotation on Y axis", 20, 70);
+	drawText("KeyPad 9: Rotation on Z axis", 20, 85);
+	drawText("KeyPad + or -: Increase/Decrease Scale", 20, 100);
 	SDL_Flip(buffer);
 }
