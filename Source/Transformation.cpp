@@ -160,11 +160,10 @@ Vec4 Mat4::mul(const Mat4& m, const Vec4& v)
 {
 	Vec4 r(0, 0, 0, 0);
 
-	for (int row=0; row < 4; row++)
-		for (int i=0; i < 4; i++)
-			r(row) += m(row, i) * v(i);
+	for (int i=0; i < 4; i++)
+		for (int j=0; j < 4; j++)
+			r(i) += m(j, i) * v(j);
 
-	cout << "REEESSSULLLLTTT: " << endl << r << endl;
 	return r;
 }
 
@@ -290,23 +289,14 @@ ostream & operator<<(ostream & o, const Mat4 & m)
 #if TEST
 int main(void)
 {
-	Mat4 a, b;
+	Mat4 a;
+	Vec4 v(0, 1, 0, 1);
 
-	a(0, 0) = 1;	a(1, 0) = 3;	a(2, 0) = 4;	a(3, 0) = 0;
-	a(0, 1) = 0;	a(1, 1) = 1;	a(2, 1) = 1;	a(3, 1) = 0;
-	a(0, 2) = 0;	a(1, 2) = 0;	a(2, 2) = 41;	a(3, 2) = 15;
-	a(0, 3) = 0;	a(1, 3) = 1;	a(2, 3) = -3.5;	a(3, 3) = 1;
+	a(0, 0) = -0.04;	a(0, 1) = -0.13; 	a(0, 2) = -22.9; 		a(0, 3) = 0.109;
+	a(1, 0) = 0.199;	a(1, 1) = 0.093;	a(1, 2) = -8.46; 		a(1, 3) = 0.044;
+	a(2, 0) = 0.096; 	a(2, 1) = -0.25;	a(2, 2) = 5.975;		a(2, 3) = -0.04;
+	a(3, 0) = 0;		a(3, 1) = 0; 		a(3, 2) = -2.00; 		a(3, 3) = 0;
 
-	b(0, 0) = 0.965926;	b(1, 0) = -.258819;	b(2, 0) = 4;	b(3, 0) = 0;
-	b(0, 1) = 0;	b(1, 1) = 1;	b(2, 1) = 1;	b(3, 1) = 0;
-	b(0, 2) = 0;	b(1, 2) = 0;	b(2, 2) = 41;	b(3, 2) = 15;
-	b(0, 3) = 0;	b(1, 3) = 1;	b(2, 3) = -3.5;	b(3, 3) = 1;
-
-	cout << a << endl;
-	cout << b << endl;
-
-	cout << Mat4::mul(a, b) << endl;
-	cout << Mat4::mul(b, a) << endl;
-
+	Mat4::mul(a, v);
 }
 #endif

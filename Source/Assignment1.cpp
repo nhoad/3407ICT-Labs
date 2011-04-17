@@ -127,11 +127,6 @@ void Assignment1::drawCube(Cube cube)
 			// get the NDC
 			Vec4 vec = Mat4::mul(modelViewPerspective, Vec4(v(0), v(1), v(2), v(3)));
 
-			if (vec(3) == 0)
-				vec(3) = -2.00401;
-			else
-				cout << "what the fuck? " << vec(3) << endl;
-
 			// normalised x, y and z against w
 			vec(0) /= vec(3);
 			vec(1) /= vec(3);
@@ -214,12 +209,12 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 //	if (((int) cross(2)) < 0)
 //		return;
 
-/*	cout << "drawing a triangle with these three points: " << endl;
+	cout << "drawing a triangle with these three points: " << endl;
 	cout << a << endl;
 	cout << b << endl;
 	cout << c << endl;
 	cout << "end" << endl << endl;
-*/
+
 	// first, we sort the vertices on the Y axis, using sort from algorithm library.
 	vector<Vertex> sorted;
 
