@@ -7,6 +7,7 @@
 #include "ObjectLoader.h"
 #include "Transformation.h"
 #include "Clipper.h"
+#include "StringFunctions.h"
 
 #include <algorithm>
 using std::sort;
@@ -81,7 +82,7 @@ void Assignment1::preprocess()
 	// load identity matrix
 	projection = new Mat4();
 
-	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 5.0);
+	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 10.0, 500.0);
 	(*projection) = *projection * perspectiveMatrix;
 
 	increaseScale = false;
@@ -202,9 +203,9 @@ void Assignment1::moveCube(Cube & cube)
 			decreaseScale = false;
 		}
 
-		angleX += 0.1;
-		angleY += 0.1;
-		angleZ += 0.1;
+		angleX += cube.speed;
+		angleY += cube.speed;
+		angleZ += cube.speed;
 	}
 
 	else if (increaseScale)
@@ -219,13 +220,13 @@ void Assignment1::moveCube(Cube & cube)
 		cube.scale = 0.1;
 
 	if (rotateX)
-		angleX += 0.1;
+		angleX += cube.speed;
 
 	if (rotateY)
-		angleY += 0.1;
+		angleY += cube.speed;
 
 	if (rotateZ)
-		angleZ += 0.1;
+		angleZ += cube.speed;
 }
 
 void Assignment1::drawPolygon(vector<Vertex> polygon)
@@ -443,6 +444,9 @@ void Assignment1::handleEvents()
 			case SDLK_ESCAPE:
 				running = false;
 				break;
+			case SDLK_KP4:
+				cube.speed -= 0.05;
+				break;
 			case SDLK_KP5:
 				angleX = 0;
 				angleY = 0;
@@ -454,6 +458,9 @@ void Assignment1::handleEvents()
 				cube.scale = 0.5;
 				decreaseScale = false;
 				increaseScale = false;
+				break;
+			case SDLK_KP6:
+				cube.speed += 0.05;
 				break;
 			case SDLK_KP7:
 				rotateX = !rotateX;
@@ -549,6 +556,10 @@ void Assignment1::render()
 	drawText("KeyPad 8: Rotation on Y axis", 20, 100);
 	drawText("KeyPad 9: Rotation on Z axis", 20, 115);
 	drawText("KeyPad + or -: Increase/Decrease Scale", 20, 130);
+
+	string speedDisplay = "Rotation speed: " + typeToString<float>(cube.speed);
+
+	drawText(speedDisplay.c_str(), 20, 145);
 
 	SDL_Flip(buffer);
 }
