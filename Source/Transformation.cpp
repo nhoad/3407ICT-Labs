@@ -124,18 +124,18 @@ ostream & operator<<(ostream & o, const Vec4 & v)
 
 float Mat4::operator()(int x, int y) const
 {
-	return data[(y * 4) + x];
+	return data[(x * 4) + y];
 }
 
 float& Mat4::operator()(int x, int y)
 {
-	return data[(y * 4) + x];
+	return data[(x * 4) + y];
 }
 
 Mat4& Mat4::operator=(const Mat4& m)
 {
 	for (int y=0; y < 16; y++)
-		(*this)(y, 0) = m(y, 0);
+		(*this)(0, y) = m(0, y);
 
 	return *this;
 
