@@ -71,12 +71,10 @@ void Assignment1::preprocess()
 	angleX = 0.0;
 	angleY = 0.0;
 	angleZ = 0.0;
+
 	cube.speed = 0.1;
 
-	xInc = 1 / cube.speed;
-	yInc = ((float) width / height) / cube.speed;
-
-	xInc = 1;
+	xInc = 0;
 	yInc = 0;
 
 	// load identity matrix
@@ -112,18 +110,24 @@ void Assignment1::drawCube(Cube cube)
 	float curX = (cube.x / width) * normScale * 2 - normScale;
 	float curY = (cube.y / height) * normScale * 2 - normScale;
 
+	cout << curX << ' ' << curY << endl;
+
+	curX = -0.6;
+	curY = 0.2;
+
 	Mat4 model;
 
-	model *= Mat4::translate(curX, curY, z);
+	model *= Mat4::translate(-x, -y, -z);
 	model *= Mat4::scale(scale, scale, scale);
 	model *= Mat4::rotateX(angleX);
 	model *= Mat4::rotateY(angleY);
 	model *= Mat4::rotateZ(angleZ);
-	model *= Mat4::translate(-x, -y, -z);
+
+	model *= Mat4::translate(curX, curY, z);
 
 	cout << model << endl;
 
-	Vec4 camera(0.0, 0.0, 0.5);
+	Vec4 camera(0.0, 0.0, 1.0);
 	Vec4 target(0, 0, 0);
 	Vec4 up(0.0, -1.0, 0.0);
 
