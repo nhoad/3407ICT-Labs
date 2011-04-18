@@ -10,7 +10,6 @@ TARGET = Core
 VPATH = Source
 
 _OBJS = HPTime.o Assignment1.o SoftwareRendering.o ObjectLoader.o StringFunctions.o Transformation.o Primitives.o Clipper.o
-#_OBJS = HPTime.o Planet.o Transformation.o
 OBJDIR = Intermediates
 
 # Optional to build examples

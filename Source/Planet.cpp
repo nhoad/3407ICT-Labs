@@ -121,7 +121,8 @@ void Core::preprocess()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(1.0, 1.0, -1.0, 0, 0, 0, 0, 0, 1);
+
+	glTranslatef(-0.5, -0.5, -0.5);
 
 	GLfloat values[16];
 	glGetFloatv(GL_MODELVIEW_MATRIX, values);

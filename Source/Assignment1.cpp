@@ -97,6 +97,7 @@ void Assignment1::preprocess()
 
 	if (!font)
 		cerr << "could not load font!" << endl;
+
 }
 
 void Assignment1::drawCube(Cube cube)
@@ -114,15 +115,13 @@ void Assignment1::drawCube(Cube cube)
 	Mat4 model;
 
 	//model *= Mat4::translate(curX, curY, z);
-	model *= Mat4::translate(curX, curY, z);
 
+	model *= Mat4::translate(-x, -y, -z);
 	model *= Mat4::scale(scale, scale, scale);
 
 	model *= Mat4::rotateX(angleX);
 	model *= Mat4::rotateY(angleY);
 	model *= Mat4::rotateZ(angleZ);
-
-	//model = model * Mat4::translate(-x, -y, -z);
 
 	Vec4 camera(0.0, 0.0, 0.5);
 	//Vec4 target(cube.x, cube.y, cube.y);
@@ -250,7 +249,7 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 
 	int z = round((x1-x0)*(y2-y0)-(y1-y0)*(x2-x0));
 
-	if (z <= 0)
+	if (z >= 0)
 		return;
 
 	// first, we sort the vertices on the Y axis, using sort from algorithm library.
