@@ -116,16 +116,14 @@ void Assignment1::drawCube(Cube cube)
 
 	model *= Mat4::translate(curX, curY, z);
 	model *= Mat4::scale(scale, scale, scale);
-
 	model *= Mat4::rotateX(angleX);
 	model *= Mat4::rotateY(angleY);
 	model *= Mat4::rotateZ(angleZ);
+	model *= Mat4::translate(-x, -y, -z);
 
-	//model *= Mat4::translate(-x, -y, -z);
-
+	cout << model << endl;
 
 	Vec4 camera(0.0, 0.0, 0.5);
-	//Vec4 target(cube.x, cube.y, cube.y);
 	Vec4 target(0, 0, 0);
 	Vec4 up(0.0, -1.0, 0.0);
 
@@ -304,6 +302,27 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 			for (unsigned i = 0; i < bc_edge.size(); i++)
 				r_edge.push_back(bc_edge[i]);
 		}
+
+		/*
+		cout << "left before" << endl;
+		for (int i=0; i < l_edge.size(); i++)
+			cout << l_edge[i] << endl;
+
+		cout << "right before" << endl;
+		for (int i=0; i < l_edge.size(); i++)
+			cout << r_edge[i] << endl;
+		*/
+		//colourSwap(l_edge, r_edge);
+
+		/*
+		cout << "after" << endl;
+		for (int i=0; i < l_edge.size(); i++)
+			cout << l_edge[i] << endl;
+
+		cout << "right after" << endl;
+		for (int i=0; i < l_edge.size(); i++)
+			cout << r_edge[i] << endl;
+		*/
 	}
 
 	assert(l_edge.size() == r_edge.size());
@@ -311,6 +330,26 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 	// now, let's paint it.
 	for (unsigned i=0; i < l_edge.size();i++)
 		scanLine(l_edge[i], r_edge[i]);
+}
+
+void Assignment1::colourSwap(vector<Vertex> & a, vector<Vertex> & b)
+{
+	for (int i=0; i < a.size(); i++)
+	{
+		// put R back to where it was.
+		float tmp = a[i](4);
+		a[i](4) = b[i](4);
+		b[i](4) = tmp;
+
+		tmp = a[i](5);
+		a[i](5) = b[i](5);
+		b[i](5) = tmp;
+
+		tmp = a[i](6);
+		a[i](6) = b[i](6);
+		b[i](6) = tmp;
+
+	}
 }
 
 vector<Vertex> Assignment1::makeLine(Vertex a, Vertex b)
@@ -354,7 +393,9 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 	double dx = b(0) - a(0);
 
 	if (a(0) > b(0))
+	{
 		swap<Vertex>(a, b);
+	}
 
 	double r_inc = (double) (b(4) - a(4)) / dx;
 	double g_inc = (double) (b(5) - a(5)) / dx;

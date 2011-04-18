@@ -94,6 +94,15 @@ class Assignment1 : public Core
 	  */
 	void triangle(Vertex a, Vertex b, Vertex c);
 
+	/**
+		draw text on the screen.
+
+		\param text the text to display.
+		\param x x coord for text.
+		\param y y coord for text
+	*/
 	void drawText(const char * text, int x, int y);
+
+	void colourSwap(std::vector<Vertex> &a, std::vector<Vertex> & b);
 
 };
