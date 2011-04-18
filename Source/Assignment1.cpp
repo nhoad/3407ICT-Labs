@@ -114,14 +114,15 @@ void Assignment1::drawCube(Cube cube)
 
 	Mat4 model;
 
-	//model *= Mat4::translate(curX, curY, z);
-
-	model *= Mat4::translate(-x, -y, -z);
+	model *= Mat4::translate(curX, curY, z);
 	model *= Mat4::scale(scale, scale, scale);
 
 	model *= Mat4::rotateX(angleX);
 	model *= Mat4::rotateY(angleY);
 	model *= Mat4::rotateZ(angleZ);
+
+	//model *= Mat4::translate(-x, -y, -z);
+
 
 	Vec4 camera(0.0, 0.0, 0.5);
 	//Vec4 target(cube.x, cube.y, cube.y);

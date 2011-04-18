@@ -124,18 +124,18 @@ ostream & operator<<(ostream & o, const Vec4 & v)
 
 float Mat4::operator()(int x, int y) const
 {
-	return data[(x * 4) + y];
+	return data[(y * 4) + x];
 }
 
 float& Mat4::operator()(int x, int y)
 {
-	return data[(x * 4) + y];
+	return data[(y * 4) + x];
 }
 
 Mat4& Mat4::operator=(const Mat4& m)
 {
 	for (int y=0; y < 16; y++)
-		(*this)(0, y) = m(0, y);
+		(*this)(y, 0) = m(y, 0);
 
 	return *this;
 
@@ -299,14 +299,11 @@ ostream & operator<<(ostream & o, const Mat4 & m)
 #if TEST
 int main(void)
 {
-	Mat4 a;
-	Vec4 v(0, 1, 0, 1);
+	cout << Mat4::translate(2, 3, 4) << endl;
 
-	a(0, 0) = -0.04;	a(0, 1) = -0.13; 	a(0, 2) = -22.9; 		a(0, 3) = 0.109;
-	a(1, 0) = 0.199;	a(1, 1) = 0.093;	a(1, 2) = -8.46; 		a(1, 3) = 0.044;
-	a(2, 0) = 0.096; 	a(2, 1) = -0.25;	a(2, 2) = 5.975;		a(2, 3) = -0.04;
-	a(3, 0) = 0;		a(3, 1) = 0; 		a(3, 2) = -2.00; 		a(3, 3) = 0;
-
-	Mat4::mul(a, v);
+	cout << Mat4::rotateX(45) << endl;
+	cout << Mat4::rotateY(45) << endl;
+	cout << Mat4::rotateZ(45) << endl;
+	cout << Mat4::scale(0.1, 0.2, 0.3) << endl;
 }
 #endif
