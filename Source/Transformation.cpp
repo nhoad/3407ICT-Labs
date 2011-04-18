@@ -141,6 +141,12 @@ Mat4& Mat4::operator=(const Mat4& m)
 
 }
 
+Mat4& Mat4::operator*=(Mat4 m)
+{
+	*this = *this * m;
+	return *this;
+}
+
 Mat4 Mat4::operator*(const Mat4& m)
 {
 	return Mat4::mul(*this, m);

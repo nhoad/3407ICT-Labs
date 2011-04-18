@@ -112,14 +112,14 @@ void Assignment1::drawCube(Cube cube)
 
 	Mat4 model;
 
-overload operator*=
-	model = model * Mat4::translate(curX, curY, z);
+	//model *= Mat4::translate(curX, curY, z);
+	model *= Mat4::translate(curX, curY, z);
 
-	model = model * Mat4::scale(scale, scale, scale);
+	model *= Mat4::scale(scale, scale, scale);
 
-	model = model * Mat4::rotateX(angleX);
-	model = model * Mat4::rotateY(angleY);
-	model = model * Mat4::rotateZ(angleZ);
+	model *= Mat4::rotateX(angleX);
+	model *= Mat4::rotateY(angleY);
+	model *= Mat4::rotateZ(angleZ);
 
 	//model = model * Mat4::translate(-x, -y, -z);
 
@@ -542,10 +542,13 @@ void Assignment1::render()
 	SDL_UnlockSurface(buffer);
 	drawText("Instructions:", 10, 10);
 	drawText("Spacebar: Enable/Disable Magic mode!", 20, 25);
-	drawText("KeyPad 5: Reset to defaults.", 20, 40);
-	drawText("KeyPad 7: Rotation on X axis", 20, 55);
-	drawText("KeyPad 8: Rotation on Y axis", 20, 70);
-	drawText("KeyPad 9: Rotation on Z axis", 20, 85);
-	drawText("KeyPad + or -: Increase/Decrease Scale", 20, 100);
+	drawText("KeyPad 4: Decrease Speed", 20, 40);
+	drawText("KeyPad 5: Reset to defaults.", 20, 55);
+	drawText("KeyPad 6: Increase Speed", 20, 70);
+	drawText("KeyPad 7: Rotation on X axis", 20, 85);
+	drawText("KeyPad 8: Rotation on Y axis", 20, 100);
+	drawText("KeyPad 9: Rotation on Z axis", 20, 115);
+	drawText("KeyPad + or -: Increase/Decrease Scale", 20, 130);
+
 	SDL_Flip(buffer);
 }
