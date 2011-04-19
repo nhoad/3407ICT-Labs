@@ -267,9 +267,7 @@ Mat4 Mat4::lookAt(Vec4 & camera, Vec4 & target, Vec4 & up)
 	Mat4 trans = Mat4::translate(-camera(0), -camera(1), -camera(2));
 	Mat4 rot;
 
-	// I know this is backwards, but if I do it the right way, my values are the wrong sign.
-	Vec4 forward = (camera - target).normalised();
-	//Vec4 forward = (target - camera).normalised();
+	Vec4 forward = (target - camera).normalised();
 	Vec4 left = (up * forward).normalised();
 	Vec4 upAxis = forward * left;
 

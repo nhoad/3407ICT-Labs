@@ -601,10 +601,16 @@ void Assignment1::render()
 	drawText("KeyPad 8: Rotation on Y axis", 20, 100);
 	drawText("KeyPad 9: Rotation on Z axis", 20, 115);
 	drawText("KeyPad + or -: Increase/Decrease Scale", 20, 130);
+	drawText("Use the directional keys to move too!", 20, 145);
 
 	string speedDisplay = "Rotation speed: " + typeToString<float>(cube.speed);
+	string posDisplay = "X/Y: " + typeToString<float>(cube.x) + " " + typeToString<float>(cube.y);
+	string scaleDisplay = "Scale: " + typeToString<float>(cube.scale);
 
-	drawText(speedDisplay.c_str(), 20, 145);
+	drawText("Stats", 10, 160);
+	drawText(speedDisplay.c_str(), 20, 175);
+	drawText(posDisplay.c_str(), 20, 190);
+	drawText(scaleDisplay.c_str(), 20, 205);
 
 	SDL_Flip(buffer);
 }
