@@ -452,7 +452,7 @@ void Assignment1::handleEvents()
 				if (e.type == SDL_KEYUP)
 					xInc = 0;
 				else
-					xInc = -1;
+					xInc = 1;
 				break;
 			}
 			case SDLK_LEFT:
@@ -460,7 +460,7 @@ void Assignment1::handleEvents()
 				if (e.type == SDL_KEYUP)
 					xInc = 0;
 				else
-					xInc = 1;
+					xInc = -1;
 				break;
 			}
 			break;
