@@ -10,13 +10,37 @@ typedef std::vector<Face> Mesh;
 
 int compareOnY(Vertex a, Vertex b);
 
+/**
+	Vertex class for representing a point in an object
+*/
 class Vertex
 {
 	float data[8];
 
 	public:
-	Vertex() { }
 
+	/**
+		Default constructor. Sets everything to zero.
+	*/
+	Vertex()
+	{
+		for (int i=0; i < 8; i++)
+			data[i] = 0;
+	}
+
+	/**
+		Constructor.
+
+		\param x the x coordinate
+		\param y the y coordinate
+		\param z the z coordinate
+		\param w the w coordinate
+		\param r red colour value
+		\param g green colour value
+		\param b blue colour value
+		\param a alpha value
+		\return description
+	*/
 	Vertex(float x, float y, float z, float w, float r, float g, float b, float a)
 	{
 		data[0] = x;
@@ -28,16 +52,34 @@ class Vertex
 		data[5] = g;
 		data[6] = b;
 		data[7] = a;
-
-//		std::cout << "constructor " << *this << std::endl;
 	}
 
+	/**
+		Overloaded operator for accessing data
+
+		\param x the index of data.
+		\return float at x in the vertex.
+	*/
 	float& operator()(int x);
+
+	/**
+		Overloaded operator for accessing data
+
+		\param x the index of data.
+		\return float at x in the vertex.
+	*/
 	float operator()(int x) const;
+
+	/**
+		Displays nice output!
+	*/
 	friend std::ostream & operator<<(std::ostream & o, const Vertex & v);
 
 };
 
+/**
+	Cube class.
+*/
 class Cube
 {
 	private:

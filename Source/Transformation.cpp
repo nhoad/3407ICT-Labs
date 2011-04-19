@@ -188,14 +188,14 @@ Mat4 Mat4::translate(float x, float y, float z)
 	return r;
 }
 
-Mat4 Mat4::rotateX(float degree)
+Mat4 Mat4::rotateX(float angle)
 {
 	Mat4 r;
 
-	degree = (degree * PI) / 180;
+	angle = (angle * PI) / 180;
 
-	const float c = cos(degree);
-	const float s = sin(degree);
+	const float c = cos(angle);
+	const float s = sin(angle);
 
 	r(1, 1) = c;  r(1, 2) = s;
 	r(2, 1) = -s; r(2, 2) = c;
@@ -203,14 +203,14 @@ Mat4 Mat4::rotateX(float degree)
 	return r;
 }
 
-Mat4 Mat4::rotateY(float degree)
+Mat4 Mat4::rotateY(float angle)
 {
 	Mat4 r;
 
-	degree = (degree * PI) / 180;
+	angle = (angle * PI) / 180;
 
-	const float c = cos(degree);
-	const float s = sin(degree);
+	const float c = cos(angle);
+	const float s = sin(angle);
 
 	r(0, 0) = c; r(0, 2) = -s;
 	r(2, 0) = s; r(2, 2) = c;
@@ -218,14 +218,14 @@ Mat4 Mat4::rotateY(float degree)
 	return r;
 }
 
-Mat4 Mat4::rotateZ(float degree)
+Mat4 Mat4::rotateZ(float angle)
 {
 	Mat4 r;
 
-	degree = (degree * PI) / 180;
+	angle = (angle * PI) / 180;
 
-	const float c = cos(degree);
-	const float s = sin(degree);
+	const float c = cos(angle);
+	const float s = sin(angle);
 
 	r(0, 0) = c;  r(0, 1) = -s;
 	r(1, 0) = s; r(1, 1) = c;

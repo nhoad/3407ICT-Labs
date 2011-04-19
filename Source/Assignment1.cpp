@@ -597,11 +597,13 @@ void Assignment1::showInstructions()
 	string speedDisplay = "Rotation speed: " + typeToString<float>(cube.speed);
 	string posDisplay = "X/Y: " + typeToString<float>(cube.x) + " " + typeToString<float>(cube.y);
 	string scaleDisplay = "Scale: " + typeToString<float>(cube.scale);
+	string fps = "FPS: " + typeToString<double>(1.0 / elapsedTime);
 
 	drawText("Stats", 10, 160);
 	drawText(speedDisplay.c_str(), 20, 175);
 	drawText(posDisplay.c_str(), 20, 190);
 	drawText(scaleDisplay.c_str(), 20, 205);
+	drawText(fps.c_str(), 20, 220);
 }
 
 void Assignment1::render()

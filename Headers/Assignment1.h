@@ -16,21 +16,34 @@
 
 #include "SoftwareRendering.h"
 
+/**
+	First assignment. Renders a 3D cube that the user can interact with.
+*/
 class Assignment1 : public Core
 {
+	// maintain the rotations on x, y and z.
 	float angleX, angleY, angleZ;
+
+	// the amount the cube is moved each frame.
 	float yInc, xInc;
+
+	// z buffer
 	float * zBuffer;
 
+	// cube read from cube.obj
 	Cube cube;
 
-	Mat4 * projection;
-
-	bool increaseScale, decreaseScale, dynamic, rotateX, rotateY, rotateZ;
-
+	// font used to render text.
 	TTF_Font * font;
 
+	// the projection matrix.
+	Mat4 * projection;
+
+	// which transformations to perform.
+	bool increaseScale, decreaseScale, dynamic, rotateX, rotateY, rotateZ;
+
 	public:
+	/** destructor*/
 	virtual ~Assignment1();
 
 	protected:
@@ -104,6 +117,12 @@ class Assignment1 : public Core
 	*/
 	void drawText(const char * text, int x, int y);
 
+	/**
+		Swap the colours of two edge lists.
+
+		\param a the first edge list.
+		\param b the second edge list.
+	*/
 	void colourSwap(std::vector<Vertex> &a, std::vector<Vertex> & b);
 
 	/**
