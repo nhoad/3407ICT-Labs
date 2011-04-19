@@ -97,6 +97,10 @@ void Assignment1::preprocess()
 	if (!font)
 		cerr << "could not load font!" << endl;
 
+	zBuffer = new float[width * height];
+
+	for (int i=0, max = width * height; i < max; i++)
+		zBuffer[i] = 500;
 }
 
 void Assignment1::drawCube(Cube cube)
@@ -323,7 +327,6 @@ void Assignment1::colourSwap(vector<Vertex> & a, vector<Vertex> & b)
 {
 	for (int i=0; i < a.size(); i++)
 	{
-		// put R back to where it was.
 		float tmp = a[i](4);
 		a[i](4) = b[i](4);
 		b[i](4) = tmp;
@@ -405,12 +408,19 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 	float g_inc = (b(5) - a(5)) / dx;
 	float b_inc = (b(6) - a(6)) / dx;
 
-	int x = a(0);
-	while (x < b(0))
+	int x = round(a(0));
+	int y = round(a(1));
+	while (x < round(b(0)))
 	{
-		putpixel(x, a(1), round(red), round(green), round(blue));
-		x++;
+		float z = a(2);
+		int pos = x + (y * width);
 
+		if (z < zBuffer[pos])
+		{
+			zBuffer[pos] = z;
+			putpixel(x, y, round(red), round(green), round(blue));
+		}
+		x++;
 		red += r_inc;
 		blue += b_inc;
 		green += g_inc;
@@ -613,4 +623,7 @@ void Assignment1::render()
 	drawText(scaleDisplay.c_str(), 20, 205);
 
 	SDL_Flip(buffer);
+
+	for (int i=0, max = width * height; i < max; i++)
+		zBuffer[i] = 500;
 }

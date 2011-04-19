@@ -20,6 +20,7 @@ class Assignment1 : public Core
 {
 	float angleX, angleY, angleZ;
 	float yInc, xInc;
+	float * zBuffer;
 
 	Cube cube;
 
