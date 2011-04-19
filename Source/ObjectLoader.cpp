@@ -59,6 +59,7 @@ void ObjectLoader::read(const string filename, bool rgbMagic)
 
 	vector<Vertex> vertices;
 
+	vector<int> face_sizes;
 	vector<int> add_order;
 
 	for (unsigned i=0; i < lines.size(); i++)
@@ -88,6 +89,10 @@ void ObjectLoader::read(const string filename, bool rgbMagic)
 		else if (type == "f")
 		{
 			// get the sort order
+
+
+			face_sizes.push_back(split_line.size() - 1);
+			// TODO: Store split_line.size() and use it work out how big each face should be.
 			for (unsigned i=1; i < split_line.size(); i++)
 			{
 				vector<string> split_face = tokenize(split_line[i], "/");
@@ -99,16 +104,35 @@ void ObjectLoader::read(const string filename, bool rgbMagic)
 
 	}
 
-	for (unsigned i=0; i < add_order.size(); i+=4)
+	for (int j=0, lastFaceEndPos=0; j < face_sizes.size(); j++)
 	{
 		Face face;
 
+		for (int i=lastFaceEndPos; i < face_sizes[j] + lastFaceEndPos; i++)
+			face.push_back(vertices[add_order[i]-1]);
+
+		lastFaceEndPos += face_sizes[j];
+
+		cout << "this face size: " << face.size() << endl;
+		mesh.push_back(face);
+
+	}
+/*	for (unsigned i=0; i < add_order.size(); i+=4)
+	{
+		Face face;
+
+		cout << "we have " << face_sizes.size() << " faces" << endl;
+		for (int j=0; j < face_sizes.size(); j++)
+			face.push_back(vertices[add_order[i+j]-1]);
+
+		/*
 		face.push_back(vertices[add_order[i]-1]);
 		face.push_back(vertices[add_order[i+1]-1]);
 		face.push_back(vertices[add_order[i+2]-1]);
 		face.push_back(vertices[add_order[i+3]-1]);
 
+
 		mesh.push_back(face);
-	}
+	}*/
 
 }

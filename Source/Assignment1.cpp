@@ -61,7 +61,7 @@ void Assignment1::preprocess()
 	// build the cube
 	ObjectLoader loader;
 
-	loader.read("Assets/Cube.obj", true);
+	loader.read("Assets/cessna.obj", true);
 
 	cube.faces = loader.object();
 	//mesh = loader.object();
@@ -201,15 +201,12 @@ void Assignment1::moveObject(Object & cube)
 	}
 
 	else if (increaseScale)
-		cube.scale += 0.01;
+		cube.scale += (cube.scale <= 0.1) ? 0.001 : 0.01;
 	else if (decreaseScale)
 		cube.scale -= 0.01;
 
 	if (cube.scale >= 1.0)
 		cube.scale = 1.0;
-
-	if (cube.scale <= 0.1)
-		cube.scale = 0.1;
 
 	if (rotateX)
 		angleX += cube.speed;
