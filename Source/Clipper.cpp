@@ -7,10 +7,12 @@ using std::vector;
 using std::cout;
 using std::endl;
 
+#include <cmath>
+
+
 vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 {
 	vector<Vertex> result;
-
 	const int minX = 0;
 
 	for (unsigned i=0; i < polygon.size(); i++)
@@ -19,21 +21,21 @@ vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 		Vertex b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
 
 		// if the vertex is invisible, ignore it.
-		if (a(0) < minX && b(0) < minX)
+		if (round(a(0)) < minX && round(b(0)) < minX)
 			continue;
 		// if both are visible, add the first one.
-		else if (a(0) >= minX && b(0) >= minX)
+		else if (round(a(0)) >= minX && round(b(0)) >= minX)
 			result.push_back(a);
 		// else, deal with a partially visible line.
 		else
 		{
-			double dy = b(1) - a(1);
-			double dx = b(0) - a(0);
+			float dy = b(1) - a(1);
+			float dx = b(0) - a(0);
 
 			// if a == in and b == out
-			if (a(0) >= minX)
+			if (round(a(0)) >= minX)
 			{
-				b(1) += ((double)(dy / dx)) * (double)(minX - b(0));
+				b(1) += (dy / dx) * (minX - b(0));
 				b(0) = minX;
 
 				result.insert(result.begin(), b);
@@ -41,8 +43,7 @@ vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 			}
 			else // a == out and b == in
 			{
-				a(1) += ((double)(dy / dx)) * (double)(minX - a(0));
-				double oldX = a(0);
+				a(1) += ((dy / dx)) * (minX - a(0));
 				a(0) = minX;
 
 				result.insert(result.begin(), a);
@@ -70,8 +71,8 @@ vector<Vertex> Clipper::clipRight(vector<Vertex> polygon, const int maxX)
 			result.push_back(a);
 		else
 		{
-			double dy = b(1) - a(1);
-			double dx = b(0) - a(0);
+			float dy = b(1) - a(1);
+			float dx = b(0) - a(0);
 
 			// if a == in and b == out
 			if (a(0) <= maxX)
@@ -85,7 +86,7 @@ vector<Vertex> Clipper::clipRight(vector<Vertex> polygon, const int maxX)
 			else // a == out and b == in
 			{
 				a(1) += (dy / dx) * (maxX - a(0));
-				double oldX = a(0);
+				float oldX = a(0);
 				a(0) = maxX-1;
 
 				float r_inc = (b(4) - a(4)) / dx;
@@ -125,8 +126,8 @@ vector<Vertex> Clipper::clipBottom(vector<Vertex> polygon, const int maxY)
 			result.push_back(a);
 		else
 		{
-			double dy = b(1) - a(1);
-			double dx = b(0) - a(0);
+			float dy = b(1) - a(1);
+			float dx = b(0) - a(0);
 
 			// if a == in and b == out
 			if (a(1) < maxY)
@@ -168,8 +169,8 @@ vector<Vertex> Clipper::clipTop(vector<Vertex> polygon)
 			result.push_back(a);
 		else
 		{
-			double dy = b(1) - a(1);
-			double dx = b(0) - a(0);
+			float dy = b(1) - a(1);
+			float dx = b(0) - a(0);
 
 			// if a == in and b == out
 			if (a(1) >= minY)
