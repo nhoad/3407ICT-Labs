@@ -81,7 +81,8 @@ void Assignment1::preprocess()
 	projection = new Mat4();
 
 	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 10.0, 500.0);
-	(*projection) = *projection * perspectiveMatrix;
+//	(*projection) = *projection * perspectiveMatrix;
+	(*projection) = perspectiveMatrix * *projection;
 
 	increaseScale = false;
 	decreaseScale = false;
@@ -118,6 +119,7 @@ void Assignment1::drawCube(Cube cube)
 	model *= Mat4::rotateY(angleY);
 	model *= Mat4::rotateZ(angleZ);
 	model = Mat4::translate(-x, -y, -z) * model;
+	model *= Mat4::translate(curX, curY, z);
 
 	model *= Mat4::scale(scale, scale, scale);
 
@@ -130,6 +132,7 @@ void Assignment1::drawCube(Cube cube)
 
 	Mat4 modelViewPerspective = model * view * (*projection);
 
+	//for (int i=0; i < 1; i++)
 	for (int i=0; i < cube.faces.size(); i++)
 	{
 		Face currentFace = cube.faces[i];
@@ -237,7 +240,12 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 	assert(decomposed.size() % 3 == 0);
 
 	for (int i = 0; i < decomposed.size() -2; i+=3)
+	{
+		//SDL_LockSurface(buffer);
+		//SDL_UnlockSurface(buffer);
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
+		//SDL_Flip(buffer);
+	}
 }
 
 void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
@@ -275,15 +283,14 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 	// build the left and right edges by comparing x values.
 	if (b(0) < c(0))
 	{
-
 		if (l_edge.size() < r_edge.size())
 		{
-			for (unsigned i = 0; i < bc_edge.size(); i++)
+			for (int i = 0; i < bc_edge.size(); i++)
 				l_edge.push_back(bc_edge[i]);
 		}
 		else
 		{
-			for (unsigned i = 0; i < bc_edge.size(); i++)
+			for (int i = 0; i < bc_edge.size(); i++)
 				r_edge.push_back(bc_edge[i]);
 		}
 	}
@@ -293,35 +300,16 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 
 		if (l_edge.size() < r_edge.size())
 		{
-			for (unsigned i = 0; i < bc_edge.size(); i++)
+			for (int i = 0; i < bc_edge.size(); i++)
 				l_edge.push_back(bc_edge[i]);
 		}
 		else
 		{
-			for (unsigned i = 0; i < bc_edge.size(); i++)
+			for (int i = 0; i < bc_edge.size(); i++)
 				r_edge.push_back(bc_edge[i]);
 		}
 
-		/*
-		cout << "left before" << endl;
-		for (int i=0; i < l_edge.size(); i++)
-			cout << l_edge[i] << endl;
-
-		cout << "right before" << endl;
-		for (int i=0; i < l_edge.size(); i++)
-			cout << r_edge[i] << endl;
-		*/
-		//colourSwap(l_edge, r_edge);
-
-		/*
-		cout << "after" << endl;
-		for (int i=0; i < l_edge.size(); i++)
-			cout << l_edge[i] << endl;
-
-		cout << "right after" << endl;
-		for (int i=0; i < l_edge.size(); i++)
-			cout << r_edge[i] << endl;
-		*/
+//		colourSwap(l_edge, r_edge);
 	}
 
 	assert(l_edge.size() == r_edge.size());
@@ -355,20 +343,20 @@ vector<Vertex> Assignment1::makeLine(Vertex a, Vertex b)
 {
 	vector<Vertex> result;
 
-	double x = a(0);
+	float x = a(0);
 
-	double red = a(4);
-	double green = a(5);
-	double blue = a(6);
+	float red = a(4);
+	float green = a(5);
+	float blue = a(6);
 
-	double dy = b(1) - a(1);
-	double dx = b(0) - a(0);
+	float dy = b(1) - a(1);
+	float dx = b(0) - a(0);
 
-	double slope = dy / dx;
+	float slope = dy / dx;
 
-	double r_inc = (double) (b(4) - a(4)) / dy;
-	double g_inc = (double) (b(5) - a(5)) / dy;
-	double b_inc = (double) (b(6) - a(6)) / dy;
+	float r_inc = (float) (b(4) - a(4)) / dy;
+	float g_inc = (float) (b(5) - a(5)) / dy;
+	float b_inc = (float) (b(6) - a(6)) / dy;
 
 	int max = round(b(1));
 
@@ -386,19 +374,36 @@ vector<Vertex> Assignment1::makeLine(Vertex a, Vertex b)
 
 void Assignment1::scanLine(Vertex a, Vertex b)
 {
-	double red = a(4);
-	double green = a(5);
-	double blue = a(6);
-	double dx = b(0) - a(0);
-
 	if (a(0) > b(0))
 	{
+/*		cout << "a and b before swap" << endl
+		<< a << endl << b << endl;*/
 		swap<Vertex>(a, b);
+
+		float tmp = a(4);
+		a(4) = b(4);
+		b(4) = tmp;
+
+		tmp = a(5);
+		a(5) = b(5);
+		b(5) = tmp;
+
+		tmp = a(6);
+		a(6) = b(6);
+		b(6) = tmp;
+/*
+		cout << "a and b after swap" << endl
+		<< a << endl << b << endl;*/
 	}
 
-	double r_inc = (double) (b(4) - a(4)) / dx;
-	double g_inc = (double) (b(5) - a(5)) / dx;
-	double b_inc = (double) (b(6) - a(6)) / dx;
+	float red = a(4);
+	float green = a(5);
+	float blue = a(6);
+	float dx = b(0) - a(0);
+
+	float r_inc = (b(4) - a(4)) / dx;
+	float g_inc = (b(5) - a(5)) / dx;
+	float b_inc = (b(6) - a(6)) / dx;
 
 	int x = a(0);
 	while (x < b(0))
