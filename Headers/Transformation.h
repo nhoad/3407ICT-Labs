@@ -102,7 +102,6 @@ class Mat4
 		*/
 		friend std::ostream & operator<<(std::ostream & o, const Mat4 & m);
 
-
 		/**
 			Perform matrix multiplication.
 
@@ -164,19 +163,58 @@ class Mat4
 			\return Scaling matrix from x, y and z values.
 		*/
 		static Mat4 scale(float x, float y, float z);
-		static Mat4 lookAt(Vec4 & camera, Vec4 & target, Vec4 & up);
-		static Mat4 perspectiveMatrix(float fieldOfView, float aspectRatio, float near, float far);
-		static Mat4 perspectiveFrustum(float fieldOfView, float aspectRatio, float near, float far);
 
+		/**
+			Construct a camera
+
+			\param camera the position of the camera.
+			\param target what the camera should look at.
+			\param up the up vector.
+		*/
+		static Mat4 lookAt(Vec4 & camera, Vec4 & target, Vec4 & up);
+
+		/**
+			Construct a perspective matrix.
+
+			\param fieldOfView angle of view (45 is a nice value).
+			\param aspectRatio aspect ratio of the window (typically width / height)
+			\param near the near value
+			\param far the far value
+			\return description
+		*/
+		static Mat4 perspectiveMatrix(float fieldOfView, float aspectRatio, float near, float far);
 };
 
+/** Vec4 class repesenting a 1x4 matrix. */
 class Vec4
 {
 	public:
 		float data[4];
+
+		/**
+			Constructor.
+
+			\param x value of first element.
+			\param y value of second element.
+			\param z value of third element.
+			\param w value of last element.
+		*/
 		Vec4(float x=0, float y=0, float z=0, float w=0);
 
+		/**
+			Single dimensional access to data
+
+			\param x the index to return.
+			\return data at position x.
+		*/
 		float& operator()(int x);
+
+		/**
+			Single dimensional access to data
+
+			\param x the index to return.
+			\return data at position x.
+		*/
 		float operator()(int x) const;
 
 		/**
@@ -203,10 +241,23 @@ class Vec4
 		*/
 		Vec4 operator/(const float& l) const;
 
+		/**
+			Get the "length" of the vector.
+
+			\return length of the vector.
+		*/
 		float length();
 
+		/**
+			Normalised form of current Vec4 object.
+
+			\return normalised version of this object.
+		*/
 		Vec4 normalised();
 
+		/**
+			Nice output!
+		*/
 		friend std::ostream & operator<<(std::ostream & o, const Vec4 & m);
 
 };

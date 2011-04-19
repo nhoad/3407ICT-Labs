@@ -8,6 +8,13 @@ class Vertex;
 typedef std::vector<Vertex> Face;
 typedef std::vector<Face> Mesh;
 
+/**
+	Compare two vertices on their Y values. Used for sorting points in a triangle for edge list generation.
+
+	\param a first Vertex.
+	\param b second Vertex to compare to a.
+	\return -1, 0 or +1 depending on the value of a and b's y values.
+*/
 int compareOnY(Vertex a, Vertex b);
 
 /**
