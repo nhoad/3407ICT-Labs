@@ -53,6 +53,7 @@ int main(int argc, char* argv[])
 Assignment1::~Assignment1()
 {
 	delete projection;
+	delete zBuffer;
 }
 
 void Assignment1::preprocess()
@@ -66,8 +67,8 @@ void Assignment1::preprocess()
 	//mesh = loader.object();
 	cube.scale = 0.5;
 
-	cube.x = 0;
-	cube.y = 0;
+	cube.x = width / 2;
+	cube.y = height / 2;
 	angleX = 0.0;
 	angleY = 0.0;
 	angleZ = 0.0;
@@ -81,8 +82,8 @@ void Assignment1::preprocess()
 	projection = new Mat4();
 
 	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 10.0, 500.0);
-//	(*projection) = *projection * perspectiveMatrix;
-	(*projection) = perspectiveMatrix * *projection;
+	(*projection) = *projection * perspectiveMatrix;
+	//(*projection) = perspectiveMatrix * *projection;
 
 	increaseScale = false;
 	decreaseScale = false;
@@ -115,14 +116,14 @@ void Assignment1::drawCube(Cube cube)
 	float curX = (cube.x / width) * normScale * 2 - normScale;
 	float curY = (cube.y / height) * normScale * 2 - normScale;
 
-	cout << curX << ' ' << curY << endl;
-
 	Mat4 model;
 
 	model *= Mat4::rotateX(angleX);
 	model *= Mat4::rotateY(angleY);
 	model *= Mat4::rotateZ(angleZ);
+
 	model = Mat4::translate(-x, -y, -z) * model;
+
 	model *= Mat4::translate(curX, curY, z);
 
 	model *= Mat4::scale(scale, scale, scale);
@@ -169,19 +170,6 @@ void Assignment1::drawCube(Cube cube)
 
 		drawPolygon(newFace);
 	}
-
-	// multiply view (lookat) by the model to get modelview matrix
-	// multiply perspective by modelview to get your model view perspective matrix
-
-	// for loop for each face of the cube
-	// store each vector as a Vec4
-	// multiply modelview perspective by each vec4 for the NDC
-	// divide each point in the NDC by w for homogeneous normalised points
-	// use the NDC to get the actual pixels.
-	// get the colours from the original shape
-	// make a new vertex using the colours and x and y values.
-	// add that vertex to a new face to preserve the original faces.
-	// draw the polygon using the face.
 }
 
 void Assignment1::moveCube(Cube & cube)
@@ -593,15 +581,8 @@ vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
 	return result;
 }
 
-void Assignment1::render()
+void Assignment1::showInstructions()
 {
-	SDL_FillRect(buffer, NULL, 0);
-
-	SDL_LockSurface(buffer);
-	drawCube(cube);
-	moveCube(cube);
-
-	SDL_UnlockSurface(buffer);
 	drawText("Instructions:", 10, 10);
 	drawText("Spacebar: Enable/Disable Magic mode!", 20, 25);
 	drawText("KeyPad 4: Decrease Speed", 20, 40);
@@ -621,9 +602,23 @@ void Assignment1::render()
 	drawText(speedDisplay.c_str(), 20, 175);
 	drawText(posDisplay.c_str(), 20, 190);
 	drawText(scaleDisplay.c_str(), 20, 205);
+}
+
+void Assignment1::render()
+{
+	SDL_FillRect(buffer, NULL, 0);
+
+	SDL_LockSurface(buffer);
+	drawCube(cube);
+	moveCube(cube);
+
+	SDL_UnlockSurface(buffer);
+
+	showInstructions();
 
 	SDL_Flip(buffer);
 
+	// reset the z buffer so this frame doesn't squash the next.
 	for (int i=0, max = width * height; i < max; i++)
 		zBuffer[i] = 500;
 }

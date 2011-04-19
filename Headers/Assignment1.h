@@ -106,4 +106,9 @@ class Assignment1 : public Core
 
 	void colourSwap(std::vector<Vertex> &a, std::vector<Vertex> & b);
 
+	/**
+		show the instructions to the user.
+	*/
+	void showInstructions();
+
 };
