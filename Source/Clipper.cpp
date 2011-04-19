@@ -3,6 +3,10 @@
 #include <vector>
 using std::vector;
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 {
 	vector<Vertex> result;
@@ -40,14 +44,6 @@ vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 				a(1) += ((double)(dy / dx)) * (double)(minX - a(0));
 				double oldX = a(0);
 				a(0) = minX;
-
-				double r_inc = (double) (b(4) - a(4)) / dy;
-				double g_inc = (double) (b(5) - a(5)) / dy;
-				double b_inc = (double) (b(6) - a(6)) / dy;
-
-				a(4) += r_inc * (oldX - a(0));
-				a(5) += g_inc * (oldX - a(0));
-				a(6) += b_inc * (oldX - a(0));
 
 				result.insert(result.begin(), a);
 			}
@@ -89,7 +85,20 @@ vector<Vertex> Clipper::clipRight(vector<Vertex> polygon, const int maxX)
 			else // a == out and b == in
 			{
 				a(1) += (dy / dx) * (maxX - a(0));
+				double oldX = a(0);
 				a(0) = maxX-1;
+
+				float r_inc = (b(4) - a(4)) / dx;
+				float g_inc = (b(5) - a(5)) / dx;
+				float b_inc = (b(6) - a(6)) / dx;
+
+				cout << b(4) - a(4) << endl;
+				cout << dy << endl;
+
+				a(4) = r_inc * (a(0) - oldX);
+				a(5) = g_inc * (a(0) - oldX);
+				a(6) = b_inc * (a(0) - oldX);
+				cout << a << endl;
 
 				result.push_back(a);
 			}

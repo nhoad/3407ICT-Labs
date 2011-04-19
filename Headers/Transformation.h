@@ -13,6 +13,8 @@ class Mat4
 		Mat4();
 		Mat4(float * values);
 		Mat4(float defaultValue);
+		float& operator()(int x);
+		float operator()(int x) const;
 		float& operator()(int x, int y);
 		float operator()(int x, int y) const;
 		Mat4& operator=(const Mat4& m);

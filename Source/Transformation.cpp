@@ -76,13 +76,6 @@ Vec4 Vec4::operator*(const Vec4 & v) const
 	temp(2) = (*this)(0) * v(1) - (*this)(1) * v(0);
 	temp(3) = 0;
 
-	/*
-	cout << "this: " << endl << (*this) << endl;
-	cout << "* v: " << endl << v << endl;
-	cout << " = : " << temp << endl;
-	exit(0);
-	*/
-
 	return temp;
 }
 
@@ -122,6 +115,17 @@ ostream & operator<<(ostream & o, const Vec4 & v)
 	return o;
 }
 
+float Mat4::operator()(int x) const
+{
+	return data[x];
+}
+
+float& Mat4::operator()(int x)
+{
+	return data[x];
+}
+
+
 float Mat4::operator()(int x, int y) const
 {
 	return data[(x * 4) + y];
@@ -134,8 +138,8 @@ float& Mat4::operator()(int x, int y)
 
 Mat4& Mat4::operator=(const Mat4& m)
 {
-	for (int y=0; y < 16; y++)
-		(*this)(0, y) = m(0, y);
+	for (int i=0; i < 16; i++)
+		(*this)(i) = m(i);
 
 	return *this;
 
@@ -181,11 +185,6 @@ Mat4 Mat4::translate(float x, float y, float z)
 	r(3, 1) = y;
 	r(3, 2) = z;
 
-/*
-	r(0, 3) = x;
-	r(1, 3) = y;
-	r(2, 3) = z;
-*/
 	return r;
 }
 
@@ -283,13 +282,13 @@ Mat4 Mat4::lookAt(Vec4 & camera, Vec4 & target, Vec4 & up)
 
 ostream & operator<<(ostream & o, const Mat4 & m)
 {
-	for (int y=0; y < 16; y++)
+	for (int i=0; i < 16; i++)
 	{
-		if (y % 4 == 0)
+		if (i % 4 == 0)
 			o << endl;
 
 		o.width(10);
-		o << m(0, y);
+		o << m(i);
 
 	}
 
@@ -299,11 +298,18 @@ ostream & operator<<(ostream & o, const Mat4 & m)
 #if TEST
 int main(void)
 {
-	cout << Mat4::translate(2, 3, 4) << endl;
+	Mat4 t =  Mat4::translate(2, 3, 4);
 
-	cout << Mat4::rotateX(45) << endl;
-	cout << Mat4::rotateY(45) << endl;
-	cout << Mat4::rotateZ(45) << endl;
-	cout << Mat4::scale(0.1, 0.2, 0.3) << endl;
+	Vec4 camera(0,0,1);
+	Vec4 target(0,0,0);
+	Vec4 up(0,-1, 0);
+
+	cout << Mat4::lookAt(camera, target, up) << endl;
+
+	cout << t << endl;
+
+	cout << t(12) << endl;
+	cout << t(13) << endl;
+	cout << t(14) << endl;
 }
 #endif

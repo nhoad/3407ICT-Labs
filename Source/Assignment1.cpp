@@ -112,20 +112,15 @@ void Assignment1::drawCube(Cube cube)
 
 	cout << curX << ' ' << curY << endl;
 
-	curX = -0.6;
-	curY = 0.2;
-
 	Mat4 model;
 
-	model *= Mat4::translate(-x, -y, -z);
-	model *= Mat4::scale(scale, scale, scale);
 	model *= Mat4::rotateX(angleX);
 	model *= Mat4::rotateY(angleY);
 	model *= Mat4::rotateZ(angleZ);
+	model = Mat4::translate(-x, -y, -z) * model;
 
-	model *= Mat4::translate(curX, curY, z);
+	model *= Mat4::scale(scale, scale, scale);
 
-	cout << model << endl;
 
 	Vec4 camera(0.0, 0.0, 1.0);
 	Vec4 target(0, 0, 0);
