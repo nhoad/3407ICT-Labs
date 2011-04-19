@@ -28,7 +28,7 @@ Mesh ObjectLoader::object()
 	return mesh;
 }
 
-void ObjectLoader::read(const string filename)
+void ObjectLoader::read(const string filename, bool rgbMagic)
 {
 	ifstream file(filename.c_str());
 
@@ -76,7 +76,10 @@ void ObjectLoader::read(const string filename)
 			z = stringToType<float>(split_line[3]);
 
 			// add them in the order they were read in, so we can get the proper ordering later.
-			vertices.push_back(Vertex(x, y, z, 1.0, x * 255, y * 255, z * 255, 1.0));
+			if (rgbMagic)
+				vertices.push_back(Vertex(x, y, z, 1.0, x * 255, y * 255, z * 255, 1.0));
+			else
+				vertices.push_back(Vertex(x, y, z, 1.0, 0, 255, 0, 1.0));
 		}
 		else if (type == "vn")
 		{

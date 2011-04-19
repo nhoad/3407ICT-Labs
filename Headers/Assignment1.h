@@ -31,7 +31,7 @@ class Assignment1 : public Core
 	float * zBuffer;
 
 	// cube read from cube.obj
-	Cube cube;
+	Object cube;
 
 	// font used to render text.
 	TTF_Font * font;
@@ -62,14 +62,14 @@ class Assignment1 : public Core
 
 	  \param cube the cube to draw.
 	  */
-	void drawCube(Cube cube);
+	void drawObject(Object cube);
 
 	/**
 	  move a cube according to the global values stored in Assignment1.
 
 	  \param cube the cube to move.
 	  */
-	void moveCube(Cube & cube);
+	void moveObject(Object & cube);
 
 	/**
 	  draw a polygon

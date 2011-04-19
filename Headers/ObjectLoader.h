@@ -13,8 +13,9 @@ class ObjectLoader
 			Read an object in from a file.
 
 			\param filename the path to the file containing the object
+			\param rgbMagic true means use the coords as colors, false will be green.
 		*/
-		void read(const std::string filename);
+		void read(const std::string filename, bool rgbMagic);
 
 		/**
 			Returns the object as it was read in from the file.

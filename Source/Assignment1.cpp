@@ -61,11 +61,11 @@ void Assignment1::preprocess()
 	// build the cube
 	ObjectLoader loader;
 
-	loader.read("Assets/Cube.obj");
+	loader.read("Assets/Cube.obj", true);
 
 	cube.faces = loader.object();
 	//mesh = loader.object();
-	cube.scale = 0.5;
+	cube.scale = 0.05;
 
 	cube.x = width / 2;
 	cube.y = height / 2;
@@ -104,7 +104,7 @@ void Assignment1::preprocess()
 		zBuffer[i] = 500;
 }
 
-void Assignment1::drawCube(Cube cube)
+void Assignment1::drawObject(Object cube)
 {
 	float x = cube.centreX();
 	float y = cube.centreY();
@@ -172,7 +172,7 @@ void Assignment1::drawCube(Cube cube)
 	}
 }
 
-void Assignment1::moveCube(Cube & cube)
+void Assignment1::moveObject(Object & cube)
 {
 	cube.x += xInc;
 	cube.y += yInc;
@@ -611,8 +611,8 @@ void Assignment1::render()
 	SDL_FillRect(buffer, NULL, 0);
 
 	SDL_LockSurface(buffer);
-	drawCube(cube);
-	moveCube(cube);
+	drawObject(cube);
+	moveObject(cube);
 
 	SDL_UnlockSurface(buffer);
 

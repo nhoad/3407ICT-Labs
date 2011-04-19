@@ -11,14 +11,14 @@ using std::vector;
 #include <iostream>
 using std::ostream;
 
-Cube::Cube()
+Object::Object()
 {
 	x = 0;
 	y = 0;
 	scale = 1;
 }
 
-float Cube::centre(int k)
+float Object::centre(int k)
 {
 	float minK, maxK;
 
@@ -40,17 +40,17 @@ float Cube::centre(int k)
 	return (minK + maxK) / 2.0f;
 }
 
-float Cube::centreY()
+float Object::centreY()
 {
 	return centre(1);
 }
 
-float Cube::centreZ()
+float Object::centreZ()
 {
 	return centre(2);
 }
 
-float Cube::centreX()
+float Object::centreX()
 {
 	return centre(0);
 }

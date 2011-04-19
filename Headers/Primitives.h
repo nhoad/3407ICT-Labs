@@ -85,9 +85,9 @@ class Vertex
 };
 
 /**
-	Cube class.
+	Object class.
 */
-class Cube
+class Object
 {
 	private:
 		/**
@@ -108,7 +108,7 @@ class Cube
 		float x, y, scale;
 		float speed;
 
-		Cube();
+		Object();
 
 
 		/**
