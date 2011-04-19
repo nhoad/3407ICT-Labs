@@ -113,26 +113,7 @@ void ObjectLoader::read(const string filename, bool rgbMagic)
 
 		lastFaceEndPos += face_sizes[j];
 
-		cout << "this face size: " << face.size() << endl;
 		mesh.push_back(face);
 
 	}
-/*	for (unsigned i=0; i < add_order.size(); i+=4)
-	{
-		Face face;
-
-		cout << "we have " << face_sizes.size() << " faces" << endl;
-		for (int j=0; j < face_sizes.size(); j++)
-			face.push_back(vertices[add_order[i+j]-1]);
-
-		/*
-		face.push_back(vertices[add_order[i]-1]);
-		face.push_back(vertices[add_order[i+1]-1]);
-		face.push_back(vertices[add_order[i+2]-1]);
-		face.push_back(vertices[add_order[i+3]-1]);
-
-
-		mesh.push_back(face);
-	}*/
-
 }

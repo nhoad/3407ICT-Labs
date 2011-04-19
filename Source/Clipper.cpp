@@ -3,10 +3,6 @@
 #include <vector>
 using std::vector;
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 #include <cmath>
 
 
@@ -93,13 +89,9 @@ vector<Vertex> Clipper::clipRight(vector<Vertex> polygon, const int maxX)
 				float g_inc = (b(5) - a(5)) / dx;
 				float b_inc = (b(6) - a(6)) / dx;
 
-				cout << b(4) - a(4) << endl;
-				cout << dy << endl;
-
 				a(4) = r_inc * (a(0) - oldX);
 				a(5) = g_inc * (a(0) - oldX);
 				a(6) = b_inc * (a(0) - oldX);
-				cout << a << endl;
 
 				result.push_back(a);
 			}
