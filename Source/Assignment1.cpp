@@ -147,7 +147,7 @@ void Assignment1::drawObject(Object cube)
 
 	Mat4 modelViewPerspective = model * view * (*projection);
 
-	//for (int i=0; i < 1; i++)
+	//for (int i=2; i < 3; i++)
 	for (int i=0; i < cube.faces.size(); i++)
 	{
 		Face currentFace = cube.faces[i];
@@ -230,15 +230,7 @@ void Assignment1::moveObject(Object & cube)
 
 void Assignment1::drawPolygon(vector<Vertex> polygon)
 {
-	for (int i=0; i < polygon.size(); i++)
-		cout << polygon[i] << endl;
-
 	vector<Vertex> clipped = Clipper::clip(polygon, width, height);
-
-	cout << "after clipping" << endl;
-	for (int i=0; i < clipped.size(); i++)
-		cout << clipped[i] << endl;
-
 	vector<Vertex> decomposed = decompose(clipped);
 
 	if (decomposed.size() == 0)
@@ -246,12 +238,10 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 
 	assert(decomposed.size() % 3 == 0);
 
+	triangle(decomposed[3], decomposed[4], decomposed[5]);
 	for (int i = 0; i < decomposed.size() -2; i+=3)
 	{
-		//SDL_LockSurface(buffer);
-		//SDL_UnlockSurface(buffer);
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
-		//SDL_Flip(buffer);
 	}
 }
 
@@ -278,51 +268,54 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 	b = sorted[1];
 	c = sorted[2];
 
+	vector<Vertex> l_edge = makeLine(a, b);
+	vector<Vertex> r_edge = makeLine(a, c);
+
 	vector<Vertex> bc_edge = makeLine(b, c);
 
-	// build the left and right edges by comparing x values.
-	if (b(0) < c(0))
+	if (!(b(0) < c(0)))
+		swap(l_edge, r_edge);
+
+	if (l_edge.size() < r_edge.size())
 	{
-		vector<Vertex> l_edge = makeLine(a, b);
-		vector<Vertex> r_edge = makeLine(a, c);
-
-		if (l_edge.size() < r_edge.size())
-		{
-			cout << "ab + bc" << endl;
-			for (int i = 0; i < bc_edge.size(); i++)
-				l_edge.push_back(bc_edge[i]);
-		}
-		else
-		{
-			cout << "ac + bc" << endl;
-			for (int i = 0; i < bc_edge.size(); i++)
-				r_edge.push_back(bc_edge[i]);
-		}
-
-		for (unsigned i=0; i < l_edge.size();i++)
-			scanLine(l_edge[i], r_edge[i]);
+		for (int i = 0; i < bc_edge.size(); i++)
+			l_edge.push_back(bc_edge[i]);
 	}
 	else
 	{
-		vector<Vertex> l_edge = makeLine(a, c);
-		vector<Vertex> r_edge = makeLine(a, b);
+		int oldRsize = r_edge.size();
+		for (int i = 0; i < bc_edge.size(); i++)
+			r_edge.push_back(bc_edge[i]);
 
-		if (l_edge.size() < r_edge.size())
+		if (oldRsize == 0)
 		{
-			cout << "ac + bc" << endl;
-			for (int i = 0; i < bc_edge.size(); i++)
-				l_edge.push_back(bc_edge[i]);
+			cout << "swapping colours!" << endl;
+			colourSwap(l_edge, r_edge);
 		}
 		else
 		{
-			cout << "ac + bc" << endl;
+			cout << "NOT swapping colours!" << endl;
+			cout << "r size: " << r_edge.size() << endl;
+			cout << "bc size: " << bc_edge.size() << endl;
+		}
+	}
+
+	for (unsigned i=0; i < l_edge.size();i++)
+		scanLine(l_edge[i], r_edge[i]);
+/*
+
+
 			for (int i = 0; i < bc_edge.size(); i++)
 				r_edge.push_back(bc_edge[i]);
+
+			if (oldRsize == 0)
+				colourSwap(l_edge, r_edge);
 		}
 
 		for (unsigned i=0; i < l_edge.size();i++)
 			scanLine(l_edge[i], r_edge[i]);
 	}
+	*/
 }
 
 void Assignment1::colourSwap(vector<Vertex> & a, vector<Vertex> & b)
