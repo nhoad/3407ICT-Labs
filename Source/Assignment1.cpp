@@ -240,9 +240,7 @@ void Assignment1::drawPolygon(vector<Vertex> polygon)
 
 	triangle(decomposed[3], decomposed[4], decomposed[5]);
 	for (int i = 0; i < decomposed.size() -2; i+=3)
-	{
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
-	}
 }
 
 void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
@@ -273,7 +271,7 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 
 	vector<Vertex> bc_edge = makeLine(b, c);
 
-	if (!(b(0) < c(0)))
+	if (b(0) == c(0))
 		swap(l_edge, r_edge);
 
 	if (l_edge.size() < r_edge.size())
@@ -283,44 +281,12 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 	}
 	else
 	{
-		int old_r_size = r_edge.size();
-
 		for (int i = 0; i < bc_edge.size(); i++)
 			r_edge.push_back(bc_edge[i]);
-
-		if (old_r_size <= bc_edge.size())
-			colourSwap(l_edge, r_edge);
-/*
-		if (oldRsize < bc_edge.size())
-		{
-			cout << "swapping colours!" << endl;
-			cout << ""
-			colourSwap(l_edge, r_edge);
-		}
-		else
-		{
-			cout << "NOT swapping colours!" << endl;
-			cout << "r size: " << r_edge.size() << endl;
-			cout << "bc size: " << bc_edge.size() << endl;
-		}*/
 	}
 
 	for (unsigned i=0; i < l_edge.size();i++)
 		scanLine(l_edge[i], r_edge[i]);
-/*
-
-
-			for (int i = 0; i < bc_edge.size(); i++)
-				r_edge.push_back(bc_edge[i]);
-
-			if (oldRsize == 0)
-				colourSwap(l_edge, r_edge);
-		}
-
-		for (unsigned i=0; i < l_edge.size();i++)
-			scanLine(l_edge[i], r_edge[i]);
-	}
-	*/
 }
 
 void Assignment1::colourSwap(vector<Vertex> & a, vector<Vertex> & b)
@@ -380,9 +346,9 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 	float a_x = a(0);
 	float b_x = b(0);
 
-	if (a_x > b_x)
+/*	if (a_x > b_x)
 		swap(a_x, b_x);
-
+*/
 	float red = a(4);
 	float green = a(5);
 	float blue = a(6);
@@ -395,21 +361,38 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 	int x = round(a_x);
 	int y = round(a(1));
 
-	while (x < b_x)
-	{
-		float z = a(2);
-		int pos = x + (y * width);
-
-		if (z < zBuffer[pos])
+	if (a_x < b_x)
+		while (x < b_x)
 		{
-			zBuffer[pos] = z;
-			putpixel(x, y, round(red), round(green), round(blue));
+			float z = a(2);
+			int pos = x + (y * width);
+
+			if (z < zBuffer[pos])
+			{
+				zBuffer[pos] = z;
+				putpixel(x, y, round(red), round(green), round(blue));
+			}
+			x++;
+			red += r_inc;
+			blue += b_inc;
+			green += g_inc;
 		}
-		x++;
-		red += r_inc;
-		blue += b_inc;
-		green += g_inc;
-	}
+	else
+		while (b_x <= x)
+		{
+			float z = a(2);
+			int pos = x + (y * width);
+
+			if (z < zBuffer[pos])
+			{
+				zBuffer[pos] = z;
+				putpixel(x, y, round(red), round(green), round(blue));
+			}
+			x--;
+			red -= r_inc;
+			blue -= b_inc;
+			green -= g_inc;
+		}
 }
 
 void Assignment1::handleEvents()
