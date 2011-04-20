@@ -3,6 +3,10 @@
 #include <vector>
 using std::vector;
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include <cmath>
 
 
@@ -73,8 +77,44 @@ vector<Vertex> Clipper::clipRight(vector<Vertex> polygon, const int maxX)
 			// if a == in and b == out
 			if (a(0) <= maxX)
 			{
+				float oldX = b(0), oldY = b(1);
 				b(1) += (dy / dx) * (maxX - b(0));
 				b(0) = maxX-1;
+
+				float r_inc = (b(4) - a(4)) / dx;
+				float g_inc = (b(5) - a(5)) / dx;
+				float b_inc = (b(6) - a(6)) / dx;
+
+				cout << "dx " << dx << endl;
+				cout << "r " << r_inc << endl;
+				cout << "g " << g_inc << endl;
+				cout << "b " << b_inc << endl;
+
+				cout << "difference between old and new: " << oldX - b(0) << endl;
+				cout << "old y and new y: " << oldY - b(1) << endl;
+
+				cout << "adjust color by these amounts" << endl;
+				cout << r_inc * (b(0) - oldX) << endl;
+				cout << g_inc * (b(0) - oldX) << endl;
+				cout << b_inc * (b(0) - oldX) << endl;
+				cout << endl;
+
+				cout << r_inc * (b(1) - oldY) << endl;
+				cout << g_inc * (b(1) - oldY) << endl;
+				cout << b_inc * (b(1) - oldY) << endl;
+				cout << endl;
+				cout << r_inc * (oldX - b(0)) << endl;
+				cout << g_inc * (oldX - b(0)) << endl;
+				cout << b_inc * (oldX - b(0)) << endl;
+				cout << endl;
+				cout << r_inc * (oldY - b(1)) << endl;
+				cout << g_inc * (oldY - b(1)) << endl;
+				cout << b_inc * (oldY - b(1)) << endl;
+				cout << endl;
+
+				b(4) += r_inc * (b(1) - oldY);
+				b(5) += g_inc * (b(1) - oldY);
+				b(6) += b_inc * (b(1) - oldY);
 
 				result.push_back(a);
 				result.push_back(b);
@@ -82,16 +122,7 @@ vector<Vertex> Clipper::clipRight(vector<Vertex> polygon, const int maxX)
 			else // a == out and b == in
 			{
 				a(1) += (dy / dx) * (maxX - a(0));
-				float oldX = a(0);
 				a(0) = maxX-1;
-
-				float r_inc = (b(4) - a(4)) / dx;
-				float g_inc = (b(5) - a(5)) / dx;
-				float b_inc = (b(6) - a(6)) / dx;
-
-				a(4) = r_inc * (a(0) - oldX);
-				a(5) = g_inc * (a(0) - oldX);
-				a(6) = b_inc * (a(0) - oldX);
 
 				result.push_back(a);
 			}

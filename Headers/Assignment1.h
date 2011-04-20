@@ -39,12 +39,22 @@ class Assignment1 : public Core
 	// the projection matrix.
 	Mat4 * projection;
 
+	// Path to the model file.
+	std::string modelFile;
+
 	// which transformations to perform.
 	bool increaseScale, decreaseScale, dynamic, rotateX, rotateY, rotateZ;
 
 	public:
 	/** destructor*/
 	virtual ~Assignment1();
+
+	/**
+		Set the path to the model to load.
+
+		\param filename the file to load the object from
+	*/
+	void setModelFile(std::string filename);
 
 	protected:
 

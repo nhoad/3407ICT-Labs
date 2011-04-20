@@ -44,8 +44,13 @@ using namespace std;
 ///
 int main(int argc, char* argv[])
 {
-
 	Assignment1 example;
+
+	if (argc < 2)
+		example.setModelFile("Assets/Cube.obj");
+	else
+		example.setModelFile(argv[1]);
+
 	example.start();
 	return 0;
 }
@@ -56,12 +61,17 @@ Assignment1::~Assignment1()
 	delete zBuffer;
 }
 
+void Assignment1::setModelFile(string filename)
+{
+	modelFile = filename;
+}
+
 void Assignment1::preprocess()
 {
 	// build the cube
 	ObjectLoader loader;
 
-	loader.read("Assets/cessna.obj", true);
+	loader.read(modelFile, true);
 
 	cube.faces = loader.object();
 	//mesh = loader.object();
@@ -220,7 +230,15 @@ void Assignment1::moveObject(Object & cube)
 
 void Assignment1::drawPolygon(vector<Vertex> polygon)
 {
+	for (int i=0; i < polygon.size(); i++)
+		cout << polygon[i] << endl;
+
 	vector<Vertex> clipped = Clipper::clip(polygon, width, height);
+
+	cout << "after clipping" << endl;
+	for (int i=0; i < clipped.size(); i++)
+		cout << clipped[i] << endl;
+
 	vector<Vertex> decomposed = decompose(clipped);
 
 	if (decomposed.size() == 0)
@@ -260,52 +278,51 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 	b = sorted[1];
 	c = sorted[2];
 
-	// we'll make all the edges now rather than littering them through code.
-	vector<Vertex> ab_edge = makeLine(a, b);
 	vector<Vertex> bc_edge = makeLine(b, c);
-	vector<Vertex> ac_edge = makeLine(a, c);
-
-	vector<Vertex> l_edge, r_edge;
-	l_edge = ab_edge;
-	r_edge = ac_edge;
 
 	// build the left and right edges by comparing x values.
 	if (b(0) < c(0))
 	{
+		vector<Vertex> l_edge = makeLine(a, b);
+		vector<Vertex> r_edge = makeLine(a, c);
+
 		if (l_edge.size() < r_edge.size())
 		{
+			cout << "ab + bc" << endl;
 			for (int i = 0; i < bc_edge.size(); i++)
 				l_edge.push_back(bc_edge[i]);
 		}
 		else
 		{
+			cout << "ac + bc" << endl;
 			for (int i = 0; i < bc_edge.size(); i++)
 				r_edge.push_back(bc_edge[i]);
 		}
+
+		for (unsigned i=0; i < l_edge.size();i++)
+			scanLine(l_edge[i], r_edge[i]);
 	}
 	else
 	{
-		swap(l_edge, r_edge);
+		vector<Vertex> l_edge = makeLine(a, c);
+		vector<Vertex> r_edge = makeLine(a, b);
 
 		if (l_edge.size() < r_edge.size())
 		{
+			cout << "ac + bc" << endl;
 			for (int i = 0; i < bc_edge.size(); i++)
 				l_edge.push_back(bc_edge[i]);
 		}
 		else
 		{
+			cout << "ac + bc" << endl;
 			for (int i = 0; i < bc_edge.size(); i++)
 				r_edge.push_back(bc_edge[i]);
 		}
 
-//		colourSwap(l_edge, r_edge);
+		for (unsigned i=0; i < l_edge.size();i++)
+			scanLine(l_edge[i], r_edge[i]);
 	}
-
-	assert(l_edge.size() == r_edge.size());
-
-	// now, let's paint it.
-	for (unsigned i=0; i < l_edge.size();i++)
-		scanLine(l_edge[i], r_edge[i]);
 }
 
 void Assignment1::colourSwap(vector<Vertex> & a, vector<Vertex> & b)
@@ -362,40 +379,25 @@ vector<Vertex> Assignment1::makeLine(Vertex a, Vertex b)
 
 void Assignment1::scanLine(Vertex a, Vertex b)
 {
-	if (a(0) > b(0))
-	{
-/*		cout << "a and b before swap" << endl
-		<< a << endl << b << endl;*/
-		swap<Vertex>(a, b);
+	float a_x = a(0);
+	float b_x = b(0);
 
-		float tmp = a(4);
-		a(4) = b(4);
-		b(4) = tmp;
-
-		tmp = a(5);
-		a(5) = b(5);
-		b(5) = tmp;
-
-		tmp = a(6);
-		a(6) = b(6);
-		b(6) = tmp;
-/*
-		cout << "a and b after swap" << endl
-		<< a << endl << b << endl;*/
-	}
+	if (a_x > b_x)
+		swap(a_x, b_x);
 
 	float red = a(4);
 	float green = a(5);
 	float blue = a(6);
-	float dx = b(0) - a(0);
+	float dx = b_x - a_x;
 
 	float r_inc = (b(4) - a(4)) / dx;
 	float g_inc = (b(5) - a(5)) / dx;
 	float b_inc = (b(6) - a(6)) / dx;
 
-	int x = round(a(0));
+	int x = round(a_x);
 	int y = round(a(1));
-	while (x < round(b(0)))
+
+	while (x < b_x)
 	{
 		float z = a(2);
 		int pos = x + (y * width);
@@ -595,12 +597,14 @@ void Assignment1::showInstructions()
 	string posDisplay = "X/Y: " + typeToString<float>(cube.x) + " " + typeToString<float>(cube.y);
 	string scaleDisplay = "Scale: " + typeToString<float>(cube.scale);
 	string fps = "FPS: " + typeToString<double>(1.0 / elapsedTime);
+	string modelName = "Model: " + modelFile;
 
 	drawText("Stats", 10, 160);
 	drawText(speedDisplay.c_str(), 20, 175);
 	drawText(posDisplay.c_str(), 20, 190);
 	drawText(scaleDisplay.c_str(), 20, 205);
 	drawText(fps.c_str(), 20, 220);
+	drawText(modelName.c_str(), 20, 235);
 }
 
 void Assignment1::render()
