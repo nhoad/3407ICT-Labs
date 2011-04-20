@@ -283,24 +283,13 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 	}
 	else
 	{
-		int oldRsize = r_edge.size();
+		int old_r_size = r_edge.size();
 
-		if (r_edge.size() == 0)
-		{
-			r_edge = bc_edge;
+		for (int i = 0; i < bc_edge.size(); i++)
+			r_edge.push_back(bc_edge[i]);
+
+		if (old_r_size <= bc_edge.size())
 			colourSwap(l_edge, r_edge);
-		}
-		else
-		{
-			int old_r_size = r_edge.size();
-
-			for (int i = 0; i < bc_edge.size(); i++)
-				r_edge.push_back(bc_edge[i]);
-
-			if (old_r_size <= bc_edge.size())
-				colourSwap(l_edge, r_edge);
-
-		}
 /*
 		if (oldRsize < bc_edge.size())
 		{
