@@ -284,12 +284,28 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 	else
 	{
 		int oldRsize = r_edge.size();
-		for (int i = 0; i < bc_edge.size(); i++)
-			r_edge.push_back(bc_edge[i]);
 
-		if (oldRsize == 0)
+		if (r_edge.size() == 0)
+		{
+			r_edge = bc_edge;
+			colourSwap(l_edge, r_edge);
+		}
+		else
+		{
+			int old_r_size = r_edge.size();
+
+			for (int i = 0; i < bc_edge.size(); i++)
+				r_edge.push_back(bc_edge[i]);
+
+			if (old_r_size <= bc_edge.size())
+				colourSwap(l_edge, r_edge);
+
+		}
+/*
+		if (oldRsize < bc_edge.size())
 		{
 			cout << "swapping colours!" << endl;
+			cout << ""
 			colourSwap(l_edge, r_edge);
 		}
 		else
@@ -297,7 +313,7 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 			cout << "NOT swapping colours!" << endl;
 			cout << "r size: " << r_edge.size() << endl;
 			cout << "bc size: " << bc_edge.size() << endl;
-		}
+		}*/
 	}
 
 	for (unsigned i=0; i < l_edge.size();i++)
