@@ -21,11 +21,14 @@ vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 		Vertex b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
 
 		// if the vertex is invisible, ignore it.
-		if (round(a(0)) < minX && round(b(0)) < minX)
+		if ((round(a(0)) < minX) && (round(b(0)) < minX))
 			continue;
 		// if both are visible, add the first one.
-		else if (a(0) >= minX && b(0) >= minX)
+		else if (round(a(0)) >= minX && round(b(0)) >= minX)
+		{
+			cout << "adding a" << endl;
 			result.push_back(a);
+		}
 		// else, deal with a partially visible line.
 		else
 		{
@@ -38,6 +41,7 @@ vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 				b(1) += (dy / dx) * (minX - b(0));
 				b(0) = minX;
 
+				cout << "adding b then a" << endl;
 				result.insert(result.begin(), b);
 				result.insert(result.begin(), a);
 			}
@@ -46,6 +50,8 @@ vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 				a(1) += ((dy / dx)) * (minX - a(0));
 				a(0) = minX;
 
+				cout << "adding a" << endl;
+				result.insert(result.begin(), b);
 				result.insert(result.begin(), a);
 			}
 		}

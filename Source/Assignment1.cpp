@@ -186,8 +186,8 @@ void Assignment1::drawObject(Object obj)
 
 	Mat4 modelViewPerspective = model * view * (*projection);
 
-	//for (int i=2; i < 3; i++)
-	for (int i=0; i < obj.faces.size(); i++)
+	//for (int i=4; i < 5; i++)
+	//for (int i=0; i < obj.faces.size(); i++)
 	{
 		Face currentFace = obj.faces[i];
 		Face newFace;
