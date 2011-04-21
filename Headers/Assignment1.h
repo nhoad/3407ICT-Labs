@@ -42,6 +42,12 @@ class Assignment1 : public Core
 	// Path to the model file.
 	std::string modelFile;
 
+	// option to display wireframe only.
+	bool wireframe;
+
+	// display text for the users
+	std::vector<std::string> instructions;
+
 	// which transformations to perform.
 	bool increaseScale, decreaseScale, dynamic, rotateX, rotateY, rotateZ;
 
@@ -136,8 +142,16 @@ class Assignment1 : public Core
 	void colourSwap(std::vector<Vertex> &a, std::vector<Vertex> & b);
 
 	/**
-		show the instructions to the user.
+		load the instructions into the instruction and stats vectors
 	*/
-	void showInstructions();
+	void loadInstructions();
+
+	/**
+		Draw a line from point a to b. This is implemented with flat white, no colour interpolation at all.
+
+		\param a starting point
+		\param b end point
+	*/
+	void line(Vertex a, Vertex b);
 
 };

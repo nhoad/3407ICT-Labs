@@ -103,6 +103,8 @@ void Assignment1::preprocess()
 	rotateY = false;
 	rotateZ = false;
 
+	wireframe = true;
+
 	font = TTF_OpenFont("Assets/calibri.ttf", 12);
 
 	if (!font)
@@ -112,6 +114,37 @@ void Assignment1::preprocess()
 
 	for (int i=0, max = width * height; i < max; i++)
 		zBuffer[i] = 500;
+
+	loadInstructions();
+}
+
+void Assignment1::line(Vertex a, Vertex b)
+{
+	if (a(0) > b(0))
+		swap(a, b);
+
+	double slope = (b(1) - a(1)) / (b(0) - a(0));
+
+	if (slope <= 1.0 && slope > -1.0)
+	{
+		float y = a(1);
+		for (int x = round(a(0)), max = round(b(0)); x < max; x++)
+		{
+			putpixel(x, round(y), 255, 255, 255);
+			y += slope;
+		}
+		return;
+	}
+	else if (slope <= -1.0)
+		swap(a, b);
+
+	float x = a(0);
+	for (int y = round(a(1)), max = round(b(1)); y < max; y++)
+	{
+		putpixel(round(x), y, 255, 255, 255);
+		x += 1 / slope;
+	}
+
 }
 
 void Assignment1::drawObject(Object obj)
@@ -231,10 +264,7 @@ void Assignment1::moveObject(Object & obj)
 void Assignment1::drawPolygon(vector<Vertex> polygon)
 {
 	vector<Vertex> clipped = Clipper::clip(polygon, width, height);
-
-	cout << "clipped size: " << clipped.size() << endl;
 	vector<Vertex> decomposed = decompose(clipped);
-	cout << "decomposed size: " << decomposed.size() << endl;
 
 	if (decomposed.size() == 0)
 		return;
@@ -249,6 +279,14 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 {
 	float x0=a(0), x1=b(0), x2=c(0);
 	float y0=a(1), y1=b(1), y2=c(1);
+
+	if (wireframe)
+	{
+		line(a, b);
+		line(b, c);
+		line(a, c);
+		return;
+	}
 
 	int z = round((x1-x0)*(y2-y0)-(y1-y0)*(x2-x0));
 
@@ -492,6 +530,10 @@ void Assignment1::handleEvents()
 			case SDLK_KP9:
 				rotateZ = !rotateZ;
 				break;
+			case SDLK_KP0:
+				if (e.type == SDL_KEYUP)
+					wireframe = !wireframe;
+				break;
 			case SDLK_KP_MINUS:
 			{
 				switch (e.type)
@@ -559,33 +601,19 @@ vector<Vertex> Assignment1::decompose(vector<Vertex> polygon)
 	return result;
 }
 
-void Assignment1::showInstructions()
+void Assignment1::loadInstructions()
 {
-	drawText("Instructions:", 10, 10);
-	drawText("Spacebar: Enable/Disable Magic mode!", 20, 25);
-	drawText("KeyPad 4: Decrease Speed", 20, 40);
-	drawText("KeyPad 5: Reset to defaults.", 20, 55);
-	drawText("KeyPad 6: Increase Speed", 20, 70);
-	drawText("KeyPad 7: Rotation on X axis", 20, 85);
-	drawText("KeyPad 8: Rotation on Y axis", 20, 100);
-	drawText("KeyPad 9: Rotation on Z axis", 20, 115);
-	drawText("KeyPad + or -: Increase/Decrease Scale", 20, 130);
-	drawText("Use the directional keys to move too!", 20, 145);
+	instructions.push_back("Spacebar: Enable/Disable Magic mode!");
+	instructions.push_back("KeyPad 4: Decrease Speed");
+	instructions.push_back("KeyPad 5: Reset to defaults.");
+	instructions.push_back("KeyPad 6: Increase Speed");
+	instructions.push_back("KeyPad 7: Rotation on X axis");
+	instructions.push_back("KeyPad 8: Rotation on Y axis");
+	instructions.push_back("KeyPad 9: Rotation on Z axis");
+	instructions.push_back("KeyPad 0: Enable/disable wireframe");
+	instructions.push_back("KeyPad + or -: Increase/Decrease Scale");
+	instructions.push_back("Use the directional keys to move too!");
 
-	string speedDisplay = "Rotation speed: " + typeToString<float>(obj.speed);
-	string posDisplay = "X/Y: " + typeToString<float>(obj.x) + " " + typeToString<float>(obj.y);
-	string scaleDisplay = "Scale: " + typeToString<float>(obj.scale);
-	string fps = "FPS: " + typeToString<double>(1.0 / elapsedTime);
-	string modelName = "Model: " + modelFile;
-	string polyCount = "Polygon Count: " + typeToString<int>(obj.faces.size());
-
-	drawText("Stats", 10, 160);
-	drawText(speedDisplay.c_str(), 20, 175);
-	drawText(posDisplay.c_str(), 20, 190);
-	drawText(scaleDisplay.c_str(), 20, 205);
-	drawText(fps.c_str(), 20, 220);
-	drawText(modelName.c_str(), 20, 235);
-	drawText(polyCount.c_str(), 20, 250);
 }
 
 void Assignment1::render()
@@ -598,7 +626,35 @@ void Assignment1::render()
 
 	SDL_UnlockSurface(buffer);
 
-	showInstructions();
+	drawText("Instructions:", 10, 10);
+
+	for (int i=0; i < instructions.size(); i++)
+		drawText(instructions[i].c_str(), 20, (i+1) * 15 + 10);
+
+	drawText("Stats", 10, 175);
+
+	string speedDisplay = "Rotation speed: " + typeToString<float>(obj.speed);
+	string posDisplay = "X/Y: " + typeToString<float>(obj.x) + " " + typeToString<float>(obj.y);
+	string scaleDisplay = "Scale: " + typeToString<float>(obj.scale);
+	string fps = "FPS: " + typeToString<double>(1.0 / elapsedTime);
+	string modelName = "Model: " + modelFile;
+	string polyCount = "Polygon Count: " + typeToString<int>(obj.faces.size());
+	string wireframeText = "Wireframe: ";
+	wireframeText += (wireframe) ? "enabled" : "disabled";
+
+	vector<string> stats;
+
+	stats.push_back(speedDisplay);
+	stats.push_back(posDisplay);
+	stats.push_back(scaleDisplay);
+	stats.push_back(fps);
+	stats.push_back(modelName);
+	stats.push_back(polyCount);
+	stats.push_back(wireframeText);
+
+	for (int i=0; i < stats.size(); i++)
+		drawText(stats[i].c_str(), 20, (i+1) * 15 + 175);
+
 
 	SDL_Flip(buffer);
 
