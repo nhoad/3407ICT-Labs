@@ -85,37 +85,6 @@ vector<Vertex> Clipper::clipRight(vector<Vertex> polygon, const int maxX)
 				float g_inc = (b(5) - a(5)) / dx;
 				float b_inc = (b(6) - a(6)) / dx;
 
-				cout << "dx " << dx << endl;
-				cout << "r " << r_inc << endl;
-				cout << "g " << g_inc << endl;
-				cout << "b " << b_inc << endl;
-
-				cout << "difference between old and new: " << oldX - b(0) << endl;
-				cout << "old y and new y: " << oldY - b(1) << endl;
-
-				cout << "adjust color by these amounts" << endl;
-				cout << r_inc * (b(0) - oldX) << endl;
-				cout << g_inc * (b(0) - oldX) << endl;
-				cout << b_inc * (b(0) - oldX) << endl;
-				cout << endl;
-
-				cout << r_inc * (b(1) - oldY) << endl;
-				cout << g_inc * (b(1) - oldY) << endl;
-				cout << b_inc * (b(1) - oldY) << endl;
-				cout << endl;
-				cout << r_inc * (oldX - b(0)) << endl;
-				cout << g_inc * (oldX - b(0)) << endl;
-				cout << b_inc * (oldX - b(0)) << endl;
-				cout << endl;
-				cout << r_inc * (oldY - b(1)) << endl;
-				cout << g_inc * (oldY - b(1)) << endl;
-				cout << b_inc * (oldY - b(1)) << endl;
-				cout << endl;
-
-				b(4) += r_inc * (b(1) - oldY);
-				b(5) += g_inc * (b(1) - oldY);
-				b(6) += b_inc * (b(1) - oldY);
-
 				result.push_back(a);
 				result.push_back(b);
 			}
@@ -186,7 +155,7 @@ vector<Vertex> Clipper::clipTop(vector<Vertex> polygon)
 		Vertex b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
 
 		// if the vertex is invisible, ignore it.
-		if (a(1) < minY && b(1) < minY)
+		if (round(a(1)) < minY && round(b(1)) < minY)
 			continue;
 		else if (a(1) >= minY && b(1) >= minY)
 			result.push_back(a);

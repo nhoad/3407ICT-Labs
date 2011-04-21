@@ -17,21 +17,21 @@
 #include "SoftwareRendering.h"
 
 /**
-	First assignment. Renders a 3D cube that the user can interact with.
+	First assignment. Renders a 3D obj that the user can interact with.
 */
 class Assignment1 : public Core
 {
 	// maintain the rotations on x, y and z.
 	float angleX, angleY, angleZ;
 
-	// the amount the cube is moved each frame.
+	// the amount the obj is moved each frame.
 	float yInc, xInc;
 
 	// z buffer
 	float * zBuffer;
 
-	// cube read from cube.obj
-	Object cube;
+	// obj read from cube.obj
+	Object obj;
 
 	// font used to render text.
 	TTF_Font * font;
@@ -68,18 +68,18 @@ class Assignment1 : public Core
 	void handleEvents();
 
 	/**
-	  draw a cube.
+	  draw a obj.
 
-	  \param cube the cube to draw.
+	  \param obj the cube to draw.
 	  */
-	void drawObject(Object cube);
+	void drawObject(Object obj);
 
 	/**
-	  move a cube according to the global values stored in Assignment1.
+	  move a obj according to the global values stored in Assignment1.
 
-	  \param cube the cube to move.
+	  \param obj the cube to move.
 	  */
-	void moveObject(Object & cube);
+	void moveObject(Object & obj);
 
 	/**
 	  draw a polygon

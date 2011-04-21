@@ -68,22 +68,22 @@ void Assignment1::setModelFile(string filename)
 
 void Assignment1::preprocess()
 {
-	// build the cube
+	// build the obj
 	ObjectLoader loader;
 
 	loader.read(modelFile, true);
 
-	cube.faces = loader.object();
+	obj.faces = loader.object();
 	//mesh = loader.object();
-	cube.scale = 0.05;
+	obj.scale = 0.05;
 
-	cube.x = width / 2;
-	cube.y = height / 2;
+	obj.x = width / 2;
+	obj.y = height / 2;
 	angleX = 0.0;
 	angleY = 0.0;
 	angleZ = 0.0;
 
-	cube.speed = 0.1;
+	obj.speed = 0.1;
 
 	xInc = 0;
 	yInc = 0;
@@ -114,17 +114,17 @@ void Assignment1::preprocess()
 		zBuffer[i] = 500;
 }
 
-void Assignment1::drawObject(Object cube)
+void Assignment1::drawObject(Object obj)
 {
-	float x = cube.centreX();
-	float y = cube.centreY();
-	float z = cube.centreZ();
+	float x = obj.centreX();
+	float y = obj.centreY();
+	float z = obj.centreZ();
 
-	float scale = cube.scale;
+	float scale = obj.scale;
 	float normScale = (scale * 2) / scale;
 
-	float curX = (cube.x / width) * normScale * 2 - normScale;
-	float curY = (cube.y / height) * normScale * 2 - normScale;
+	float curX = (obj.x / width) * normScale * 2 - normScale;
+	float curY = (obj.y / height) * normScale * 2 - normScale;
 
 	Mat4 model;
 
@@ -148,9 +148,9 @@ void Assignment1::drawObject(Object cube)
 	Mat4 modelViewPerspective = model * view * (*projection);
 
 	//for (int i=2; i < 3; i++)
-	for (int i=0; i < cube.faces.size(); i++)
+	for (int i=0; i < obj.faces.size(); i++)
 	{
-		Face currentFace = cube.faces[i];
+		Face currentFace = obj.faces[i];
 		Face newFace;
 
 		for (int j=0; j < currentFace.size(); j++)
@@ -182,63 +182,65 @@ void Assignment1::drawObject(Object cube)
 	}
 }
 
-void Assignment1::moveObject(Object & cube)
+void Assignment1::moveObject(Object & obj)
 {
-	cube.x += xInc;
-	cube.y += yInc;
+	obj.x += xInc;
+	obj.y += yInc;
 
 	if (dynamic)
 	{
 		if (increaseScale)
-			cube.scale += 0.01;
+			obj.scale += 0.01;
 		else
-			cube.scale -= 0.01;
+			obj.scale -= 0.01;
 
-		if (cube.scale >= 1)
+		if (obj.scale >= 1)
 		{
 			increaseScale = false;
 			decreaseScale = true;
 		}
-		else if (cube.scale <= 0.1)
+		else if (obj.scale <= 0.1)
 		{
 			increaseScale = true;
 			decreaseScale = false;
 		}
 
-		angleX += cube.speed;
-		angleY += cube.speed;
-		angleZ += cube.speed;
+		angleX += obj.speed;
+		angleY += obj.speed;
+		angleZ += obj.speed;
 	}
 
 	else if (increaseScale)
-		cube.scale += (cube.scale <= 0.1) ? 0.001 : 0.01;
+		obj.scale += (obj.scale <= 0.1) ? 0.001 : 0.01;
 	else if (decreaseScale)
-		cube.scale -= 0.01;
+		obj.scale -= 0.01;
 
-	if (cube.scale >= 1.0)
-		cube.scale = 1.0;
+	if (obj.scale >= 1.0)
+		obj.scale = 1.0;
 
 	if (rotateX)
-		angleX += cube.speed;
+		angleX += obj.speed;
 
 	if (rotateY)
-		angleY += cube.speed;
+		angleY += obj.speed;
 
 	if (rotateZ)
-		angleZ += cube.speed;
+		angleZ += obj.speed;
 }
 
 void Assignment1::drawPolygon(vector<Vertex> polygon)
 {
 	vector<Vertex> clipped = Clipper::clip(polygon, width, height);
+
+	cout << "clipped size: " << clipped.size() << endl;
 	vector<Vertex> decomposed = decompose(clipped);
+	cout << "decomposed size: " << decomposed.size() << endl;
 
 	if (decomposed.size() == 0)
 		return;
 
 	assert(decomposed.size() % 3 == 0);
 
-	triangle(decomposed[3], decomposed[4], decomposed[5]);
 	for (int i = 0; i < decomposed.size() -2; i+=3)
 		triangle(decomposed[i], decomposed[i+1], decomposed[i+2]);
 }
@@ -268,7 +270,6 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 
 	vector<Vertex> l_edge = makeLine(a, b);
 	vector<Vertex> r_edge = makeLine(a, c);
-
 	vector<Vertex> bc_edge = makeLine(b, c);
 
 	if (b(0) == c(0))
@@ -323,9 +324,9 @@ vector<Vertex> Assignment1::makeLine(Vertex a, Vertex b)
 
 	float slope = dy / dx;
 
-	float r_inc = (float) (b(4) - a(4)) / dy;
-	float g_inc = (float) (b(5) - a(5)) / dy;
-	float b_inc = (float) (b(6) - a(6)) / dy;
+	float r_inc = (b(4) - a(4)) / dy;
+	float g_inc = (b(5) - a(5)) / dy;
+	float b_inc = (b(6) - a(6)) / dy;
 
 	int max = round(b(1));
 
@@ -346,9 +347,6 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 	float a_x = a(0);
 	float b_x = b(0);
 
-/*	if (a_x > b_x)
-		swap(a_x, b_x);
-*/
 	float red = a(4);
 	float green = a(5);
 	float blue = a(6);
@@ -468,7 +466,7 @@ void Assignment1::handleEvents()
 				running = false;
 				break;
 			case SDLK_KP4:
-				cube.speed -= 0.05;
+				obj.speed -= 0.05;
 				break;
 			case SDLK_KP5:
 				angleX = 0;
@@ -478,12 +476,12 @@ void Assignment1::handleEvents()
 				rotateY = false;
 				rotateZ = false;
 				dynamic = false;
-				cube.scale = 0.5;
+				obj.scale = 0.5;
 				decreaseScale = false;
 				increaseScale = false;
 				break;
 			case SDLK_KP6:
-				cube.speed += 0.05;
+				obj.speed += 0.05;
 				break;
 			case SDLK_KP7:
 				rotateX = !rotateX;
@@ -574,11 +572,12 @@ void Assignment1::showInstructions()
 	drawText("KeyPad + or -: Increase/Decrease Scale", 20, 130);
 	drawText("Use the directional keys to move too!", 20, 145);
 
-	string speedDisplay = "Rotation speed: " + typeToString<float>(cube.speed);
-	string posDisplay = "X/Y: " + typeToString<float>(cube.x) + " " + typeToString<float>(cube.y);
-	string scaleDisplay = "Scale: " + typeToString<float>(cube.scale);
+	string speedDisplay = "Rotation speed: " + typeToString<float>(obj.speed);
+	string posDisplay = "X/Y: " + typeToString<float>(obj.x) + " " + typeToString<float>(obj.y);
+	string scaleDisplay = "Scale: " + typeToString<float>(obj.scale);
 	string fps = "FPS: " + typeToString<double>(1.0 / elapsedTime);
 	string modelName = "Model: " + modelFile;
+	string polyCount = "Polygon Count: " + typeToString<int>(obj.faces.size());
 
 	drawText("Stats", 10, 160);
 	drawText(speedDisplay.c_str(), 20, 175);
@@ -586,6 +585,7 @@ void Assignment1::showInstructions()
 	drawText(scaleDisplay.c_str(), 20, 205);
 	drawText(fps.c_str(), 20, 220);
 	drawText(modelName.c_str(), 20, 235);
+	drawText(polyCount.c_str(), 20, 250);
 }
 
 void Assignment1::render()
@@ -593,8 +593,8 @@ void Assignment1::render()
 	SDL_FillRect(buffer, NULL, 0);
 
 	SDL_LockSurface(buffer);
-	drawObject(cube);
-	moveObject(cube);
+	drawObject(obj);
+	moveObject(obj);
 
 	SDL_UnlockSurface(buffer);
 
