@@ -15,7 +15,6 @@ Object::Object()
 {
 	x = 0;
 	y = 0;
-	scale = 1;
 }
 
 float Object::centre(int k)

@@ -14,16 +14,8 @@ class ObjectLoader
 
 			\param filename the path to the file containing the object
 			\param rgbMagic true means use the coords as colors, false will be green.
+			\return the mesh from input file.
 		*/
-		void read(const std::string filename, bool rgbMagic);
+		Mesh read(const std::string filename, bool rgbMagic);
 
-		/**
-			Returns the object as it was read in from the file.
-
-			\return the object mesh.
-		*/
-		Mesh object();
-
-	private:
-		Mesh mesh;
 };

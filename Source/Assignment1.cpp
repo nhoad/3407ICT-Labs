@@ -47,9 +47,14 @@ int main(int argc, char* argv[])
 	Assignment1 example;
 
 	if (argc < 2)
-		example.setModelFile("Assets/Cube.obj");
+	{
+		example.addModelFile("Assets/Cube.obj");
+	}
 	else
-		example.setModelFile(argv[1]);
+	{
+		for (int i=1; i < argc; i++)
+			example.addModelFile(argv[i]);
+	}
 
 	example.start();
 	return 0;
@@ -61,39 +66,42 @@ Assignment1::~Assignment1()
 	delete zBuffer;
 }
 
-void Assignment1::setModelFile(string filename)
+void Assignment1::addModelFile(string filename)
 {
 	modelFile = filename;
+
+	ObjectLoader loader;
+	Object o;
+
+	o.faces = loader.read(filename, true);
+
+	objects.push_back(o);
 }
 
 void Assignment1::preprocess()
 {
-	// build the obj
-	ObjectLoader loader;
+	for (int i=0; i < objects.size(); i++)
+	{
+		objects[i].x = 50 + (i * 300);
+		objects[i].y = height / 2;
+	}
 
-	loader.read(modelFile, true);
+	if (objects.size() == 1)
+		objects[0].x = width / 2;
 
-	obj.faces = loader.object();
-	//mesh = loader.object();
-	obj.scale = 0.05;
-
-	obj.x = width / 2;
-	obj.y = height / 2;
+	speed = 0.1;
+	scale = 0.5;
+	xInc = 0;
+	yInc = 0;
 	angleX = 0.0;
 	angleY = 0.0;
 	angleZ = 0.0;
-
-	obj.speed = 0.1;
-
-	xInc = 0;
-	yInc = 0;
 
 	// load identity matrix
 	projection = new Mat4();
 
 	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 10.0, 500.0);
 	(*projection) = *projection * perspectiveMatrix;
-	//(*projection) = perspectiveMatrix * *projection;
 
 	increaseScale = false;
 	decreaseScale = false;
@@ -153,7 +161,6 @@ void Assignment1::drawObject(Object obj)
 	float y = obj.centreY();
 	float z = obj.centreZ();
 
-	float scale = obj.scale;
 	float normScale = (scale * 2) / scale;
 
 	float curX = (obj.x / width) * normScale * 2 - normScale;
@@ -170,7 +177,6 @@ void Assignment1::drawObject(Object obj)
 	model *= Mat4::translate(curX, curY, z);
 
 	model *= Mat4::scale(scale, scale, scale);
-
 
 	Vec4 camera(0.0, 0.0, 1.0);
 	Vec4 target(0, 0, 0);
@@ -223,42 +229,42 @@ void Assignment1::moveObject(Object & obj)
 	if (dynamic)
 	{
 		if (increaseScale)
-			obj.scale += 0.01;
+			scale += 0.01;
 		else
-			obj.scale -= 0.01;
+			scale -= 0.01;
 
-		if (obj.scale >= 1)
+		if (scale >= 1)
 		{
 			increaseScale = false;
 			decreaseScale = true;
 		}
-		else if (obj.scale <= 0.1)
+		else if (scale <= 0.1)
 		{
 			increaseScale = true;
 			decreaseScale = false;
 		}
 
-		angleX += obj.speed;
-		angleY += obj.speed;
-		angleZ += obj.speed;
+		angleX += speed;
+		angleY += speed;
+		angleZ += speed;
 	}
 
 	else if (increaseScale)
-		obj.scale += (obj.scale <= 0.1) ? 0.001 : 0.01;
+		scale += (scale <= 0.1) ? 0.001 : 0.01;
 	else if (decreaseScale)
-		obj.scale -= 0.01;
+		scale -= 0.01;
 
-	if (obj.scale >= 1.0)
-		obj.scale = 1.0;
+	if (scale >= 1.0)
+		scale = 1.0;
 
 	if (rotateX)
-		angleX += obj.speed;
+		angleX += speed;
 
 	if (rotateY)
-		angleY += obj.speed;
+		angleY += speed;
 
 	if (rotateZ)
-		angleZ += obj.speed;
+		angleZ += speed;
 }
 
 void Assignment1::drawPolygon(vector<Vertex> polygon)
@@ -504,7 +510,7 @@ void Assignment1::handleEvents()
 				running = false;
 				break;
 			case SDLK_KP4:
-				obj.speed -= 0.05;
+				speed -= 0.05;
 				break;
 			case SDLK_KP5:
 				angleX = 0;
@@ -514,12 +520,12 @@ void Assignment1::handleEvents()
 				rotateY = false;
 				rotateZ = false;
 				dynamic = false;
-				obj.scale = 0.5;
+				scale = 0.5;
 				decreaseScale = false;
 				increaseScale = false;
 				break;
 			case SDLK_KP6:
-				obj.speed += 0.05;
+				speed += 0.05;
 				break;
 			case SDLK_KP7:
 				rotateX = !rotateX;
@@ -621,8 +627,12 @@ void Assignment1::render()
 	SDL_FillRect(buffer, NULL, 0);
 
 	SDL_LockSurface(buffer);
-	drawObject(obj);
-	moveObject(obj);
+
+	for (int i=0; i < objects.size(); i++)
+	{
+		drawObject(objects[i]);
+		moveObject(objects[i]);
+	}
 
 	SDL_UnlockSurface(buffer);
 
@@ -633,12 +643,12 @@ void Assignment1::render()
 
 	drawText("Stats", 10, 175);
 
-	string speedDisplay = "Rotation speed: " + typeToString<float>(obj.speed);
-	string posDisplay = "X/Y: " + typeToString<float>(obj.x) + " " + typeToString<float>(obj.y);
-	string scaleDisplay = "Scale: " + typeToString<float>(obj.scale);
+	string speedDisplay = "Rotation speed: " + typeToString<float>(speed);
+	string posDisplay = "X/Y: " + typeToString<float>(objects[0].x) + " " + typeToString<float>(objects[0].y);
+	string scaleDisplay = "Scale: " + typeToString<float>(scale);
 	string fps = "FPS: " + typeToString<double>(1.0 / elapsedTime);
 	string modelName = "Model: " + modelFile;
-	string polyCount = "Polygon Count: " + typeToString<int>(obj.faces.size());
+	//string polyCount = "Polygon Count: " + typeToString<int>(obj.faces.size());
 	string wireframeText = "Wireframe: ";
 	wireframeText += (wireframe) ? "enabled" : "disabled";
 
@@ -649,7 +659,7 @@ void Assignment1::render()
 	stats.push_back(scaleDisplay);
 	stats.push_back(fps);
 	stats.push_back(modelName);
-	stats.push_back(polyCount);
+	//stats.push_back(polyCount);
 	stats.push_back(wireframeText);
 
 	for (int i=0; i < stats.size(); i++)

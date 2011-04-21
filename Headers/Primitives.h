@@ -105,8 +105,7 @@ class Object
 	public:
 		Mesh faces;
 
-		float x, y, scale;
-		float speed;
+		float x, y;
 
 		Object();
 

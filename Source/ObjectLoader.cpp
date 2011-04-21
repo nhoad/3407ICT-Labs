@@ -23,13 +23,13 @@ using std::endl;
 #include <cstring>
 #include <cstdlib>
 
-Mesh ObjectLoader::object()
+Mesh ObjectLoader::read(const string filename, bool rgbMagic)
 {
-	return mesh;
-}
+	Mesh mesh;
 
-void ObjectLoader::read(const string filename, bool rgbMagic)
-{
+	cout << "Loading model: " << filename << endl;
+	mesh.clear();
+
 	ifstream file(filename.c_str());
 
 	vector<string> lines;
@@ -62,7 +62,7 @@ void ObjectLoader::read(const string filename, bool rgbMagic)
 	vector<int> face_sizes;
 	vector<int> add_order;
 
-	for (unsigned i=0; i < lines.size(); i++)
+	for (int i=0; i < lines.size(); i++)
 	{
 		line = lines[i];
 
@@ -88,11 +88,8 @@ void ObjectLoader::read(const string filename, bool rgbMagic)
 		}
 		else if (type == "f")
 		{
-			// get the sort order
-
-
 			face_sizes.push_back(split_line.size() - 1);
-			// TODO: Store split_line.size() and use it work out how big each face should be.
+
 			for (unsigned i=1; i < split_line.size(); i++)
 			{
 				vector<string> split_face = tokenize(split_line[i], "/");
@@ -114,6 +111,7 @@ void ObjectLoader::read(const string filename, bool rgbMagic)
 		lastFaceEndPos += face_sizes[j];
 
 		mesh.push_back(face);
-
 	}
+
+	return mesh;
 }

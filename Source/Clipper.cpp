@@ -24,7 +24,7 @@ vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 		if (round(a(0)) < minX && round(b(0)) < minX)
 			continue;
 		// if both are visible, add the first one.
-		else if (round(a(0)) >= minX && round(b(0)) >= minX)
+		else if (a(0) >= minX && b(0) >= minX)
 			result.push_back(a);
 		// else, deal with a partially visible line.
 		else

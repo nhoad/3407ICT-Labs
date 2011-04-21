@@ -25,13 +25,13 @@ class Assignment1 : public Core
 	float angleX, angleY, angleZ;
 
 	// the amount the obj is moved each frame.
-	float yInc, xInc;
+	float yInc, xInc, speed, scale;
 
 	// z buffer
 	float * zBuffer;
 
 	// obj read from cube.obj
-	Object obj;
+	std::vector<Object> objects;
 
 	// font used to render text.
 	TTF_Font * font;
@@ -60,7 +60,7 @@ class Assignment1 : public Core
 
 		\param filename the file to load the object from
 	*/
-	void setModelFile(std::string filename);
+	void addModelFile(std::string filename);
 
 	protected:
 
