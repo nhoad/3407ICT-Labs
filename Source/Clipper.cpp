@@ -42,17 +42,21 @@ vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 				b(0) = minX;
 
 				cout << "adding b then a" << endl;
-				result.insert(result.begin(), b);
-				result.insert(result.begin(), a);
+				result.push_back(a);
+				result.push_back(b);
+//				result.insert(result.begin(), b);
+//				result.insert(result.begin(), a);
 			}
 			else // a == out and b == in
 			{
 				a(1) += ((dy / dx)) * (minX - a(0));
 				a(0) = minX;
 
-				cout << "adding a" << endl;
-				result.insert(result.begin(), b);
-				result.insert(result.begin(), a);
+				cout << "adding b then a BRO" << endl;
+				result.push_back(a);
+				result.push_back(b);
+				//result.insert(result.begin(), b);
+//		result.insert(result.begin(), a);
 			}
 		}
 
