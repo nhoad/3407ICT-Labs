@@ -41,22 +41,16 @@ vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 				b(1) += (dy / dx) * (minX - b(0));
 				b(0) = minX;
 
-				cout << "adding b then a" << endl;
 				result.push_back(a);
 				result.push_back(b);
-//				result.insert(result.begin(), b);
-//				result.insert(result.begin(), a);
 			}
 			else // a == out and b == in
 			{
 				a(1) += ((dy / dx)) * (minX - a(0));
 				a(0) = minX;
 
-				cout << "adding b then a BRO" << endl;
 				result.push_back(a);
 				result.push_back(b);
-				//result.insert(result.begin(), b);
-//		result.insert(result.begin(), a);
 			}
 		}
 
@@ -177,16 +171,35 @@ vector<Vertex> Clipper::clipTop(vector<Vertex> polygon)
 			// if a == in and b == out
 			if (a(1) >= minY)
 			{
+				float oldY = b(1);
+
 				b(0) += (minY - b(1)) / (dy / dx);
 				b(1) = minY;
+
+				float r_inc = (b(4) - a(4)) / dy;
+				float g_inc = (b(5) - a(5)) / dy;
+				float b_inc = (b(6) - a(6)) / dy;
+
+				b(4) += r_inc * (b(1) - oldY);
+				b(5) += g_inc * (b(1) - oldY);
+				b(6) += b_inc * (b(1) - oldY);
 
 				result.push_back(a);
 				result.push_back(b);
 			}
 			else // a == out and b == in
 			{
+				float oldY = a(1);
 				a(0) += (minY - a(1)) / (dy / dx);
 				a(1) = minY;
+
+				float r_inc = (b(4) - a(4)) / dy;
+				float g_inc = (b(5) - a(5)) / dy;
+				float b_inc = (b(6) - a(6)) / dy;
+
+				a(4) += r_inc * (a(1) - oldY);
+				a(5) += g_inc * (a(1) - oldY);
+				a(6) += b_inc * (a(1) - oldY);
 
 				result.push_back(a);
 			}

@@ -173,9 +173,7 @@ void Assignment1::drawObject(Object obj)
 	model *= Mat4::rotateZ(angleZ);
 
 	model = Mat4::translate(-x, -y, -z) * model;
-
 	model *= Mat4::translate(curX, curY, z);
-
 	model *= Mat4::scale(scale, scale, scale);
 
 	Vec4 camera(0.0, 0.0, 1.0);
@@ -186,8 +184,8 @@ void Assignment1::drawObject(Object obj)
 
 	Mat4 modelViewPerspective = model * view * (*projection);
 
-	//for (int i=4; i < 5; i++)
-	for (int i=0; i < obj.faces.size(); i++)
+	for (int i=2; i < 3; i++)
+	//for (int i=0; i < obj.faces.size(); i++)
 	{
 		Face currentFace = obj.faces[i];
 		Face newFace;
