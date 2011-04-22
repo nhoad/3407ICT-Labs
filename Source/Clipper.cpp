@@ -78,24 +78,34 @@ vector<Vertex> Clipper::clipRight(vector<Vertex> polygon, const int maxX)
 			float dy = b(1) - a(1);
 			float dx = b(0) - a(0);
 
+			float r_inc = (b(4) - a(4)) / dx;
+			float g_inc = (b(5) - a(5)) / dx;
+			float b_inc = (b(6) - a(6)) / dx;
+
 			// if a == in and b == out
 			if (a(0) <= maxX)
 			{
-				float oldX = b(0), oldY = b(1);
+				float oldX = b(0);
 				b(1) += (dy / dx) * (maxX - b(0));
 				b(0) = maxX-1;
 
-				float r_inc = (b(4) - a(4)) / dx;
-				float g_inc = (b(5) - a(5)) / dx;
-				float b_inc = (b(6) - a(6)) / dx;
+				b(4) += r_inc * (b(0) - oldX);
+				b(5) += g_inc * (b(0) - oldX);
+				b(6) += b_inc * (b(0) - oldX);
 
 				result.push_back(a);
 				result.push_back(b);
 			}
 			else // a == out and b == in
 			{
+				float oldX = a(0);
 				a(1) += (dy / dx) * (maxX - a(0));
 				a(0) = maxX-1;
+
+				a(4) += r_inc * (a(0) - oldX);
+				a(5) += g_inc * (a(0) - oldX);
+				a(6) += b_inc * (a(0) - oldX);
+
 
 				result.push_back(a);
 			}
