@@ -242,9 +242,9 @@ class Vec4
 		Vec4 operator/(const float& l) const;
 
 		/**
-			Get the "length" of the vector.
+			returns the length of the vector.
 
-			\return length of the vector.
+			\return square root of the vector multiplied by itself
 		*/
 		float length();
 
