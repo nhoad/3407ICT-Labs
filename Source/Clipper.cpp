@@ -125,19 +125,33 @@ vector<Vertex> Clipper::clipBottom(vector<Vertex> polygon, const int maxY)
 			float dy = b(1) - a(1);
 			float dx = b(0) - a(0);
 
+			float r_inc = (b(4) - a(4)) / dy;
+			float g_inc = (b(5) - a(5)) / dy;
+			float b_inc = (b(6) - a(6)) / dy;
+
 			// if a == in and b == out
 			if (a(1) < maxY)
 			{
+				float oldY = b(1);
 				b(0) += (maxY - b(1)) / (dy / dx);
 				b(1) = maxY-1;
+
+				b(4) += r_inc * (b(1) - oldY);
+				b(5) += g_inc * (b(1) - oldY);
+				b(6) += b_inc * (b(1) - oldY);
 
 				result.push_back(a);
 				result.push_back(b);
 			}
 			else // a == out and b == in
 			{
+				float oldY = a(1);
 				a(0) += (maxY - a(1)) / (dy / dx);
 				a(1) = maxY-1;
+
+				a(4) += r_inc * (a(1) - oldY);
+				a(5) += g_inc * (a(1) - oldY);
+				a(6) += b_inc * (a(1) - oldY);
 
 				result.push_back(a);
 			}
@@ -168,6 +182,10 @@ vector<Vertex> Clipper::clipTop(vector<Vertex> polygon)
 			float dy = b(1) - a(1);
 			float dx = b(0) - a(0);
 
+			float r_inc = (b(4) - a(4)) / dy;
+			float g_inc = (b(5) - a(5)) / dy;
+			float b_inc = (b(6) - a(6)) / dy;
+
 			// if a == in and b == out
 			if (a(1) >= minY)
 			{
@@ -175,10 +193,6 @@ vector<Vertex> Clipper::clipTop(vector<Vertex> polygon)
 
 				b(0) += (minY - b(1)) / (dy / dx);
 				b(1) = minY;
-
-				float r_inc = (b(4) - a(4)) / dy;
-				float g_inc = (b(5) - a(5)) / dy;
-				float b_inc = (b(6) - a(6)) / dy;
 
 				b(4) += r_inc * (b(1) - oldY);
 				b(5) += g_inc * (b(1) - oldY);
@@ -190,12 +204,9 @@ vector<Vertex> Clipper::clipTop(vector<Vertex> polygon)
 			else // a == out and b == in
 			{
 				float oldY = a(1);
+
 				a(0) += (minY - a(1)) / (dy / dx);
 				a(1) = minY;
-
-				float r_inc = (b(4) - a(4)) / dy;
-				float g_inc = (b(5) - a(5)) / dy;
-				float b_inc = (b(6) - a(6)) / dy;
 
 				a(4) += r_inc * (a(1) - oldY);
 				a(5) += g_inc * (a(1) - oldY);
