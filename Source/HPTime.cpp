@@ -1,7 +1,8 @@
 /**
- * @file Time.cpp
- * This file takes control of time.
+ * 3407ICT Graphics Programming
+ * Tutorial Graphics Rendering Framework
  * @author Nathan Hoad (nathan@getoffmalawn.com)
+ * Student Number: s2754580
  */
 #include "HPTime.h"
 

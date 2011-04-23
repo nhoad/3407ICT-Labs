@@ -1,14 +1,15 @@
+/**
+ * 3407ICT Graphics Programming
+ * Tutorial Graphics Rendering Framework
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
+ * Student Number: s2754580
+ */
 #include "Clipper.h"
 
 #include <vector>
 using std::vector;
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 #include <cmath>
-
 
 vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 {
@@ -25,10 +26,7 @@ vector<Vertex> Clipper::clipLeft(vector<Vertex> polygon)
 			continue;
 		// if both are visible, add the first one.
 		else if (round(a(0)) >= minX && round(b(0)) >= minX)
-		{
-			cout << "adding a" << endl;
 			result.push_back(a);
-		}
 		// else, deal with a partially visible line.
 		else
 		{
@@ -139,9 +137,9 @@ vector<Vertex> Clipper::clipBottom(vector<Vertex> polygon, const int maxY)
 		Vertex b = (i == polygon.size()-1) ? polygon[0] : polygon[i+1];
 
 		// if the vertex is invisible, ignore it.
-		if (a(1) > maxY && b(1) > maxY)
+		if (round(a(1)) >= maxY && round(b(1)) >= maxY)
 			continue;
-		else if (a(1) <= maxY && b(1) <= maxY)
+		else if (round(a(1)) < maxY && round(b(1)) < maxY)
 			result.push_back(a);
 		else
 		{
@@ -153,7 +151,7 @@ vector<Vertex> Clipper::clipBottom(vector<Vertex> polygon, const int maxY)
 			float b_inc = (b(6) - a(6)) / dy;
 
 			// if a == in and b == out
-			if (a(1) < maxY)
+			if (round(a(1)) < maxY)
 			{
 				float oldY = b(1);
 				b(0) += (maxY - b(1)) / (dy / dx);
@@ -198,7 +196,7 @@ vector<Vertex> Clipper::clipTop(vector<Vertex> polygon)
 		// if the vertex is invisible, ignore it.
 		if (round(a(1)) < minY && round(b(1)) < minY)
 			continue;
-		else if (a(1) >= minY && b(1) >= minY)
+		else if (round(a(1)) >= minY && round(b(1)) >= minY)
 			result.push_back(a);
 		else
 		{
@@ -210,7 +208,7 @@ vector<Vertex> Clipper::clipTop(vector<Vertex> polygon)
 			float b_inc = (b(6) - a(6)) / dy;
 
 			// if a == in and b == out
-			if (a(1) >= minY)
+			if (round(a(1)) >= minY)
 			{
 				float oldY = b(1);
 

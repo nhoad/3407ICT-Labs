@@ -2,6 +2,7 @@
  * 3407ICT Graphics Programming
  * Tutorial Graphics Rendering Framework
  * @author Nathan Hoad (nathan@getoffmalawn.com)
+ * Student Number: s2754580
  */
 #include "Assignment1.h"
 #include "ObjectLoader.h"
@@ -48,6 +49,8 @@ int main(int argc, char* argv[])
 
 	if (argc < 2)
 	{
+		example.addModelFile("Assets/Cube.obj");
+		example.addModelFile("Assets/Cube.obj");
 		example.addModelFile("Assets/Cube.obj");
 	}
 	else
@@ -331,25 +334,6 @@ void Assignment1::triangle(Vertex a, Vertex b, Vertex c)
 		scanLine(l_edge[i], r_edge[i]);
 }
 
-void Assignment1::colourSwap(vector<Vertex> & a, vector<Vertex> & b)
-{
-	for (int i=0; i < a.size(); i++)
-	{
-		float tmp = a[i](4);
-		a[i](4) = b[i](4);
-		b[i](4) = tmp;
-
-		tmp = a[i](5);
-		a[i](5) = b[i](5);
-		b[i](5) = tmp;
-
-		tmp = a[i](6);
-		a[i](6) = b[i](6);
-		b[i](6) = tmp;
-
-	}
-}
-
 vector<Vertex> Assignment1::makeLine(Vertex a, Vertex b)
 {
 	vector<Vertex> result;
@@ -401,7 +385,7 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 	int y = round(a(1));
 
 	if (a_x < b_x)
-		while (x < b_x)
+		while (x <= b_x)
 		{
 			float z = a(2);
 			int pos = x + (y * width);
@@ -417,7 +401,7 @@ void Assignment1::scanLine(Vertex a, Vertex b)
 			green += g_inc;
 		}
 	else
-		while (b_x <= x)
+		while (b_x < x)
 		{
 			float z = a(2);
 			int pos = x + (y * width);
@@ -641,11 +625,25 @@ void Assignment1::render()
 	drawText("Stats", 10, 175);
 
 	string speedDisplay = "Rotation speed: " + typeToString<float>(speed);
-	string posDisplay = "X/Y: " + typeToString<float>(objects[0].x) + " " + typeToString<float>(objects[0].y);
+	string posDisplay = "X/Y: ";
+	string polyCount = "Polygon Count: ";
+
+	for (int i=0; i < objects.size(); i++)
+	{
+		posDisplay += typeToString<float>(objects[i].x) + " " + typeToString<float>(objects[i].y);
+		polyCount += typeToString<int>(objects[i].faces.size());
+
+		if (i != objects.size()-1)
+		{
+			posDisplay += ", ";
+			polyCount += ", ";
+		}
+
+	}
+
 	string scaleDisplay = "Scale: " + typeToString<float>(scale);
 	string fps = "FPS: " + typeToString<double>(1.0 / elapsedTime);
 	string modelName = "Model: " + modelFile;
-	//string polyCount = "Polygon Count: " + typeToString<int>(obj.faces.size());
 	string wireframeText = "Wireframe: ";
 	wireframeText += (wireframe) ? "enabled" : "disabled";
 
@@ -656,7 +654,7 @@ void Assignment1::render()
 	stats.push_back(scaleDisplay);
 	stats.push_back(fps);
 	stats.push_back(modelName);
-	//stats.push_back(polyCount);
+	stats.push_back(polyCount);
 	stats.push_back(wireframeText);
 
 	for (int i=0; i < stats.size(); i++)

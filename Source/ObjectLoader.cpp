@@ -1,7 +1,8 @@
 /**
  * 3407ICT Graphics Programming
- * ObjectLoader implementation.
+ * Tutorial Graphics Rendering Framework
  * @author Nathan Hoad (nathan@getoffmalawn.com)
+ * Student Number: s2754580
  */
 #include "ObjectLoader.h"
 #include <string>

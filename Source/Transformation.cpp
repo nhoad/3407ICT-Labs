@@ -2,6 +2,7 @@
  * 3407ICT Graphics Programming
  * Tutorial Graphics Rendering Framework
  * @author Nathan Hoad (nathan@getoffmalawn.com)
+ * Student Number: s2754580
  */
 #include "Transformation.h"
 
@@ -296,18 +297,39 @@ ostream & operator<<(ostream & o, const Mat4 & m)
 #if TEST
 int main(void)
 {
-	Mat4 t =  Mat4::translate(2, 3, 4);
+	Mat4 m, n;
+
+	m(0, 0) = 1; m(0, 1) = 2; m(0, 2) = 3; m(0, 3) = 4;
+	m(1, 0) = 5; m(1, 1) = 6; m(1, 2) = 7; m(1, 3) = 8;
+	m(2, 0) = 9; m(2, 1) = 10; m(2, 2) = 11; m(2, 3) = 12;
+	m(3, 0) = 13; m(3, 1) = 14; m(3, 2) = 15; m(3, 3) = 16;
+
+	n(0, 2) = 6; n(1, 3) = 9;
+
+	cout << m << endl;
+	cout << n << endl;
+	cout << m * n << endl;
+
+	cout << Mat4::translate(2, 3, 4) << endl;
+
+	cout << Mat4::rotateX(45) << endl;
+
+	cout << Mat4::scale(0.5, 1.2, 3.1) << endl;
 
 	Vec4 camera(0,0,1);
 	Vec4 target(0,0,0);
 	Vec4 up(0,-1, 0);
 
 	cout << Mat4::lookAt(camera, target, up) << endl;
+	cout << Mat4::perspectiveMatrix(45, (float) 800 / 600, 1, 500) << endl;
 
-	cout << t << endl;
+	cout << Vec4(0, 1, 2, 3).length() << endl;
+	cout << Vec4(0, -13, -22, -43).normalised() << endl;
 
-	cout << t(12) << endl;
-	cout << t(13) << endl;
-	cout << t(14) << endl;
+	cout << Vec4(1,4,5,1) * Vec4(6,1,3,5) << endl;
+
+	cout << Vec4(1,4,1,1) / 2 << endl;
+
+	cout << Vec4(1,4,5,1) - Vec4(6,1,3,5) << endl;
 }
 #endif

@@ -1,7 +1,8 @@
 /**
  * 3407ICT Graphics Programming
  * Tutorial Graphics Rendering Framework
- * @author Xavier Ho (contact@xavierho.com)
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
+ * Student Number: s2754580
  */
 #pragma once
 #include "SDL.h"

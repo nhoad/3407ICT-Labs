@@ -1,3 +1,9 @@
+/**
+ * 3407ICT Graphics Programming
+ * Tutorial Graphics Rendering Framework
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
+ * Student Number: s2754580
+ */
 #include <vector>
 #include <iostream>
 #include "SDL.h"

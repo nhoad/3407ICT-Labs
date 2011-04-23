@@ -1,23 +1,20 @@
 /**
  * 3407ICT Graphics Programming
  * Tutorial Graphics Rendering Framework
- * @author Xavier Ho (contact@xavierho.com)
+ * @author Nathan Hoad (nathan@getoffmalawn.com)
+ * Student Number: s2754580
  */
 #pragma once
 #include "SDL.h"
 #include "SDL_ttf.h"
 
-/**
- * Top-tier class, handles mainloop, events, and other classes.
- * This class has been designed with a minimal style in mind.
- */
 #include "Primitives.h"
 #include "Transformation.h"
 
 #include "SoftwareRendering.h"
 
 /**
-	First assignment. Renders a 3D obj that the user can interact with.
+	First assignment. Renders a 3D object that the user can interact with.
 */
 class Assignment1 : public Core
 {
@@ -132,14 +129,6 @@ class Assignment1 : public Core
 		\param y y coord for text
 	*/
 	void drawText(const char * text, int x, int y);
-
-	/**
-		Swap the colours of two edge lists.
-
-		\param a the first edge list.
-		\param b the second edge list.
-	*/
-	void colourSwap(std::vector<Vertex> &a, std::vector<Vertex> & b);
 
 	/**
 		load the instructions into the instruction and stats vectors
