@@ -125,21 +125,19 @@ void Core::preprocess()
 	terrainHeightMap = IMG_Load("Assets/heightMap_sand.png");
 
 	// Height map
-	for (int i=0; i < terrainHeightMap->w; i++)
-		for (int j=0; j < terrainHeightMap->h; j++)
-			terrainHeights.push_back(getpixel24(terrainHeightMap, i, j)(0));
 
 	// Define your terrain detail levels (divisions)
-	// ..
+	int xDiv = 72;
+	int zDiv = 72;
 
 	// And create your height map array from the image
 	// Make your divisions the same resolution as your image; it'll make your life easier.
-//	fillTerrainHeights(/**/);
+	fillTerrainHeights(xDiv, zDiv);
 
 	// Load objects here
 
 	// Create any VBO here
-	//createTerrain(/**/);
+	createTerrain(xDiv, zDiv, &terrain, terrainHeights);
 
 	// Add all renderable mesh to the list of objects (see header file)
 	// Optional but helpful //
@@ -154,17 +152,19 @@ void Core::preprocess()
 	gluLookAt(1, 1, 1, 0, 0, 0, 0, 1, 0);
 
 	// Enable any OpenGL feature you like, such as backface culling and depth testing, here.
-	// ..
+	glEnable(GL_DEPTH_TEST);
 	//glPolygonMode(GL_FRONT, GL_LINE);
+
 }
 
 void Core::render()
 {
 	// Clear the frame buffer each time we draw.
-	// ..
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Enable vertex array and such
-	// ..
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
 
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
@@ -173,34 +173,72 @@ void Core::render()
 	// ..
 
 	// Bind the VBO
-	// ..
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
 	// Pass vertex information
+	glVertexPointer(4, GL_FLOAT, sizeof(Vec4), 0);
+	glColorPointer(4, GL_FLOAT, sizeof(Vec4), 0);
 
 	// Pass colour information
-	// ..
 
 	// Draw object
-	// ..
+	glColor3f(1,1,1);
+	glDrawArrays(GL_QUADS, 0, 4);
 
 	// Pop the matrix from the stack.
 	glPopMatrix();
 
 	// Diable vertex array and such
-	// ..
+	//glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
 
 	// Flip the buffer for double buffering
-	// ..
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	SDL_GL_SwapBuffers();
 }
 
 void Core::cleanup()
 {
+
 }
 
 void Core::createTerrain(int xDiv, int zDiv, Object* _terrain, vector<float> heights)
 {
 	// Compute the polygon coordinates
-	// ..
+
+	int curX = 0, curZ = 0, i=0;
+
+	vector<Vec4> firstTriangle, secondTriangle;
+	while (_terrain->faces.size() * 3 < heights.size())
+	{
+		firstTriangle.push_back(Vec4(0, 0, 0, 1));
+		firstTriangle.push_back(Vec4(1, 0, 0, 1));
+		firstTriangle.push_back(Vec4(1, 1, 0, 1));
+
+		/*firstTriangle.push_back(Vec4(curX, 0, curZ, 1));
+		firstTriangle.push_back(Vec4(curX, 0, curZ+zDiv, 1));
+		firstTriangle.push_back(Vec4(curX+xDiv, 0, curZ+zDiv, 1));
+		*/
+		secondTriangle.push_back(Vec4(curX, 0, curZ, 1));
+		secondTriangle.push_back(Vec4(curX+xDiv, 0, curZ, 1));
+		secondTriangle.push_back(Vec4(curX+xDiv, 0, curZ+zDiv, 1));
+
+		_terrain->faces.push_back(firstTriangle);
+		_terrain->faces.push_back(secondTriangle);
+
+		curX += xDiv;
+		curZ += zDiv;
+		break;
+	}
+
+	glGenBuffers(1, &buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
+	cout << _terrain->faces[0].size() * sizeof(Vec4) << endl;
+	glBufferData(GL_ARRAY_BUFFER, firstTriangle.size() * sizeof(Vec4), &firstTriangle[0], GL_STATIC_DRAW);
+//	glBufferData(GL_ARRAY_BUFFER, _terrain->faces[0].size() * sizeof(Vec4), &_terrain->faces[0], GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 	/*
 		.
@@ -223,7 +261,9 @@ void Core::fillTerrainHeights(int xDiv, int zDiv)
 	SDL_LockSurface(terrainHeightMap);
 
 	// Copy the pixel value (just use one of either R, G, or B channel) into the height map array
-	// .. (use getpixel here)
+	for (int i=0; i < terrainHeightMap->w; i++)
+		for (int j=0; j < terrainHeightMap->h; j++)
+			terrainHeights.push_back(getpixel24(terrainHeightMap, i, j)(0));
 
 	// Remember to unlock it.
 	SDL_UnlockSurface(terrainHeightMap);

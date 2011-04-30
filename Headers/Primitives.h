@@ -7,11 +7,12 @@
 #include <vector>
 #include <iostream>
 #include "SDL.h"
+#include "Transformation.h"
 
 #pragma once
 class Vertex;
 
-typedef std::vector<Vertex> Face;
+typedef std::vector<Vec4> Face;
 typedef std::vector<Face> Mesh;
 
 /**

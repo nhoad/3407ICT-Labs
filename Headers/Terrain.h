@@ -45,6 +45,7 @@ class Core
 
     /** List of Objects */ // Optional but helpful
     // std::list<Object*> objects;
+	 GLuint buffer;
 
 public:
     /** Constructor. */

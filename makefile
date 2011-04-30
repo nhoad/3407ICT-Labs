@@ -21,9 +21,9 @@ OBJS = $(patsubst %,$(OBJDIR)/%,$(_OBJS))
 #use my own header files
 INCLUDE = -I/usr/include/ -I./Headers -D_GNU_SOURCE=1 -D_REENTRANT -I/usr/include/SDL -I/usr/include/GL
 
-FLAGS = -g3 -Wall -O0 -DDEBUG -fmessage-length=0 -pedantic
+FLAGS = -g -Wall -O0 -DDEBUG -fmessage-length=0 -pedantic
 #LIBS = -ldl -lXft -lpthread -lSDL -lSDLmain -lSDL_ttf -lSDL_image -lm -lGLEW -lGL
-LIBS = -ldl -lXft -lpthread -lSDL -lSDLmain -lSDL_ttf -lSDL_image -lm -lGLEW -lGL -L/usr/lib
+LIBS = -ldl -lXft -lpthread -lSDL -lSDLmain -lSDL_ttf -lSDL_image -lm -lGLEW -lGL -L/usr/lib -L.
 #LIB_PATH = -L./Libraries/
 # use my own libraries
 LIB_PATH =
