@@ -76,7 +76,7 @@ protected:
         xDiv and yDiv determines the number of polygon divisions on the plane.
         heights is the height map array.
         Result is stored in obj. */ //                       v- You may also use std::vector<float>
-    void createTerrain(int xDiv, int zDiv, Object* _terrain, float* heights);
+    void createTerrain(int xDiv, int zDiv, Object* _terrain, std::vector<float> heights);
 
     /** Copies the data from the height map into memory. */
     void fillTerrainHeights(int xDiv, int zDiv);

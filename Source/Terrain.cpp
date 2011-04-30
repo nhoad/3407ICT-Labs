@@ -122,16 +122,12 @@ void Core::preprocess()
 {
 	// Load any images here
 
-	cout << "asdf" << endl;
 	terrainHeightMap = IMG_Load("Assets/heightMap_sand.png");
 
 	// Height map
 	for (int i=0; i < terrainHeightMap->w; i++)
 		for (int j=0; j < terrainHeightMap->h; j++)
 			terrainHeights.push_back(getpixel24(terrainHeightMap, i, j)(0));
-
-	for (int i=0; i < terrainHeights.size(); i++)
-		cout << "height of " << i << " " << terrainHeights[i] << endl;
 
 	// Define your terrain detail levels (divisions)
 	// ..
@@ -201,7 +197,7 @@ void Core::cleanup()
 {
 }
 
-void Core::createTerrain(int xDiv, int zDiv, Object* _terrain, float* heights)
+void Core::createTerrain(int xDiv, int zDiv, Object* _terrain, vector<float> heights)
 {
 	// Compute the polygon coordinates
 	// ..
