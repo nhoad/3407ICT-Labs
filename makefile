@@ -9,7 +9,7 @@ CC = g++
 TARGET = Core
 VPATH = Source
 
-_OBJS = HPTime.o Assignment1.o SoftwareRendering.o ObjectLoader.o StringFunctions.o Transformation.o Primitives.o Clipper.o
+_OBJS = HPTime.o Terrain.o Transformation.o Primitives.o
 OBJDIR = Intermediates
 
 # Optional to build examples
@@ -17,11 +17,16 @@ OBJDIR = Intermediates
 # _OBJS += Simple.o
 
 OBJS = $(patsubst %,$(OBJDIR)/%,$(_OBJS))
-INCLUDE = -I./Headers -I./Headers/Linux
+#INCLUDE = -I./Headers -I./Headers/Linux
+#use my own header files
+INCLUDE = -I/usr/include/ -I./Headers -D_GNU_SOURCE=1 -D_REENTRANT -I/usr/include/SDL -I/usr/include/GL
 
 FLAGS = -g3 -Wall -O0 -DDEBUG -fmessage-length=0 -pedantic
-LIBS = -ldl -lXft -lpthread -lSDL -lSDLmain -lSDL_ttf -lSDL_image -lm -lGLEW -lGL
-LIB_PATH = -L./Libraries/
+#LIBS = -ldl -lXft -lpthread -lSDL -lSDLmain -lSDL_ttf -lSDL_image -lm -lGLEW -lGL
+LIBS = -ldl -lXft -lpthread -lSDL -lSDLmain -lSDL_ttf -lSDL_image -lm -lGLEW -lGL -L/usr/lib
+#LIB_PATH = -L./Libraries/
+# use my own libraries
+LIB_PATH =
 
 all: $(TARGET)
 

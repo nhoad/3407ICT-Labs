@@ -33,6 +33,12 @@ Mat4::Mat4(float * values)
 		data[i] = values[i];
 }
 
+Vec4::Vec4(float * data)
+{
+	for (int i=0; i < 4; i++)
+		this->data[i] = data[i];
+}
+
 Vec4::Vec4(float x, float y, float z, float w)
 {
 	data[0] = x;

@@ -207,6 +207,13 @@ class Vec4
 		Vec4(float x=0, float y=0, float z=0, float w=0);
 
 		/**
+		  Constructur.
+
+		  \param data float[4] containing points
+		*/
+		Vec4(float * data);
+
+		/**
 			Single dimensional access to data
 
 			\param x the index to return.
