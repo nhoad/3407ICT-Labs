@@ -58,7 +58,9 @@ class Core
 	 */
 	 float getHeight(std::vector<float> * heights, int x, int y, int size);
 
-	 float scale;
+	 Vec4 getColor(float value, float width);
+
+	 float zPos, xPos, yPos;
 
 	 std::vector<Vec4> colors;
 

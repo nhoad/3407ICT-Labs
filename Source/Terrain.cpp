@@ -136,7 +136,9 @@ void Core::preprocess()
 	fillTerrainHeights(xDiv, zDiv);
 
 	// Load objects here
-	scale = -10;
+	xPos = 212;
+	zPos = 194;
+	yPos = 900;
 
 	// Create any VBO here
 	createTerrain(xDiv, zDiv, &terrain, terrainHeights);
@@ -163,6 +165,8 @@ void Core::render()
 	// Clear the frame buffer each time we draw.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	glColorPointer(4, GL_FLOAT, sizeof(Vec4), &colors[0](0));
+
 	// Enable vertex array and such
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
@@ -172,8 +176,8 @@ void Core::render()
 
 	// Multiply the matrix by the object's transformation matrix.
 	glLoadIdentity();
-	//gluLookAt(0, -10, scale, 0, 0, 0, 0, 1, 0);
-	gluLookAt(212, 60, 194, 186, 55, 171, 0, 1, 0);
+
+	gluLookAt(xPos, yPos, zPos, 186, 55, 171, 0, 1, 0);
 
 	// Bind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
@@ -182,12 +186,11 @@ void Core::render()
 	glVertexPointer(4, GL_FLOAT, sizeof(Vec4), 0);
 
 	// Pass colour information
-	glColorPointer(4, GL_FLOAT, sizeof(Vec4), &colors[0](0));
 	//glColorPointer(4, GL_FLOAT, sizeof(Vec4), 0);
 
 	//glColor3f(1,1,1);
 	// Draw object
-	glDrawArrays(GL_TRIANGLES, 0, terrainHeights.size());
+	glDrawArrays(GL_TRIANGLES, 0, colors.size());
 
 	// Pop the matrix from the stack.
 	glPopMatrix();
@@ -211,6 +214,16 @@ float Core::getHeight(vector<float> * heights, int x, int y, int size)
 	return (*heights)[x + (y * size)];
 }
 
+Vec4 Core::getColor(float value, float w)
+{
+	Vec4 result;
+
+	for (int i=0; i < 4; i++)
+		result(i) = -0.15f + value / w;
+
+	return result;
+}
+
 void Core::createTerrain(int xDiv, int zDiv, Object* _terrain, vector<float> heights)
 {
 	// Compute the polygon coordinates
@@ -218,33 +231,31 @@ void Core::createTerrain(int xDiv, int zDiv, Object* _terrain, vector<float> hei
 	vector<Vec4> polygon;
 
 	// easy way to get our image size, assumes square image
-	int width = sqrt(heights.size());
-	int depth = width;
+	int w = sqrt(heights.size());
+	int depth = w;
 
 	for (int z=0; z  < depth; z++)
 	{
-		for (int x=0; x < width; x++)
+		for (int x=0; x < w; x++)
 		{
 			int curX = x * xDiv;
 			int curZ = z * zDiv;
 
-			polygon.push_back(Vec4(curX, getHeight(&heights, x, z, width), curZ, 1));
-			polygon.push_back(Vec4(curX+xDiv, getHeight(&heights, x+1, z+1, width), curZ+zDiv, 1));
-			polygon.push_back(Vec4(curX, getHeight(&heights, x, z+1, width), curZ+zDiv, 1));
+			polygon.push_back(Vec4(curX, getHeight(&heights, x, z, w), curZ, 1));
+			polygon.push_back(Vec4(curX+xDiv, getHeight(&heights, x+1, z+1, w), curZ+zDiv, 1));
+			polygon.push_back(Vec4(curX, getHeight(&heights, x, z+1, w), curZ+zDiv, 1));
 
-			polygon.push_back(Vec4(curX, getHeight(&heights, x, z, width), curZ, 1));
-			polygon.push_back(Vec4(curX+xDiv, getHeight(&heights, x+1, z, width), curZ, 1));
-			polygon.push_back(Vec4(curX+xDiv, getHeight(&heights, x+1, z+1, width), curZ+zDiv, 1));
+			polygon.push_back(Vec4(curX, getHeight(&heights, x, z, w), curZ, 1));
+			polygon.push_back(Vec4(curX+xDiv, getHeight(&heights, x+1, z, w), curZ, 1));
+			polygon.push_back(Vec4(curX+xDiv, getHeight(&heights, x+1, z+1, w), curZ+zDiv, 1));
 
-			float color = getHeight(&heights, x, z, width);
+			colors.push_back(getColor(getHeight(&heights, x, z, w), w));
+			colors.push_back(getColor(getHeight(&heights, x+1, z+1, w), w));
+			colors.push_back(getColor(getHeight(&heights, x, z+1, w), w));
 
-			colors.push_back(Vec4( getHeight(&heights, x, z, width), 0, 0, 1));
-			colors.push_back(Vec4( getHeight(&heights, x+1, z+1, width), 0, 0, 1));
-			colors.push_back(Vec4( getHeight(&heights, x, z+1, width), 0, 0, 1));
-
-			colors.push_back(Vec4( getHeight(&heights, x, z, width), 0, 0, 1));
-			colors.push_back(Vec4( getHeight(&heights, x+1, z, width), 0, 0, 1));
-			colors.push_back(Vec4( getHeight(&heights, x+1, z+1, width), 0, 0, 1));
+			colors.push_back(getColor(getHeight(&heights, x, z, w), w));
+			colors.push_back(getColor(getHeight(&heights, x+1, z, w), w));
+			colors.push_back(getColor(getHeight(&heights, x+1, z+1, w), w));
 		}
 
 	}
@@ -252,12 +263,7 @@ void Core::createTerrain(int xDiv, int zDiv, Object* _terrain, vector<float> hei
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
-	int size = polygon.size();
-
-/*	for (int i=0; i < colors.size(); i++)
-		cout << i << ": " << colors[i] << endl;
-*/
-	glBufferData(GL_ARRAY_BUFFER, size * sizeof(Vec4), &polygon[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, polygon.size() * sizeof(Vec4), &polygon[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -284,7 +290,7 @@ void Core::fillTerrainHeights(int xDiv, int zDiv)
 	// Copy the pixel value (just use one of either R, G, or B channel) into the height map array
 	for (int i=0; i < terrainHeightMap->w; i++)
 		for (int j=0; j < terrainHeightMap->h; j++)
-			terrainHeights.push_back(getpixel24(terrainHeightMap, i, j)(0) / 10 - 15);
+			terrainHeights.push_back(getpixel24(terrainHeightMap, i, j)(0));
 
 	// Remember to unlock it.
 	SDL_UnlockSurface(terrainHeightMap);
@@ -304,11 +310,27 @@ void Core::handleEvents()
 					case SDLK_ESCAPE:
 						running = false;
 						break;
+					default: break;
+				}
+			case SDL_KEYDOWN:
+				switch (e.key.keysym.sym) {
 					case SDLK_UP:
-						scale += 1;
+						xPos += 1;
 						break;
 					case SDLK_DOWN:
-						scale -= 1;
+						xPos -= 1;
+						break;
+					case SDLK_LEFT:
+						zPos -= 1;
+						break;
+					case SDLK_RIGHT:
+						zPos += 1;
+						break;
+					case SDLK_KP_PLUS:
+						yPos += 5;
+						break;
+					case SDLK_KP_MINUS:
+						yPos -= 5;
 						break;
 					default: break;
 				}
