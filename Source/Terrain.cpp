@@ -21,6 +21,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 
 using namespace std;
 
@@ -127,8 +128,8 @@ void Core::preprocess()
 	// Height map
 
 	// Define your terrain detail levels (divisions)
-	int xDiv = 72;
-	int zDiv = 72;
+	int xDiv = 3;
+	int zDiv = 3;
 
 	// And create your height map array from the image
 	// Make your divisions the same resolution as your image; it'll make your life easier.
@@ -146,11 +147,10 @@ void Core::preprocess()
 	// Feel free to either use the built-in OpenGL transforms or your own ;]
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45, ((float) width / height), 1, 20);
+	gluPerspective(45, ((float) width / height), 1, 200);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(1, 1, 1, 0, 0, 0, 0, 1, 0);
-
+	gluLookAt(0, 10, -10, 10, 10, 0, 0, 1, 0);
 	// Enable any OpenGL feature you like, such as backface culling and depth testing, here.
 	glEnable(GL_DEPTH_TEST);
 	//glPolygonMode(GL_FRONT, GL_LINE);
@@ -164,26 +164,29 @@ void Core::render()
 
 	// Enable vertex array and such
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
+//	glEnableClientState(GL_COLOR_ARRAY);
 
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
 
 	// Multiply the matrix by the object's transformation matrix.
-	// ..
 
 	// Bind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
 	// Pass vertex information
-	glVertexPointer(4, GL_FLOAT, sizeof(Vec4), 0);
-	glColorPointer(4, GL_FLOAT, sizeof(Vec4), 0);
+	glVertexPointer(3, GL_FLOAT, sizeof(Vec4), 0);
+//	glColorPointer(4, GL_FLOAT, sizeof(Vec4), 0);
 
 	// Pass colour information
 
 	// Draw object
 	glColor3f(1,1,1);
-	glDrawArrays(GL_QUADS, 0, 4);
+
+	for (int i=0; i < terrainHeights.size(); i+=5)
+	{
+		glDrawArrays(GL_TRIANGLE_STRIP, i, 7);
+	}
 
 	// Pop the matrix from the stack.
 	glPopMatrix();
@@ -206,36 +209,61 @@ void Core::createTerrain(int xDiv, int zDiv, Object* _terrain, vector<float> hei
 {
 	// Compute the polygon coordinates
 
-	int curX = 0, curZ = 0, i=0;
+	vector<Vec4> polygon;
 
-	vector<Vec4> firstTriangle, secondTriangle;
-	while (_terrain->faces.size() * 3 < heights.size())
+	// easy way to get our image size, assumes square image
+	int width = sqrt(heights.size());
+	int depth = width;
+
+	for (int z=0; z  < depth; z++)
 	{
-		firstTriangle.push_back(Vec4(0, 0, 0, 1));
-		firstTriangle.push_back(Vec4(1, 0, 0, 1));
-		firstTriangle.push_back(Vec4(1, 1, 0, 1));
+		for (int x=0; x < width; x++)
+		{
+			int curX = x * xDiv;
+			int curZ = z * zDiv;
 
-		/*firstTriangle.push_back(Vec4(curX, 0, curZ, 1));
-		firstTriangle.push_back(Vec4(curX, 0, curZ+zDiv, 1));
-		firstTriangle.push_back(Vec4(curX+xDiv, 0, curZ+zDiv, 1));
-		*/
-		secondTriangle.push_back(Vec4(curX, 0, curZ, 1));
-		secondTriangle.push_back(Vec4(curX+xDiv, 0, curZ, 1));
-		secondTriangle.push_back(Vec4(curX+xDiv, 0, curZ+zDiv, 1));
+			polygon.push_back(Vec4(curX, 0, curZ, 1));
+			polygon.push_back(Vec4(curX+xDiv, 0, curZ+zDiv, 1));
+			polygon.push_back(Vec4(curX, 0, curZ+zDiv, 1));
 
-		_terrain->faces.push_back(firstTriangle);
-		_terrain->faces.push_back(secondTriangle);
+			polygon.push_back(Vec4(curX, 0, curZ, 1));
+			polygon.push_back(Vec4(curX+xDiv, 0, curZ, 1));
+			polygon.push_back(Vec4(curX+xDiv, 0, curZ+zDiv, 1));
+			/*
+			polygon.push_back(Vec4(curX, 0, z * zDiv, 1));
+			polygon.push_back(Vec4((x+1) * xDiv, 0, (z+1) * zDiv, 1));
+			polygon.push_back(Vec4(x * xDiv, 0, (z + 1) * zDiv, 1));
+
+			polygon.push_back(Vec4(x * xDiv, 0, z * zDiv, 1));
+			polygon.push_back(Vec4((x+1) * xDiv, 0, z * zDiv, 1));
+			polygon.push_back(Vec4((x+1) * xDiv, 0, (z+1) * zDiv, 1));*/
+		}
+
+	}
+/*	for (int i=0; i < heights.size(); i++)
+	{
+		polygon.push_back(Vec4(curX, 0, curZ, 1));
+		polygon.push_back(Vec4(curX+xDiv, 0, curZ+zDiv, 1));
+		polygon.push_back(Vec4(curX, 0, curZ+zDiv, 1));
+
+		polygon.push_back(Vec4(curX, 0, curZ, 1));
+		polygon.push_back(Vec4(curX+xDiv, 0, curZ, 1));
+		polygon.push_back(Vec4(curX+xDiv, 0, curZ+zDiv, 1));
 
 		curX += xDiv;
+		curY = heights[i];
 		curZ += zDiv;
-		break;
-	}
+	}*/
 
 	glGenBuffers(1, &buffer);
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
-	cout << _terrain->faces[0].size() * sizeof(Vec4) << endl;
-	glBufferData(GL_ARRAY_BUFFER, firstTriangle.size() * sizeof(Vec4), &firstTriangle[0], GL_STATIC_DRAW);
+	int size = polygon.size();
+	cout << size << endl;
+
+	glBufferData(GL_ARRAY_BUFFER, size * sizeof(Vec4), &polygon[0], GL_STATIC_DRAW);
+
+	//glBufferData(GL_ARRAY_BUFFER, firstTriangle.size() * sizeof(Vec4), &firstTriangle[0], GL_STATIC_DRAW);
 //	glBufferData(GL_ARRAY_BUFFER, _terrain->faces[0].size() * sizeof(Vec4), &_terrain->faces[0], GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
