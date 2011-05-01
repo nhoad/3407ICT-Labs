@@ -47,6 +47,21 @@ class Core
     // std::list<Object*> objects;
 	 GLuint buffer;
 
+	 /**
+	  Get a height from the heightmap using nice x and y coordinates
+
+	  \param heights the heightmap
+	  \param x x coordinate of desired heightmap value.
+	  \param y y coordinate of desired heightmap value (this should be your z value really)
+	  \param size the width or height of the height map (same size)
+	  \return heightmap value at x and y
+	 */
+	 float getHeight(std::vector<float> * heights, int x, int y, int size);
+
+	 float scale;
+
+	 std::vector<Vec4> colors;
+
 public:
     /** Constructor. */
     Core(int width=800, int height=600, bool fullscreen=false);
