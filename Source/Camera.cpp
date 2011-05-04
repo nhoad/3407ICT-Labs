@@ -36,8 +36,8 @@ void Camera::load()
 	cout << "y rot: " << yRot << endl;
 
 	Mat4 m = Mat4::translate(-xpos, -ypos, -zpos);
-	m *= Mat4::rotateX(xRot);
 	m *= Mat4::rotateY(yRot);
+	m *= Mat4::rotateX(xRot);
 
 	glLoadMatrixf(m);
 
@@ -114,14 +114,8 @@ void Camera::look(int direction)
 
 void Camera::handleMouse(int x, int y)
 {
-	int xDiff = x - oldMouseX;
-	int yDiff = y - oldMouseY;
-
-	oldMouseX = x;
-	oldMouseY = y;
-
-	rotation(0) += yDiff;
-	rotation(1) += xDiff;
+	rotation(0) += y;
+	rotation(1) += x;
 
 	if (rotation(1) > 360.0)
 		rotation(1) -= 360.0;

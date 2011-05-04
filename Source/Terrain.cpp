@@ -104,7 +104,7 @@ void Core::initialise()
 	}
 
 	SDL_WM_GrabInput(SDL_GRAB_ON);
-	SDL_WarpMouse(width / 2, height / 2);
+	SDL_ShowCursor(SDL_DISABLE);
 }
 
 ///
@@ -375,7 +375,7 @@ void Core::handleEvents()
 				}
 				break;
 			case SDL_MOUSEMOTION:
-				camera.handleMouse(e.motion.x, e.motion.y);
+				camera.handleMouse(e.motion.xrel, e.motion.yrel);
 //				SDL_WarpMouse(width / 2, height / 2);
 			default: break;
 		}
