@@ -10,6 +10,7 @@
 #include "glew.h"
 #include "Transformation.h"
 #include "Primitives.h"
+#include "Camera.h"
 
 // Include your headers here
 // #include "Primitives.h"
@@ -60,7 +61,7 @@ class Core
 
 	 Vec4 getColor(float value, float width);
 
-	 float zPos, xPos, yPos;
+	 Camera camera;
 
 	 std::vector<Vec4> colors;
 

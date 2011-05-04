@@ -9,7 +9,7 @@ CC = g++
 TARGET = Core
 VPATH = Source
 
-_OBJS = HPTime.o Terrain.o Transformation.o Primitives.o
+_OBJS = HPTime.o Terrain.o Transformation.o Primitives.o Camera.o
 OBJDIR = Intermediates
 
 # Optional to build examples

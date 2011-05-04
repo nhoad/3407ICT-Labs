@@ -17,6 +17,7 @@
 #include "Terrain.h"
 #include "HPTime.h"
 #include "Transformation.h"
+#include "Camera.h"
 
 #include <iostream>
 #include <fstream>
@@ -88,6 +89,9 @@ void Core::initialise()
 		SDL_Quit();
 	}
 
+	if (SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL))
+		cerr << "couldn't enable key repeat!" << endl;
+
 	// Initialises SDL_image, an image reading wrapper on many popular formats.
 	// SDL_image supports more than just these two formats. Have a look at the
 	// documentation page linked in the #include comments.
@@ -136,9 +140,9 @@ void Core::preprocess()
 	fillTerrainHeights(xDiv, zDiv);
 
 	// Load objects here
-	xPos = 212;
-	zPos = 194;
-	yPos = 900;
+	camera.setPosition(Vec4(212, 194, 900, 1));
+	camera.setTarget(Vec4(186, 55, 171, 1));
+	camera.setUp(Vec4(0, 1, 0));
 
 	// Create any VBO here
 	createTerrain(xDiv, zDiv, &terrain, terrainHeights);
@@ -175,10 +179,8 @@ void Core::render()
 	glPushMatrix();
 
 	// Multiply the matrix by the object's transformation matrix.
-	glLoadIdentity();
 
-	gluLookAt(xPos, yPos, zPos, 186, 55, 171, 0, 1, 0);
-
+	camera.load();
 	// Bind the VBO
 	glBindBuffer(GL_ARRAY_BUFFER, buffer);
 
@@ -218,8 +220,25 @@ Vec4 Core::getColor(float value, float w)
 {
 	Vec4 result;
 
-	for (int i=0; i < 4; i++)
-		result(i) = -0.15f + value / w;
+	if (value < 100)
+	{
+		result(0) = 0;
+		result(1) = 0;
+		result(2) = -0.15f + value / w;
+		result(3) = 1;
+	}
+	else if (value < 160)
+	{
+		result(0) = 0;
+		result(1) = -0.15f + value / w;
+		result(2) = 0;
+		result(3) = 1;
+	}
+	else
+	{
+		for (int i=0; i < 4; i++)
+		result(i) = -0.125f + value / w;
+	}
 
 	return result;
 }
@@ -314,23 +333,35 @@ void Core::handleEvents()
 				}
 			case SDL_KEYDOWN:
 				switch (e.key.keysym.sym) {
-					case SDLK_UP:
-						xPos += 1;
+					case SDLK_w:
+						camera.move(FORWARD);
 						break;
-					case SDLK_DOWN:
-						xPos -= 1;
+					case SDLK_s:
+						camera.move(BACKWARD);
 						break;
-					case SDLK_LEFT:
-						zPos -= 1;
+					case SDLK_a:
+						camera.move(LEFT);
 						break;
-					case SDLK_RIGHT:
-						zPos += 1;
+					case SDLK_d:
+						camera.move(RIGHT);
 						break;
-					case SDLK_KP_PLUS:
-						yPos += 5;
+					case SDLK_SPACE:
+						camera.move(UP);
 						break;
-					case SDLK_KP_MINUS:
-						yPos -= 5;
+					case SDLK_LSHIFT:
+						camera.move(DOWN);
+						break;
+					case SDLK_r:
+						camera.look(UP);
+						break;
+					case SDLK_f:
+						camera.look(DOWN);
+						break;
+					case SDLK_q:
+						camera.look(LEFT);
+						break;
+					case SDLK_e:
+						camera.look(RIGHT);
 						break;
 					default: break;
 				}
