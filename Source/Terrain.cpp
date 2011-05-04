@@ -253,7 +253,8 @@ void Core::createTerrain(int xDiv, int zDiv, Object* _terrain, vector<float> hei
 	int w = sqrt(heights.size());
 	int depth = w;
 
-	for (int z=0; z  < depth; z++)
+	// -1 because going to the absolute last means you're going into unchartered memory.
+	for (int z=0; z  < depth-1; z++)
 	{
 		for (int x=0; x < w; x++)
 		{
