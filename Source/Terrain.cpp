@@ -102,6 +102,9 @@ void Core::initialise()
 		cerr << IMG_GetError() << endl;
 		SDL_Quit();
 	}
+
+	SDL_WM_GrabInput(SDL_GRAB_ON);
+	SDL_WarpMouse(width / 2, height / 2);
 }
 
 ///
@@ -144,9 +147,9 @@ void Core::preprocess()
 	fillTerrainHeights(xDiv, zDiv);
 
 	// Load objects here
+	camera.setSpeed(5);
 	camera.setPosition(Vec4(212, 194, 900, 1));
 	camera.setTarget(Vec4(384, 55, 384, 1));
-	camera.setUp(Vec4(0, 1, 0));
 
 	// Create any VBO here
 	createTerrain(xDiv, zDiv, &terrain, terrainHeights);
@@ -371,6 +374,9 @@ void Core::handleEvents()
 					default: break;
 				}
 				break;
+			case SDL_MOUSEMOTION:
+				camera.handleMouse(e.motion.x, e.motion.y);
+//				SDL_WarpMouse(width / 2, height / 2);
 			default: break;
 		}
 	}

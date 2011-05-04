@@ -7,10 +7,14 @@
 #endif
 
 #include <cmath>
+#include <iostream>
+using std::cout;
+using std::endl;
 
 Camera::Camera()
 {
-
+	oldMouseY = 0;
+	oldMouseX = 0;
 }
 
 Camera::~Camera()
@@ -27,6 +31,10 @@ void Camera::load()
 	float xRot = rotation(0);
 	float yRot = rotation(1);
 
+
+	cout << "x rot: " << xRot << endl;
+	cout << "y rot: " << yRot << endl;
+
 	Mat4 m = Mat4::translate(-xpos, -ypos, -zpos);
 	m *= Mat4::rotateX(xRot);
 	m *= Mat4::rotateY(yRot);
@@ -35,11 +43,6 @@ void Camera::load()
 
 //	glLoadIdentity();
 //	gluLookAt(xpos, ypos, zpos, target(0), target(1), target(2), up(0), up(1), up(2));
-}
-
-void Camera::setUp(Vec4 v)
-{
-	up = v;
 }
 
 void Camera::setTarget(Vec4 v)
@@ -59,24 +62,24 @@ void Camera::move(int direction)
 	switch (direction)
 	{
 		case FORWARD:
-			position(0) += sin(yRot / 180.0 * PI);
-			position(1) -= sin(xRot / 180.0 * PI);
-			position(2) -= cos(yRot / 180.0 * PI);
+			position(0) += sin(yRot / 180.0 * PI) * speed;
+			position(1) -= sin(xRot / 180.0 * PI) * speed;
+			position(2) -= cos(yRot / 180.0 * PI) * speed;
 			break;
 		case BACKWARD:
-			position(0) -= sin(yRot / 180.0 * PI);
-			position(1) += sin(xRot / 180.0 * PI);
-			position(2) += cos(yRot / 180.0 * PI);
+			position(0) -= sin(yRot / 180.0 * PI) * speed;
+			position(1) += sin(xRot / 180.0 * PI) * speed;
+			position(2) += cos(yRot / 180.0 * PI) * speed;
 			break;
 
 		case LEFT:
-			position(0) -= (cos(yRot / 180.0 * PI));
-			position(2) -= (sin(yRot / 180.0 * PI));
+			position(0) -= (cos(yRot / 180.0 * PI)) * speed;
+			position(2) -= (sin(yRot / 180.0 * PI)) * speed;
 			break;
 
 		case RIGHT:
-			position(0) += (cos(yRot / 180.0 * PI));
-			position(2) += (sin(yRot / 180.0 * PI));
+			position(0) += (cos(yRot / 180.0 * PI)) * speed;
+			position(2) += (sin(yRot / 180.0 * PI)) * speed;
 			break;
 	}
 }
@@ -91,11 +94,11 @@ void Camera::look(int direction)
 	switch (direction)
 	{
 		case LEFT:
-			target(0) -= speed;
+			rotation(1) -= speed;
 			break;
 
 		case RIGHT:
-			target(0) += speed;
+			rotation(1) += speed;
 			break;
 
 		case UP:
@@ -107,4 +110,26 @@ void Camera::look(int direction)
 			break;
 
 	}
+}
+
+void Camera::handleMouse(int x, int y)
+{
+	int xDiff = x - oldMouseX;
+	int yDiff = y - oldMouseY;
+
+	oldMouseX = x;
+	oldMouseY = y;
+
+	rotation(0) += yDiff;
+	rotation(1) += xDiff;
+
+	if (rotation(1) > 360.0)
+		rotation(1) -= 360.0;
+
+	if (rotation(0) > 80.0)
+		rotation(0) = 80.0;
+
+	if (rotation(0) < -30.0)
+		rotation(0) = -30.0;
+
 }

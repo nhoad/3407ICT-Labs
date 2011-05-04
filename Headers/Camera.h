@@ -23,9 +23,11 @@ class Camera
 		void setUp(Vec4 v);
 		void load();
 		void setSpeed(float speed);
+		void handleMouse(int x, int y);
 
 	private:
-		Vec4 target, position, up, right, rotation;
+		Vec4 target, position, rotation;
 		float speed;
+		int oldMouseX, oldMouseY;
 };
 #endif
