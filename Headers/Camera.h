@@ -25,7 +25,7 @@ class Camera
 		void setSpeed(float speed);
 
 	private:
-		Vec4 target, position, up, right;
+		Vec4 target, position, up, right, rotation;
 		float speed;
 };
 #endif

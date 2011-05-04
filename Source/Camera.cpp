@@ -1,9 +1,12 @@
 #include "gl.h"
 #include "glut.h"
 #include "Camera.h"
-#include <iostream>
-using std::cout;
-using std::endl;
+
+#ifndef PI
+#define PI 3.14159265
+#endif
+
+#include <cmath>
 
 Camera::Camera()
 {
@@ -21,8 +24,17 @@ void Camera::load()
 	float ypos = position(1);
 	float zpos = position(2);
 
-	glLoadIdentity();
-	gluLookAt(xpos, ypos, zpos, target(0), target(1), target(2), up(0), up(1), up(2));
+	float xRot = rotation(0);
+	float yRot = rotation(1);
+
+	Mat4 m = Mat4::translate(-xpos, -ypos, -zpos);
+	m *= Mat4::rotateX(xRot);
+	m *= Mat4::rotateY(yRot);
+
+	glLoadMatrixf(m);
+
+//	glLoadIdentity();
+//	gluLookAt(xpos, ypos, zpos, target(0), target(1), target(2), up(0), up(1), up(2));
 }
 
 void Camera::setUp(Vec4 v)
@@ -42,33 +54,30 @@ void Camera::setPosition(Vec4 v)
 
 void Camera::move(int direction)
 {
+	float xRot = rotation(0), yRot = rotation(1);
+
 	switch (direction)
 	{
 		case FORWARD:
-			position(2) -= speed;
+			position(0) += sin(yRot / 180.0 * PI);
+			position(1) -= sin(xRot / 180.0 * PI);
+			position(2) -= cos(yRot / 180.0 * PI);
 			break;
-
 		case BACKWARD:
-			position(2) += speed;
+			position(0) -= sin(yRot / 180.0 * PI);
+			position(1) += sin(xRot / 180.0 * PI);
+			position(2) += cos(yRot / 180.0 * PI);
 			break;
 
 		case LEFT:
-			position(0) -= speed;
+			position(0) -= (cos(yRot / 180.0 * PI));
+			position(2) -= (sin(yRot / 180.0 * PI));
 			break;
 
 		case RIGHT:
-			position(0) += speed;
+			position(0) += (cos(yRot / 180.0 * PI));
+			position(2) += (sin(yRot / 180.0 * PI));
 			break;
-
-		case UP:
-			position(1) += speed;
-			break;
-
-		case DOWN:
-			position(1) -= speed;
-			cout << "down" << endl;
-			break;
-
 	}
 }
 
@@ -90,11 +99,11 @@ void Camera::look(int direction)
 			break;
 
 		case UP:
-			target(1) += speed;
+			rotation(0) += speed;
 			break;
 
 		case DOWN:
-			target(1) -= speed;
+			rotation(0) -= speed;
 			break;
 
 	}

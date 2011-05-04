@@ -132,8 +132,12 @@ void Core::preprocess()
 	// Height map
 
 	// Define your terrain detail levels (divisions)
-	int xDiv = 3;
-	int zDiv = 3;
+	float xDiv = 3;
+	float zDiv = xDiv;
+
+	cout << terrainHeightMap->w << endl;
+
+	cout << xDiv << endl;
 
 	// And create your height map array from the image
 	// Make your divisions the same resolution as your image; it'll make your life easier.
@@ -141,7 +145,7 @@ void Core::preprocess()
 
 	// Load objects here
 	camera.setPosition(Vec4(212, 194, 900, 1));
-	camera.setTarget(Vec4(186, 55, 171, 1));
+	camera.setTarget(Vec4(384, 55, 384, 1));
 	camera.setUp(Vec4(0, 1, 0));
 
 	// Create any VBO here
