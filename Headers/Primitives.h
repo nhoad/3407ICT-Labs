@@ -6,13 +6,15 @@
  */
 #include <vector>
 #include <iostream>
+using std::cout;
+using std::endl;
 #include "SDL.h"
 #include "Transformation.h"
 
 #pragma once
 class Vertex;
 
-typedef std::vector<Vec4> Face;
+typedef std::vector<Vertex> Face;
 typedef std::vector<Face> Mesh;
 
 /**
@@ -27,68 +29,48 @@ int compareOnY(Vertex a, Vertex b);
 /**
 	Vertex class for representing a point in an object
 */
-class Vertex
+struct Vertex
 {
-	float data[8];
+	union {
+		struct {
+			float x, y, z, w;
+		};
+		float pos[4];
+	};
 
-	public:
+	union {
+		struct {
+			float nx, ny, nz;
+		};
+		float normal[3];
+	};
 
-	/**
-		Default constructor. Sets everything to zero.
-	*/
-	Vertex()
+	union {
+		struct {
+			float tx, ty;
+		};
+		float tex[2];
+	};
+
+	Vertex(float x=0.0, float y=0.0, float z=0.0, float w=1.0,
+			 float nx=0.0, float ny=0.0, float nz=1.0,
+			 float tx=0.0, float ty=0.0)
 	{
-		for (int i=0; i < 8; i++)
-			data[i] = 0;
-	}
+		this->x = x;
+		this->y = y;
+		this->z = z;
+		this->w = w;
 
-	/**
-		Constructor.
+		this->nx = nx;
+		this->ny = ny;
+		this->nz = nz;
+		this->tx = tx;
+		this->ty = ty;
+	};
 
-		\param x the x coordinate
-		\param y the y coordinate
-		\param z the z coordinate
-		\param w the w coordinate
-		\param r red colour value
-		\param g green colour value
-		\param b blue colour value
-		\param a alpha value
-		\return description
-	*/
-	Vertex(float x, float y, float z, float w, float r, float g, float b, float a)
-	{
-		data[0] = x;
-		data[1] = y;
-		data[2] = z;
-		data[3] = w;
-
-		data[4] = r;
-		data[5] = g;
-		data[6] = b;
-		data[7] = a;
-	}
-
-	/**
-		Overloaded operator for accessing data
-
-		\param x the index of data.
-		\return float at x in the vertex.
-	*/
-	float& operator()(int x);
-
-	/**
-		Overloaded operator for accessing data
-
-		\param x the index of data.
-		\return float at x in the vertex.
-	*/
-	float operator()(int x) const;
-
-	/**
-		Displays nice output!
-	*/
 	friend std::ostream & operator<<(std::ostream & o, const Vertex & v);
-
+	float operator()(int x) const;
+	float& operator()(int x);
 };
 
 /**
@@ -110,9 +92,10 @@ class Object
 		float centre(int k);
 
 	public:
-		Mesh faces;
+		Mesh mesh;
+		Mat4 matrix;
 
-		float x, y;
+		unsigned int vbo, shaderProgram;
 
 		Object();
 

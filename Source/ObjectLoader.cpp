@@ -24,7 +24,7 @@ using std::endl;
 #include <cstring>
 #include <cstdlib>
 
-Mesh ObjectLoader::read(const string filename, bool rgbMagic)
+Mesh ObjectLoader::read(const string filename)
 {
 	Mesh mesh;
 
@@ -78,10 +78,7 @@ Mesh ObjectLoader::read(const string filename, bool rgbMagic)
 			z = stringToType<float>(split_line[3]);
 
 			// add them in the order they were read in, so we can get the proper ordering later.
-			if (rgbMagic)
-				vertices.push_back(Vertex(x, y, z, 1.0, x * 255, y * 255, z * 255, 1.0));
-			else
-				vertices.push_back(Vertex(x, y, z, 1.0, 0, 255, 0, 1.0));
+			vertices.push_back(Vertex(x, y, z));
 		}
 		else if (type == "vn")
 		{

@@ -1,20 +1,22 @@
 #ifndef Camera_h
 #define Camera_h
-#define TILT_UP 0
-#define TILT_DOWN 1
+
 #define FORWARD 0
 #define BACKWARD 1
 #define LEFT 2
 #define RIGHT 3
 #define UP 4
 #define DOWN 5
+
+#define FPS 0
+#define THIRD_PERSON 1
 #include "Transformation.h"
 
 
 class Camera
 {
 	public:
-		Camera();
+		Camera(int mode);
 		virtual ~Camera();
 		void move(int direction);
 		void look(int direction);
@@ -28,6 +30,6 @@ class Camera
 	private:
 		Vec4 target, position, rotation;
 		float speed;
-		int oldMouseX, oldMouseY;
+		int mode;
 };
 #endif

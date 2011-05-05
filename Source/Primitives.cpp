@@ -14,26 +14,24 @@ using std::ostream;
 
 Object::Object()
 {
-	x = 0;
-	y = 0;
 }
 
 float Object::centre(int k)
 {
 	float minK, maxK;
 
-	minK = faces[0][0](k);
-	maxK = faces[0][0](k);
+	minK = mesh[0][0](k);
+	maxK = mesh[0][0](k);
 
-	for (unsigned i=0; i < faces.size(); i++)
+	for (unsigned i=0; i < mesh.size(); i++)
 	{
-		for (unsigned j=0; j < faces[i].size(); j++)
+		for (unsigned j=0; j < mesh[i].size(); j++)
 		{
-			if (faces[i][j](k) < minK)
-				minK = faces[i][j](k);
+			if (mesh[i][j](k) < minK)
+				minK = mesh[i][j](k);
 
-			if (faces[i][j](k) > maxK)
-				maxK = faces[i][j](k);
+			if (mesh[i][j](k) > maxK)
+				maxK = mesh[i][j](k);
 		}
 	}
 
@@ -62,12 +60,12 @@ int compareOnY(Vertex a, Vertex b)
 
 float Vertex::operator()(int x) const
 {
-	return data[x];
+	return pos[x];
 }
 
 float& Vertex::operator()(int x)
 {
-	return data[x];
+	return pos[x];
 }
 
 ostream & operator<<(ostream & o, const Vertex & v)

@@ -4,7 +4,6 @@
  * @author Nathan Hoad (nathan@getoffmalawn.com)
  * Student Number: s2754580
  */
-using std::vector;
 
 #include <string>
 using std::string;
@@ -13,6 +12,7 @@ using std::string;
 using std::istringstream;
 
 #include "StringFunctions.h"
+using std::vector;
 
 string strip(string line)
 {

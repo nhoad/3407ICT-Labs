@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 ///
 	Core::Core(int width, int height, bool fullscreen)
 : width(width), height(height), fullscreen(fullscreen),
-	elapsedTime(0), running(true), terrain()//, objects()
+	elapsedTime(0), running(true), terrain(), camera(FPS)//, objects()
 {
 }
 

@@ -121,76 +121,56 @@ void Core::preprocess()
 	// build the cube
 	ObjectLoader loader;
 
-	loader.read("Assets/Cube.obj");
+	cube.mesh = loader.read("Assets/Cube.obj");
 
-	cube.mesh = loader.object();
-	//mesh = loader.object();
-	cube.scale = 0.125;
-
-	cube.x = 0;
-	cube.y = 0;
-	angle = 15.0;
-	cube.speed = 10;
-
-	xInc = 1 / cube.speed;
-	yInc = ((float) width / height) / cube.speed;
+	for (int i=0; i < cube.mesh.size(); i++)
+		for (int j=0; j < cube.mesh[i].size(); j++)
+			cout << cube.mesh[i][j] << endl;
 
 	glEnable(GL_DEPTH_TEST);
 
 	// load identity matrix
-	projection = new Mat4();
+	//projection = new Mat4();
 
 	Mat4 perspectiveMatrix = Mat4::perspectiveMatrix(45.0, ((float) width / height), 1.0, 20.0);
-	(*projection) = Mat4::mul((*projection), perspectiveMatrix);
+	//(*projection) = Mat4::mul((*projection), perspectiveMatrix);
 
 	glMatrixMode(GL_PROJECTION);
-	glLoadMatrixf(*projection);
-	//gluPerspective(45.0, ((float)width / height), 1.0, 20.0);
+	glLoadIdentity();
+	//glLoadMatrixf(*projection);
+	gluPerspective(45.0, ((float)width / height), 1.0, 20.0);
 
-	modelview = new Mat4();
+	//modelview = new Mat4();
 
 	Vec4 camera(0.0, 0.0, 3.5);
 	Vec4 target(0.0, 0.0, 0.0);
 	Vec4 up(0.0, 1.0, 0.0);
 
-	(*modelview) = Mat4::mul((*modelview), Mat4::lookAt(camera, target, up));
-	//gluLookAt(0.0, 0.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	//(*modelview) = Mat4::mul((*modelview), Mat4::lookAt(camera, target, up));
 
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf(*modelview);
+	glLoadIdentity();
+	gluLookAt(0.0, 2.0, 3.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+	//glLoadMatrixf(*modelview);
 	glViewport(0, 0, width, height);
 
 }
 
-void Core::drawCube(Cube cube)
+void Core::drawCube()
 {
 
 	float x = cube.centreX();
 	float y = cube.centreY();
 	float z = cube.centreZ();
 
-	float scale = cube.scale;
-	float normScale = (scale * 2) / scale;
-
-	float curX = (cube.x / width) * normScale * 2 - normScale;
-	float curY = (cube.y / height) * normScale * 2 - normScale;
-
 	// push matrix
-	Mat4 old = (*modelview);
+	//Mat4 old = (*modelview);
 
 	Mat4 view;
 
-	view = Mat4::mul(view, Mat4::translate(curX, curY, -z));
-	view = Mat4::mul(view, Mat4::scale(scale, scale, scale));
-	view = Mat4::mul(view, Mat4::rotateX(angle));
-	view = Mat4::mul(view, Mat4::rotateY(angle));
-	view = Mat4::mul(view, Mat4::rotateZ(angle));
-	view = Mat4::mul(view, Mat4::translate(-x, -y, -z));
-
 	glMultMatrixf(view);
 
-	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube.mesh[0]);
-	glColorPointer(4, GL_FLOAT, sizeof(Vertex), &cube.mesh[0].r);
+	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &cube.mesh[0][0]);
 
 /*
 	GLfloat values[16];
@@ -199,9 +179,6 @@ void Core::drawCube(Cube cube)
 */
 
 	glDrawArrays(GL_QUADS, 0, 4);
-	glDrawArrays(GL_QUADS, 4, 8);
-	glDrawArrays(GL_QUADS, 8, 12);
-	glDrawArrays(GL_QUADS, 12, 16);
 
 	//(*modelview) = old;
 
@@ -214,22 +191,9 @@ void Core::render()
 	glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
 
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
 
-	drawCube(cube);
+	drawCube();
 
-	angle += elapsedTime * 100;
-
-	if (cube.y >= height || cube.y < 0)
-		yInc = -yInc;
-
-	if (cube.x >= width || cube.x < 0)
-		xInc = -xInc;
-
-	cube.x += xInc;
-	cube.y += yInc;
-
-	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	// Flip the buffer for double buffering

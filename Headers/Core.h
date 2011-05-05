@@ -1,12 +1,20 @@
-/**
- * 3407ICT Graphics Programming
- * Tutorial Graphics Rendering Framework
- * @author Nathan Hoad (nathan@getoffmalawn.com)
- * Student Number: s2754580
- */
 #pragma once
 
+// http://www.libsdl.org/
+#include "SDL.h"
+// http://www.libsdl.org/projects/SDL_ttf/
+#include "SDL_ttf.h"
+// http://www.libsdl.org/projects/SDL_image/
+#include "SDL_image.h"
+// http://glew.sourceforge.net/
+#include "glew.h"
+#include "Transformation.h"
 #include "Primitives.h"
+#include "Camera.h"
+
+// Include your headers here
+// #include "Primitives.h"
+#include <vector>
 
 /**
  * Top-tier class, handles mainloop, events, and other classes.
@@ -14,142 +22,74 @@
  */
 class Core
 {
-	/** Width and height of the rendering window. */
-	int width, height;
+    /** Width and height of the rendering window. */
+    int width, height;
 
-	/** fullscreen flag */
-	bool fullscreen;
+    /** fullscreen flag */
+    bool fullscreen;
 
-	/** The amount of time passed after each frame */
-	double elapsedTime;
+    /** The amount of time passed after each frame */
+    double elapsedTime;
 
-	/** buffer for drawing */
-	SDL_Surface * buffer;
+    /** Mainloop control toggle */
+    bool running;
 
-	/** Mainloop control toggle */
-	bool running;
+    /** Images */
+    SDL_Surface *terrainHeightMap;
 
-	/** The mesh for a cube */
-	Cube cube;
+    /** Objects */
+    Object terrain;
 
-	/** rotation angle */
-	float angle;
+    /** List of Objects */ // Optional but helpful
+    std::vector<Object*> objects;
 
-	public:
-	/** Constructor. */
-	Core(int width=800, int height=600, bool fullscreen=false);
+	 /**
+	  Get a height from the heightmap using nice x and y coordinates
 
-	/** Destructor */
-	virtual ~Core();
+	  \param heights the heightmap
+	  \param x x coordinate of desired heightmap value.
+	  \param y y coordinate of desired heightmap value (this should be your z value really)
+	  \param size the width or height of the height map (same size)
+	  \return heightmap value at x and y
+	 */
+	 Camera camera;
 
-	/** Starts the main loop. */
-	void start();
+	 void createVBOs();
 
-	protected:
-	/** Sets up rendering context. */
-	void initialise();
+public:
+    /** Constructor. */
+    Core(int width=800, int height=600, bool fullscreen=false);
 
-	/** Prepares objects for rendering. */
-	void preprocess();
+    /** Destructor */
+    virtual ~Core();
 
-	/** Draws to screen. */
-	void render();
+    /** Starts the main loop. */
+    void start();
 
-	/** Handles user events. */
-	void handleEvents();
+protected:
+    /** Sets up rendering context. */
+    void initialise();
 
-	/**
-		Performs clipping on a polygon.
+    /** Prepares objects for rendering. */
+    void preprocess();
 
-		\param polygon the polygon to clip.
-		\return returns a clipped polygon.
-	*/
-	std::vector<Point> clip(std::vector<Point> polygon);
+    /** Draws to screen. */
+    void render();
 
-	/**
-		Performs clipping on left side of a polygon.
+    /** Free any OpenGL resources here */
+    void cleanup();
 
-		\param polygon the polygon to clip.
-		\return returns a left-side clipped polygon.
-	*/
-	std::vector<Point> clipLeft(std::vector<Point> polygon);
+    /** Handles user events. */
+    void handleEvents();
 
-	/**
-		Performs clipping on right side of a polygon.
+    /** Generates a square ground plane, 1x1, with even tessellation into a VBO.
+        xDiv and yDiv determines the number of polygon divisions on the plane.
+        heights is the height map array.
+        Result is stored in obj. */ //                       v- You may also use std::vector<float>
+    void createTerrain(int xDiv, int zDiv, Object* _terrain, std::vector<float> heights);
 
-		\param polygon the polygon to clip.
-		\return returns a right-side clipped polygon.
-	*/
-	std::vector<Point> clipRight(std::vector<Point> polygon);
+    /** Copies the data from the height map into memory. */
+    void fillTerrainHeights(int xDiv, int zDiv);
 
-	/**
-		Performs clipping on top side of a polygon.
-
-		\param polygon the polygon to clip.
-		\return returns a top-side clipped polygon.
-	*/
-	std::vector<Point> clipTop(std::vector<Point> polygon);
-
-	/**
-		Performs clipping on left side of a polygon.
-
-		\param polygon the polygon to clip.
-		\return returns a bottom-side clipped polygon.
-	*/
-	std::vector<Point> clipBottom(std::vector<Point> polygon);
-
-	/**
-		make a line from point A to point B.
-
-		\param a the starting point
-		\param b the finish point.
-		\return a vector of Points, making up a line from A to B.
-	*/
-	std::vector<Point> makeLine(Point a, Point b);
-
-	/**
-	 draw a convex polygon.
-
-	 \param polygon the polygon to draw.
-	*/
-	void drawPolygon(std::vector<Point> polygon);
-
-	/**
-	 Decompose a polygon into triangles.
-
-	 \param polygon the polygon to decompose.
-	 \return returns a vector of Points that will be a multiple of three.
-	*/
-	std::vector<Point> decompose(std::vector<Point> polygon);
-
-	/**
-	 scan line algorithm for polygon filling.
-	 \param a the first point to draw from
-	 \param b the second point to draw to.
-	*/
-	void scanLine(Point a, Point b);
-
-	/**
-	 draw a triangle.
-	 \param a point to draw triangle from
-	 \param b point to draw triangle from
-	 \param c point to draw triangle from
-	*/
-	void triangle(Point a, Point b, Point c);
-
-	/**
-		Draw a cube.
-
-		\param cube the cube to draw.
-	*/
-	void drawCube(Cube cube);
-
-	/**
-		move a cube.
-
-		\param cube the cube to move, according to global acceleration values.
-	*/
-	void moveCube(Cube & cube);
-
-	void putpixel(int x, int y, Uint8 r, Uint8 g, Uint8 b, Uint8 a=255);
+    Vec4 getpixel24(SDL_Surface *surface, int x, int y);
 };

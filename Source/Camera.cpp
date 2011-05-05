@@ -11,10 +11,19 @@
 using std::cout;
 using std::endl;
 
-Camera::Camera()
+Camera::Camera(int mode)
 {
-	oldMouseY = 0;
-	oldMouseX = 0;
+	this->mode = mode;
+
+	switch (mode)
+	{
+		case FPS:
+			cout << "FPS mode enabled" << endl;
+			break;
+		case THIRD_PERSON:
+			cout << "third person follow mode enabled" << endl;
+			break;
+	}
 }
 
 Camera::~Camera()
