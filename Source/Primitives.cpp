@@ -70,7 +70,7 @@ float& Vertex::operator()(int x)
 
 ostream & operator<<(ostream & o, const Vertex & v)
 {
-	for (int i=0; i < 8; i++)
+	for (int i=0; i < 4; i++)
 	{
 		o.width(10);
 		o << v(i);

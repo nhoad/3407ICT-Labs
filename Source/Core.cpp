@@ -139,7 +139,7 @@ void Core::preprocess()
 
 	// Load objects here
 	camera.setSpeed(5);
-	camera.setPosition(Vec4(-5, -5, -5, 1));
+	camera.setPosition(Vec4(0, 2, 3, 1));
 	camera.setTarget(Vec4(0, 0, 0, 1));
 
 	// Add all renderable mesh to the list of objects (see header file)
@@ -153,7 +153,7 @@ void Core::preprocess()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0, 2, 3, 0, 0, 0, 0, 1, 0);
+//	gluLookAt(0, 2, 3, 0, 0, 0, 0, 1, 0);
 
 	// Enable any OpenGL feature you like, such as backface culling and depth testing, here.
 	glEnable(GL_DEPTH_TEST);
@@ -193,12 +193,13 @@ void Core::render()
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
 
-	//camera.load();
+	camera.load();
 
 	// Multiply the matrix by the object's transformation matrix.
 
 	glPushMatrix();
 	glColor3f(1,1,1);
+	cout << "whats' going on " << endl;
 
 	for (int i=0; i < objects.size(); i++)
 	{
@@ -206,17 +207,11 @@ void Core::render()
 		//glLoadIdentity();
 
 		//glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
-		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &(*objects[i]).mesh[0][0]);
 
-		//glDrawArrays(GL_QUADS, 0, 4);
-		glDrawArrays(GL_QUADS, 0, 4);
-		//glDrawArrays(GL_QUADS, 8, 4);
-		//glDrawArrays(GL_QUADS, 12, 4);
-		for (int j=1; j < objects[i]->mesh.size();j++)
-		{
-			//glDrawArrays(GL_QUADS, objects[i]->mesh[j-1].size(), 4);
-			cout << objects[i]->mesh[j-1].size() << endl;
-		}
+		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &(*objects[i]).mesh[0].x);
+
+		glDrawArrays(GL_QUADS, 0, 24);
+
 
 		//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
