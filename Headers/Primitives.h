@@ -9,6 +9,7 @@
 using std::cout;
 using std::endl;
 #include "SDL.h"
+#include "glut.h"
 #include "Transformation.h"
 
 #pragma once
@@ -94,7 +95,8 @@ class Object
 		Mesh mesh;
 		Mat4 matrix;
 
-		unsigned int vbo, shaderProgram;
+		GLuint vbo;
+		unsigned int shaderProgram;
 
 		Object();
 

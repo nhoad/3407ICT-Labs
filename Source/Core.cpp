@@ -153,7 +153,7 @@ void Core::preprocess()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-//	gluLookAt(0, 2, 3, 0, 0, 0, 0, 1, 0);
+	gluLookAt(0, 2, 3, 0, 0, 0, 0, 1, 0);
 
 	// Enable any OpenGL feature you like, such as backface culling and depth testing, here.
 	glEnable(GL_DEPTH_TEST);
@@ -163,18 +163,13 @@ void Core::preprocess()
 
 void Core::createVBOs()
 {
-	GLuint buffers[objects.size()];
-
-	glGenBuffers(objects.size(), buffers);
-
 	for (int i=0; i < objects.size(); i++)
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, buffers[i]);
+		glGenBuffers(1, &objects[i]->vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
 
-	//	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 9 * objects[i]->mesh.size(),
-	//				&objects[i]->mesh[0][0].x, GL_STATIC_DRAW);
-
-		objects[i]->vbo = buffers[i];
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * objects[i]->mesh.size(),
+					&objects[i]->mesh[0](0), GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -193,27 +188,25 @@ void Core::render()
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
 
-	camera.load();
+	//camera.load();
 
 	// Multiply the matrix by the object's transformation matrix.
 
 	glPushMatrix();
 	glColor3f(1,1,1);
-	cout << "whats' going on " << endl;
 
 	for (int i=0; i < objects.size(); i++)
 	{
-		//glLoadMatrixf(objects[i]->matrix);
-		//glLoadIdentity();
+		glLoadMatrixf(objects[i]->matrix);
 
-		//glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
 
-		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &(*objects[i]).mesh[0].x);
+		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), 0);
 
 		glDrawArrays(GL_QUADS, 0, 24);
 
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 	glPushMatrix();
 

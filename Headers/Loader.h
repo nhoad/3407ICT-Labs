@@ -12,16 +12,23 @@
 /**
 	Class used to load an object from an obj file.
 */
-class ObjectLoader
+class Loader
 {
 	public:
 		/**
 			Read an object in from a file.
 
 			\param filename the path to the file containing the object
-			\param rgbMagic true means use the coords as colors, false will be green.
 			\return the mesh from input file.
 		*/
-		Mesh read(const std::string filename);
+		Mesh readObject(const std::string filename);
+
+		/**
+			Read a GLSL script in from a file.
+
+			\param filename the path to the file containing the object
+			\return the script from input file as a string string.
+		*/
+		std::string readGLSL(const std::string filename);
 
 };

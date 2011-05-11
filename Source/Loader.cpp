@@ -4,7 +4,7 @@
  * @author Nathan Hoad (nathan@getoffmalawn.com)
  * Student Number: s2754580
  */
-#include "ObjectLoader.h"
+#include "Loader.h"
 #include <string>
 using std::string;
 
@@ -24,7 +24,7 @@ using std::endl;
 #include <cstring>
 #include <cstdlib>
 
-Mesh ObjectLoader::read(const string filename)
+Mesh Loader::read(const string filename)
 {
 	Mesh mesh;
 
@@ -52,7 +52,7 @@ Mesh ObjectLoader::read(const string filename)
 	}
 	else
 	{
-		cout << "ObjectLoader: Could not open " << filename << ": " << strerror(errno) << endl;
+		cout << "Loader: Could not open " << filename << ": " << strerror(errno) << endl;
 		exit(1);
 	}
 
@@ -111,4 +111,41 @@ Mesh ObjectLoader::read(const string filename)
 	}
 
 	return mesh;
+}
+
+string Loader::loadGLSL(string filename)
+{
+	string script = "";
+
+	cout << "Loading GLSL script: " << filename << endl;
+
+	ifstream file(name.c_str());
+
+	vector<string> lines;
+	string line;
+
+	if (file.is_open())
+	{
+		while (file.good())
+		{
+			getline(file, line);
+
+			// remove whitespace from beginning and end of text.
+			line = strip(line);
+
+			// add all important lines
+			if (line.size() > 0 && line.find("#") != 0)
+				lines.push_back(line);
+		}
+	}
+	else
+	{
+		cout << "Loader: Could not open " << filename << ": " << strerror(errno) << endl;
+		exit(1);
+	}
+
+	for (int i=0; i < lines.size(); i++)
+		script += lines[i];
+
+	return script;
 }
