@@ -20,19 +20,16 @@ float Object::centre(int k)
 {
 	float minK, maxK;
 
-	minK = mesh[0][0](k);
-	maxK = mesh[0][0](k);
+	minK = mesh[0](k);
+	maxK = mesh[0](k);
 
 	for (unsigned i=0; i < mesh.size(); i++)
 	{
-		for (unsigned j=0; j < mesh[i].size(); j++)
-		{
-			if (mesh[i][j](k) < minK)
-				minK = mesh[i][j](k);
+		if (mesh[i](k) < minK)
+			minK = mesh[i](k);
 
-			if (mesh[i][j](k) > maxK)
-				maxK = mesh[i][j](k);
-		}
+		if (mesh[i](k) > maxK)
+			maxK = mesh[i](k);
 	}
 
 	return (minK + maxK) / 2.0f;

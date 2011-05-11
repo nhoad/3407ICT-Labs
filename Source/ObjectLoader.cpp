@@ -101,14 +101,13 @@ Mesh ObjectLoader::read(const string filename)
 
 	for (int j=0, lastFaceEndPos=0; j < face_sizes.size(); j++)
 	{
-		Face face;
 
 		for (int i=lastFaceEndPos; i < face_sizes[j] + lastFaceEndPos; i++)
-			face.push_back(vertices[add_order[i]-1]);
+			mesh.push_back(vertices[add_order[i]-1]);
+			//face.push_back(vertices[add_order[i]-1]);
 
 		lastFaceEndPos += face_sizes[j];
 
-		mesh.push_back(face);
 	}
 
 	return mesh;

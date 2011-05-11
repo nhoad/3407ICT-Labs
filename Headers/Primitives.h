@@ -14,8 +14,7 @@ using std::endl;
 #pragma once
 class Vertex;
 
-typedef std::vector<Vertex> Face;
-typedef std::vector<Face> Mesh;
+typedef std::vector<Vertex> Mesh;
 
 /**
 	Compare two vertices on their Y values. Used for sorting points in a triangle for edge list generation.
