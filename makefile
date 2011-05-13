@@ -9,7 +9,7 @@ CC = g++
 TARGET = Core
 VPATH = Source
 
-_OBJS = HPTime.o Core.o Mat4.o Vec4.o Primitives.o Camera.o Loader.o StringFunctions.o
+_OBJS = HPTime.o Core.o Mat4.o Vec2.o Vec3.o Vec4.o Primitives.o Camera.o Loader.o StringFunctions.o
 #_OBJS = HPTime.o RGBCube.o Transformation.o Primitives.o Camera.o ObjectLoader.o StringFunctions.o
 OBJDIR = Intermediates
 

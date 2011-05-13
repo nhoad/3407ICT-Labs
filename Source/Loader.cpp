@@ -8,7 +8,6 @@
 
 #include "glew.h"
 
-#include "Loader.h"
 #include <string>
 using std::string;
 
@@ -18,8 +17,6 @@ using std::ifstream;
 #include <vector>
 using std::vector;
 
-#include "StringFunctions.h"
-
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -28,6 +25,11 @@ using std::cerr;
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
+
+#include "StringFunctions.h"
+#include "Loader.h"
+#include "Vec2.h"
+#include "Vec3.h"
 
 Mesh Loader::readMesh(const string filename)
 {
@@ -63,7 +65,9 @@ Mesh Loader::readMesh(const string filename)
 
 	float x, y, z;
 
-	vector<Vertex> vertices, texture_coords, normals;
+	vector<Vertex> vertices;
+	vector<Vec2> texture_coords;
+	vector<Vec3> normals;
 
 	vector<int> face_sizes;
 	vector<int> add_order;
@@ -87,12 +91,18 @@ Mesh Loader::readMesh(const string filename)
 		}
 		else if (type == "vn")
 		{
+			x = stringToType<float>(split_line[1]);
+			y = stringToType<float>(split_line[2]);
+			z = stringToType<float>(split_line[3]);
 
-			// add a normal?
+			normals.push_back(Vec3(x, y, z));
 		}
 		else if (type == "vt")
 		{
-			// add a texture coordinate
+			x = stringToType<float>(split_line[1]);
+			y = stringToType<float>(split_line[2]);
+
+			texture_coords.push_back(Vec2(x, y));
 		}
 		else if (type == "f")
 		{
