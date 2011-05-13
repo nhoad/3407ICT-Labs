@@ -4,7 +4,7 @@
 #ifndef PI
 #define PI 3.14159265
 #endif
-#include "glew.h"
+#include "glut.h"
 #include <cmath>
 #include <iostream>
 using std::cout;
