@@ -104,6 +104,7 @@ void Core::initialise()
 		SDL_Quit();
 	}
 
+	SDL_WarpMouse(0, 0);
 	SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(SDL_DISABLE);
 }
@@ -131,15 +132,14 @@ void Core::preprocess()
 {
 
 	Object * o = new Object;
-
 	o->mesh = Loader::readMesh("Assets/Cube.obj");
-
 	this->objects.push_back(o);
 
 	// Load objects here
 	camera.setSpeed(0.5);
-	camera.setPosition(Vec4(0, 2, 3, 1));
+	camera.setPosition(Vec4(0, 0, 5, 1));
 	camera.setTarget(Vec4(0, 0, 0, 1));
+	camera.setUp(Vec4(0, 1, 0));
 
 	// Add all renderable mesh to the list of objects (see header file)
 	// Optional but helpful //
@@ -152,7 +152,7 @@ void Core::preprocess()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	//gluLookAt(0, 2, 3, 0, 0, 0, 0, 1, 0);
+	//gluLookAt(323, 318, 33, 0, 0, 0, 0, 1, 0);
 
 	// Enable any OpenGL feature you like, such as backface culling and depth testing, here.
 	glEnable(GL_DEPTH_TEST);
@@ -176,7 +176,6 @@ void Core::createVBOs()
 					&objects[i]->mesh[0].x, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 	}
 
 }
@@ -188,25 +187,40 @@ void Core::render()
 
 	// Enable vertex array and such
 	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+
+	glBegin(GL_LINES);
+	glColor3f(1, 1, 1);
+
+	glVertex3f(50, 0, 0);
+	glVertex3f(-50, 0, 0);
+
+	glVertex3f(0, 50, 0);
+	glVertex3f(0, -50, 0);
+
+	glVertex3f(0, 0, 50);
+	glVertex3f(0, 0, -50);
+	glEnd();
 
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
 
 	camera.load();
 
-	// Multiply the matrix by the object's transformation matrix.
-
 	for (int i=0; i < objects.size(); i++)
 	{
 		glPushMatrix();
-		glMultMatrixf(objects[i]->matrix);
+		glMultMatrixf(objects[i]->matrix * Mat4::rotateZ(32));
 
-		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
+		//glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
+
 		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0]);
+		glNormalPointer(GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].nx);
 
 		glUseProgram(shaderProgram);
 		glDrawArrays(GL_QUADS, 0, 24);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+		//glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glPopMatrix();
 
 	}
@@ -214,7 +228,8 @@ void Core::render()
 	// Pop the matrix from the stack.
 	glPopMatrix();
 
-	//glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 
 	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();

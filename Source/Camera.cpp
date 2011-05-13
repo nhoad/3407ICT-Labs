@@ -50,6 +50,13 @@ void Camera::load()
 	m *= Mat4::rotateX(xRot);
 
 	glMultMatrixf(m);
+
+//	glMultMatrixf(Mat4::lookAt(position, target, up));
+}
+
+void Camera::setUp(Vec4 v)
+{
+	//up = v;
 }
 
 void Camera::setTarget(Vec4 v)
