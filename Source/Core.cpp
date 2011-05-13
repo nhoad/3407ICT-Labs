@@ -104,7 +104,7 @@ void Core::initialise()
 		SDL_Quit();
 	}
 
-	SDL_WarpMouse(0, 0);
+//	SDL_WarpMouse(0, 0);
 	SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(SDL_DISABLE);
 }
@@ -132,14 +132,13 @@ void Core::preprocess()
 {
 
 	Object * o = new Object;
-	o->mesh = Loader::readMesh("Assets/Cube.obj");
+	o->mesh = Loader::readMesh("Assets/Person.obj");
 	this->objects.push_back(o);
 
 	// Load objects here
 	camera.setSpeed(0.5);
 	camera.setPosition(Vec4(0, 0, 5, 1));
 	camera.setTarget(Vec4(0, 0, 0, 1));
-	camera.setUp(Vec4(0, 1, 0));
 
 	// Add all renderable mesh to the list of objects (see header file)
 	// Optional but helpful //
@@ -162,6 +161,7 @@ void Core::preprocess()
 
 	shaderProgram = Loader::linkShader(vShader, fShader);
 
+	first = true;
 	//createVBOs();
 }
 
@@ -210,7 +210,7 @@ void Core::render()
 	for (int i=0; i < objects.size(); i++)
 	{
 		glPushMatrix();
-		glMultMatrixf(objects[i]->matrix * Mat4::rotateZ(32));
+		glMultMatrixf(objects[i]->matrix * Mat4::rotateY(-50));
 
 		//glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
 
@@ -218,7 +218,7 @@ void Core::render()
 		glNormalPointer(GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].nx);
 
 		glUseProgram(shaderProgram);
-		glDrawArrays(GL_QUADS, 0, 24);
+		glDrawArrays(GL_QUADS, 0, objects[i]->mesh.size());
 
 		//glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glPopMatrix();
@@ -292,6 +292,7 @@ void Core::handleEvents()
 				break;
 			case SDL_MOUSEMOTION:
 				camera.handleMouse(e.motion.xrel, e.motion.yrel);
+				break;
 			default: break;
 		}
 	}

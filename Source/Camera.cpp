@@ -128,6 +128,12 @@ void Camera::look(int direction)
 
 void Camera::handleMouse(int x, int y)
 {
+	if (first)
+	{
+		first = false;
+		return;
+	}
+
 	rotation(0) += y;
 	rotation(1) += x;
 

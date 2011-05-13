@@ -31,5 +31,6 @@ class Camera
 		Vec4 target, position, rotation;
 		float speed;
 		int mode;
+		bool first;
 };
 #endif
