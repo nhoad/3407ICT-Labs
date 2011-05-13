@@ -19,12 +19,15 @@ using std::vector;
 #include <iostream>
 using std::cout;
 using std::endl;
+using std::cerr;
+
+#include "gl.h"
 
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
 
-Mesh Loader::read(const string filename)
+Mesh Loader::readMesh(const string filename)
 {
 	Mesh mesh;
 
@@ -113,13 +116,13 @@ Mesh Loader::read(const string filename)
 	return mesh;
 }
 
-string Loader::loadGLSL(string filename)
+string Loader::readGLSL(string filename)
 {
 	string script = "";
 
 	cout << "Loading GLSL script: " << filename << endl;
 
-	ifstream file(name.c_str());
+	ifstream file(filename.c_str());
 
 	vector<string> lines;
 	string line;
@@ -145,7 +148,71 @@ string Loader::loadGLSL(string filename)
 	}
 
 	for (int i=0; i < lines.size(); i++)
-		script += lines[i];
+		script += lines[i] + "\n";
 
 	return script;
+}
+
+unsigned int Loader::loadShader(string scriptFile, int shaderType)
+{
+	string script = Loader::readGLSL(scriptFile);
+
+	cout << "ShaderLoader: Loading Script: " << script << endl;
+
+	unsigned int id = glCreateShader(shaderType);
+
+	int result;
+	int size = script.size();
+	const char * script_c = script.c_str();
+
+	glShaderSource(id, 1, &script_c, &size);
+	glCompileShader(id);
+	glGetShaderiv(id, GL_COMPILE_STATUS, &result);
+
+	if (result == GL_FALSE)
+	{
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &result);
+		char * errorMessage = new char[result];
+
+		glGetShaderInfoLog(id, result, &result, errorMessage);
+
+		cerr << "ShaderLoader: Could not compile script " << errorMessage << endl;
+
+		delete errorMessage;
+		glDeleteShader(id);
+		return -1;
+	}
+
+	return id;
+}
+
+unsigned int Loader::linkShader(unsigned int vertex, unsigned int fragment)
+{
+	unsigned int id = glCreateProgram();
+
+	glAttachShader(id, vertex);
+	glAttachShader(id, fragment);
+
+	glLinkProgram(id);
+
+	int result;
+	glGetShaderiv(id, GL_LINK_STATUS, &result);
+
+	if (result == GL_FALSE)
+	{
+		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &result);
+		char * errorMessage = new char[result];
+
+		glGetShaderInfoLog(id, result, &result, errorMessage);
+
+		cerr << "ShaderLoader: Could not compile script " << errorMessage << endl;
+
+		delete errorMessage;
+		glDeleteShader(id);
+		return 0;
+	}
+
+	//glValidateProgram(?);
+
+	return id;
 }

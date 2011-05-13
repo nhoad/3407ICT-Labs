@@ -18,7 +18,7 @@
 #include "HPTime.h"
 #include "Transformation.h"
 #include "Camera.h"
-#include "ObjectLoader.h"
+#include "Loader.h"
 
 #include <iostream>
 #include <fstream>
@@ -104,7 +104,7 @@ void Core::initialise()
 		SDL_Quit();
 	}
 
-	SDL_WM_GrabInput(SDL_GRAB_ON);
+	//SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -129,16 +129,15 @@ void Core::start()
 
 void Core::preprocess()
 {
-	ObjectLoader oLoader;
 
 	Object * o = new Object;
 
-	o->mesh = oLoader.read("Assets/Cube.obj");
+	o->mesh = Loader::readMesh("Assets/Cube.obj");
 
 	this->objects.push_back(o);
 
 	// Load objects here
-	camera.setSpeed(5);
+	camera.setSpeed(1);
 	camera.setPosition(Vec4(0, 2, 3, 1));
 	camera.setTarget(Vec4(0, 0, 0, 1));
 
@@ -153,12 +152,17 @@ void Core::preprocess()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(0, 2, 3, 0, 0, 0, 0, 1, 0);
+	//gluLookAt(0, 2, 3, 0, 0, 0, 0, 1, 0);
 
 	// Enable any OpenGL feature you like, such as backface culling and depth testing, here.
 	glEnable(GL_DEPTH_TEST);
 
-	createVBOs();
+	vShader = Loader::loadShader("Assets/basic_shader_v.glsl", GL_VERTEX_SHADER);
+	fShader = Loader::loadShader("Assets/basic_shader_f.glsl", GL_FRAGMENT_SHADER);
+
+	shaderProgram = Loader::linkShader(vShader, fShader);
+
+	//createVBOs();
 }
 
 void Core::createVBOs()
@@ -188,32 +192,31 @@ void Core::render()
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
 
-	//camera.load();
+	camera.load();
 
 	// Multiply the matrix by the object's transformation matrix.
-
-	glPushMatrix();
+	
 	glColor3f(1,1,1);
 
 	for (int i=0; i < objects.size(); i++)
 	{
-		glLoadMatrixf(objects[i]->matrix);
+		glPushMatrix();
+		glMultMatrixf(objects[i]->matrix);
 
 		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
+		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0]);
 
-		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), 0);
-
+		glUseProgram(shaderProgram);
 		glDrawArrays(GL_QUADS, 0, 24);
-
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glPopMatrix();
 
 	}
-	glPushMatrix();
 
 	// Pop the matrix from the stack.
-	glPopMatrix();
+	glPopMatrix(); 
 
-	glDisableClientState(GL_VERTEX_ARRAY);
+	//glDisableClientState(GL_VERTEX_ARRAY);
 
 	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
@@ -260,10 +263,10 @@ void Core::handleEvents()
 						camera.move(DOWN);
 						break;
 					case SDLK_r:
-						camera.look(UP);
+						camera.look(DOWN);
 						break;
 					case SDLK_f:
-						camera.look(DOWN);
+						camera.look(UP);
 						break;
 					case SDLK_q:
 						camera.look(LEFT);

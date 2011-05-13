@@ -21,7 +21,7 @@ class Loader
 			\param filename the path to the file containing the object
 			\return the mesh from input file.
 		*/
-		Mesh readObject(const std::string filename);
+		Mesh static readMesh(const std::string filename);
 
 		/**
 			Read a GLSL script in from a file.
@@ -29,6 +29,15 @@ class Loader
 			\param filename the path to the file containing the object
 			\return the script from input file as a string string.
 		*/
-		std::string readGLSL(const std::string filename);
+		std::string static readGLSL(const std::string filename);
+		
+		/**
+			Create a shader from a script.
 
+			\param filepath script the script to load in
+			\param shaderType either GL_VERTEX_SHADER or GL_FRAGMENT_SHADER
+		*/
+		unsigned int static loadShader(std::string script, int shaderType);
+
+		unsigned int static linkShader(unsigned int vertex, unsigned int fragment);
 };

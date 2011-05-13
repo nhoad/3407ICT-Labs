@@ -1,11 +1,10 @@
-#include "gl.h"
-#include "glut.h"
+
 #include "Camera.h"
 
 #ifndef PI
 #define PI 3.14159265
 #endif
-
+#include "glew.h"
 #include <cmath>
 #include <iostream>
 using std::cout;
@@ -40,18 +39,14 @@ void Camera::load()
 	float xRot = rotation(0);
 	float yRot = rotation(1);
 
-
-	cout << "x rot: " << xRot << endl;
-	cout << "y rot: " << yRot << endl;
+	//cout << "x rot: " << xRot << endl;
+	//cout << "y rot: " << yRot << endl;
 
 	Mat4 m = Mat4::translate(-xpos, -ypos, -zpos);
 	m *= Mat4::rotateY(yRot);
 	m *= Mat4::rotateX(xRot);
 
-	glLoadMatrixf(m);
-
-//	glLoadIdentity();
-//	gluLookAt(xpos, ypos, zpos, target(0), target(1), target(2), up(0), up(1), up(2));
+	glMultMatrixf(m);
 }
 
 void Camera::setTarget(Vec4 v)

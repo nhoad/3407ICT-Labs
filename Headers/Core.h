@@ -43,18 +43,11 @@ class Core
     /** List of Objects */ // Optional but helpful
     std::vector<Object*> objects;
 
-	 /**
-	  Get a height from the heightmap using nice x and y coordinates
+	unsigned int shaderProgram, vShader, fShader;
 
-	  \param heights the heightmap
-	  \param x x coordinate of desired heightmap value.
-	  \param y y coordinate of desired heightmap value (this should be your z value really)
-	  \param size the width or height of the height map (same size)
-	  \return heightmap value at x and y
-	 */
-	 Camera camera;
+	Camera camera;
 
-	 void createVBOs();
+	void createVBOs();
 
 public:
     /** Constructor. */
