@@ -12,6 +12,6 @@ void main()
    position = gl_Vertex;
    gl_Position = gl_ModelViewProjectionMatrix * position;
 
-   diffuse = max(dot(normalize(normal), normalize(light_dir)), 0) * 0.5;
+   diffuse = max(dot(normalize(normal), normalize(light_dir)), 0.05) * 0.5;
 
 }

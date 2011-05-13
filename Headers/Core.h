@@ -32,7 +32,7 @@ class Core
     double elapsedTime;
 
     /** Mainloop control toggle */
-    bool running, first;
+    bool running;
 
     /** Images */
     SDL_Surface *terrainHeightMap;

@@ -105,7 +105,7 @@ void Core::initialise()
 	}
 
 //	SDL_WarpMouse(0, 0);
-	SDL_WM_GrabInput(SDL_GRAB_ON);
+	//SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -161,8 +161,7 @@ void Core::preprocess()
 
 	shaderProgram = Loader::linkShader(vShader, fShader);
 
-	first = true;
-	//createVBOs();
+	createVBOs();
 }
 
 void Core::createVBOs()
@@ -173,7 +172,7 @@ void Core::createVBOs()
 		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
 
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * objects[i]->mesh.size(),
-					&objects[i]->mesh[0].x, GL_STATIC_DRAW);
+					&objects[i]->mesh[0], GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
@@ -212,15 +211,15 @@ void Core::render()
 		glPushMatrix();
 		glMultMatrixf(objects[i]->matrix * Mat4::rotateY(-50));
 
-		//glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
+		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
+		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), 0);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0]);
 		glNormalPointer(GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].nx);
 
 		glUseProgram(shaderProgram);
 		glDrawArrays(GL_QUADS, 0, objects[i]->mesh.size());
 
-		//glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glPopMatrix();
 
 	}
