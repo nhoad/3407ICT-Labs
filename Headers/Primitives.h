@@ -53,14 +53,14 @@ class Vertex
 		float tex[2];
 	};
 
-	Vertex(float x=0.0, float y=0.0, float z=0.0, float w=1.0,
+	Vertex(float x=0.0, float y=0.0, float z=0.0,
 			 float nx=0.0, float ny=0.0, float nz=1.0,
 			 float tx=0.0, float ty=0.0)
 	{
 		this->x = x;
 		this->y = y;
 		this->z = z;
-		this->w = w;
+		this->w = 1;
 
 		this->nx = nx;
 		this->ny = ny;

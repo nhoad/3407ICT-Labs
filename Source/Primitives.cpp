@@ -63,5 +63,17 @@ ostream & operator<<(ostream & o, const Vertex & v)
 		o << v.pos[i];
 	}
 
+	for (int i=0; i < 3; i++)
+	{
+		o.width(10);
+		o << v.normal[i];
+	}
+
+	for (int i=0; i < 2; i++)
+	{
+		o.width(10);
+		o << v.tex[i];
+	}
+
 	return o;
 }

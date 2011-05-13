@@ -115,29 +115,33 @@ Mesh Loader::readMesh(const string filename)
 				int normal_number = stringToType<int>(split_face[2]);
 
 				add_order.push_back(face_number);
-		//		add_order.push_back(texture_number);
-		//		add_order.push_back(normal_number);
+				add_order.push_back(texture_number);
+				add_order.push_back(normal_number);
 			}
 		}
 
 	}
 
-	for (int j=0, lastFaceEndPos=0; j < face_sizes.size(); j++)
+	cout << "Loaded " << vertices.size() << " vertices" << endl;
+	cout << "Loaded " << texture_coords.size() << " texture coordinates" << endl;
+	cout << "Loaded " << normals.size() << " normals" << endl;
+
+	for (int i=0; i < add_order.size(); i+= 3)
 	{
+		float x, y, z, tx, ty, nx, ny, nz;
 
-		for (int i=lastFaceEndPos; i < face_sizes[j] + lastFaceEndPos; i++)
-		{
-			float x, y, z, tx, ty, nx, ny, nz;
+		x = vertices[add_order[i]-1](0);
+		y = vertices[add_order[i]-1](1);
+		z = vertices[add_order[i]-1](2);
 
-			x = vertices[add_order[i]-1](0);
-			y = vertices[add_order[i]-1](1);
-			z = vertices[add_order[i]-1](2);
+		tx = texture_coords[add_order[i+1]-1](0);
+		ty = texture_coords[add_order[i+1]-1](1);
 
-			Vertex v(x, y, z);
-			mesh.push_back(v);
-		}
-		lastFaceEndPos += face_sizes[j];
+		nx = normals[add_order[i+2]-1](0);
+		ny = normals[add_order[i+2]-1](1);
+		nz = normals[add_order[i+2]-1](2);
 
+		mesh.push_back(Vertex(x, y, z, nx, ny, nz, tx, ty));
 	}
 
 	return mesh;
