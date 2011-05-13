@@ -65,9 +65,8 @@ Mesh Loader::readMesh(const string filename)
 
 	float x, y, z;
 
-	vector<Vertex> vertices;
 	vector<Vec2> texture_coords;
-	vector<Vec3> normals;
+	vector<Vec3> normals, vertices;
 
 	vector<int> face_sizes;
 	vector<int> add_order;
@@ -87,7 +86,7 @@ Mesh Loader::readMesh(const string filename)
 			z = stringToType<float>(split_line[3]);
 
 			// add them in the order they were read in, so we can get the proper ordering later.
-			vertices.push_back(Vertex(x, y, z));
+			vertices.push_back(Vec3(x, y, z));
 		}
 		else if (type == "vn")
 		{
@@ -111,9 +110,13 @@ Mesh Loader::readMesh(const string filename)
 			for (unsigned i=1; i < split_line.size(); i++)
 			{
 				vector<string> split_face = tokenize(split_line[i], "/");
-				int number = stringToType<int>(split_face[0]);
+				int face_number = stringToType<int>(split_face[0]);
+				int texture_number = stringToType<int>(split_face[1]);
+				int normal_number = stringToType<int>(split_face[2]);
 
-				add_order.push_back(number);
+				add_order.push_back(face_number);
+		//		add_order.push_back(texture_number);
+		//		add_order.push_back(normal_number);
 			}
 		}
 
@@ -123,9 +126,16 @@ Mesh Loader::readMesh(const string filename)
 	{
 
 		for (int i=lastFaceEndPos; i < face_sizes[j] + lastFaceEndPos; i++)
-			mesh.push_back(vertices[add_order[i]-1]);
-			//face.push_back(vertices[add_order[i]-1]);
+		{
+			float x, y, z, tx, ty, nx, ny, nz;
 
+			x = vertices[add_order[i]-1](0);
+			y = vertices[add_order[i]-1](1);
+			z = vertices[add_order[i]-1](2);
+
+			Vertex v(x, y, z);
+			mesh.push_back(v);
+		}
 		lastFaceEndPos += face_sizes[j];
 
 	}
