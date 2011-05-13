@@ -20,16 +20,16 @@ float Object::centre(int k)
 {
 	float minK, maxK;
 
-	minK = mesh[0](k);
-	maxK = mesh[0](k);
+	minK = mesh[0].pos[k];
+	maxK = mesh[0].pos[k];
 
 	for (unsigned i=0; i < mesh.size(); i++)
 	{
-		if (mesh[i](k) < minK)
-			minK = mesh[i](k);
+		if (mesh[i].pos[k] < minK)
+			minK = mesh[i].pos[k];
 
-		if (mesh[i](k) > maxK)
-			maxK = mesh[i](k);
+		if (mesh[i].pos[k] > maxK)
+			maxK = mesh[i].pos[k];
 	}
 
 	return (minK + maxK) / 2.0f;
@@ -52,17 +52,7 @@ float Object::centreX()
 
 int compareOnY(Vertex a, Vertex b)
 {
-	return (a(1) < b(1));
-}
-
-float Vertex::operator()(int x) const
-{
-	return pos[x];
-}
-
-float& Vertex::operator()(int x)
-{
-	return pos[x];
+	return (a.y < b.y);
 }
 
 ostream & operator<<(ostream & o, const Vertex & v)
@@ -70,7 +60,7 @@ ostream & operator<<(ostream & o, const Vertex & v)
 	for (int i=0; i < 4; i++)
 	{
 		o.width(10);
-		o << v(i);
+		o << v.pos[i];
 	}
 
 	return o;

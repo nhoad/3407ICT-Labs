@@ -8,7 +8,7 @@
 #include "SDL_image.h"
 // http://glew.sourceforge.net/
 #include "glew.h"
-#include "Transformation.h"
+
 #include "Primitives.h"
 #include "Camera.h"
 

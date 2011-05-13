@@ -1,14 +1,17 @@
+#include "glut.h"
 
 #include "Camera.h"
 
-#ifndef PI
-#define PI 3.14159265
-#endif
-#include "glut.h"
 #include <cmath>
 #include <iostream>
 using std::cout;
 using std::endl;
+
+#include "Mat4.h"
+
+#ifndef PI
+#define PI 3.14159265
+#endif
 
 Camera::Camera(int mode)
 {

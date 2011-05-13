@@ -6,11 +6,11 @@
  */
 #include <vector>
 #include <iostream>
-using std::cout;
-using std::endl;
+
+#include "Mat4.h"
+
 #include "SDL.h"
 #include "glut.h"
-#include "Transformation.h"
 
 #pragma once
 class Vertex;
@@ -29,8 +29,9 @@ int compareOnY(Vertex a, Vertex b);
 /**
 	Vertex class for representing a point in an object
 */
-struct Vertex
+class Vertex
 {
+	public:
 	union {
 		struct {
 			float x, y, z, w;
@@ -69,8 +70,6 @@ struct Vertex
 	};
 
 	friend std::ostream & operator<<(std::ostream & o, const Vertex & v);
-	float operator()(int x) const;
-	float& operator()(int x);
 };
 
 /**

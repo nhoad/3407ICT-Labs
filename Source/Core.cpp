@@ -16,7 +16,7 @@
 
 #include "Core.h"
 #include "HPTime.h"
-#include "Transformation.h"
+#include "Mat4.h"
 #include "Camera.h"
 #include "Loader.h"
 
@@ -137,7 +137,7 @@ void Core::preprocess()
 	this->objects.push_back(o);
 
 	// Load objects here
-	camera.setSpeed(1);
+	camera.setSpeed(0.5);
 	camera.setPosition(Vec4(0, 2, 3, 1));
 	camera.setTarget(Vec4(0, 0, 0, 1));
 
@@ -173,7 +173,7 @@ void Core::createVBOs()
 		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
 
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * objects[i]->mesh.size(),
-					&objects[i]->mesh[0](0), GL_STATIC_DRAW);
+					&objects[i]->mesh[0].x, GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -195,8 +195,6 @@ void Core::render()
 	camera.load();
 
 	// Multiply the matrix by the object's transformation matrix.
-	
-	glColor3f(1,1,1);
 
 	for (int i=0; i < objects.size(); i++)
 	{
@@ -214,7 +212,7 @@ void Core::render()
 	}
 
 	// Pop the matrix from the stack.
-	glPopMatrix(); 
+	glPopMatrix();
 
 	//glDisableClientState(GL_VERTEX_ARRAY);
 

@@ -63,7 +63,7 @@ Mesh Loader::readMesh(const string filename)
 
 	float x, y, z;
 
-	vector<Vertex> vertices;
+	vector<Vertex> vertices, texture_coords, normals;
 
 	vector<int> face_sizes;
 	vector<int> add_order;
@@ -87,7 +87,12 @@ Mesh Loader::readMesh(const string filename)
 		}
 		else if (type == "vn")
 		{
+
 			// add a normal?
+		}
+		else if (type == "vt")
+		{
+			// add a texture coordinate
 		}
 		else if (type == "f")
 		{
