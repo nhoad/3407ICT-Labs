@@ -7,6 +7,7 @@
 #pragma once
 
 #include "glew.h"
+
 #include "Loader.h"
 #include <string>
 using std::string;
@@ -158,7 +159,7 @@ unsigned int Loader::loadShader(string scriptFile, int shaderType)
 {
 	string script = Loader::readGLSL(scriptFile);
 
-	cout << "ShaderLoader: Loading Script: " << script << endl;
+	cout << "ShaderLoader: Loading Script: " << scriptFile << endl;
 
 	unsigned int id = glCreateShader(shaderType);
 
@@ -177,7 +178,7 @@ unsigned int Loader::loadShader(string scriptFile, int shaderType)
 
 		glGetShaderInfoLog(id, result, &result, errorMessage);
 
-		cerr << "ShaderLoader: Could not compile script " << errorMessage << endl;
+		cerr << "ShaderLoader: Could not compile " << scriptFile << ": " << endl << errorMessage << endl;
 
 		delete errorMessage;
 		glDeleteShader(id);
