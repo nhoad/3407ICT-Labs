@@ -1,4 +1,4 @@
-varying vec3 diffuse;
+varying float diffuse;
 varying vec3 ambience;
 varying vec3 specular;
 
