@@ -105,7 +105,7 @@ void Core::initialise()
 	}
 
 //	SDL_WarpMouse(0, 0);
-	//SDL_WM_GrabInput(SDL_GRAB_ON);
+	SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -147,7 +147,7 @@ void Core::preprocess()
 	// Feel free to either use the built-in OpenGL transforms or your own ;]
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45, ((float) width / height), 1, 2000);
+	gluPerspective(45, ((float) width / height), 1, 50);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -160,6 +160,17 @@ void Core::preprocess()
 	fShader = Loader::loadShader("Assets/basic_shader_f.glsl", GL_FRAGMENT_SHADER);
 
 	shaderProgram = Loader::linkShader(vShader, fShader);
+
+	glUseProgram(shaderProgram);
+
+	float bg_colour[] = {0.1f, 0.2f, 0.4f, 0.0f};
+
+	int bg_colour_id = glGetUniformLocation(shaderProgram, "bg_colour");
+
+	glUniform3fv(bg_colour_id, 1, bg_colour);
+	glClearColor(bg_colour[0], bg_colour[1], bg_colour[2], bg_colour[3]);
+
+
 
 	createVBOs();
 }
@@ -188,19 +199,6 @@ void Core::render()
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 
-	glBegin(GL_LINES);
-	glColor3f(1, 1, 1);
-
-	glVertex3f(50, 0, 0);
-	glVertex3f(-50, 0, 0);
-
-	glVertex3f(0, 50, 0);
-	glVertex3f(0, -50, 0);
-
-	glVertex3f(0, 0, 50);
-	glVertex3f(0, 0, -50);
-	glEnd();
-
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
 
@@ -217,7 +215,6 @@ void Core::render()
 
 		glNormalPointer(GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].nx);
 
-		glUseProgram(shaderProgram);
 		glDrawArrays(GL_QUADS, 0, objects[i]->mesh.size());
 
 		glPopMatrix();
@@ -236,6 +233,9 @@ void Core::render()
 
 void Core::cleanup()
 {
+
+	for (int i=0; i < objects.size(); i++)
+		delete objects[i];
 
 }
 

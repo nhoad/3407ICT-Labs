@@ -167,9 +167,7 @@ string Loader::readGLSL(string filename)
 			// remove whitespace from beginning and end of text.
 			line = strip(line);
 
-			// add all important lines
-			if (line.size() > 0 && line.find("#") != 0)
-				lines.push_back(line);
+			lines.push_back(line);
 		}
 	}
 	else

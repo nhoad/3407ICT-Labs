@@ -8,7 +8,7 @@
 #include "SDL_image.h"
 // http://glew.sourceforge.net/
 #include "glew.h"
-#include "Transformation.h"
+#include "Vec3.h"
 #include "Primitives.h"
 #include "Camera.h"
 
@@ -59,11 +59,11 @@ class Core
 	 */
 	 float getHeight(std::vector<float> * heights, int x, int y, int size);
 
-	 Vec4 getColor(float value, float width);
+	 Vec3 getColour(SDL_Surface * colourMap, int x, int y);
 
 	 Camera camera;
 
-	 std::vector<Vec4> colors;
+	 std::vector<Vec3> colors;
 
 public:
     /** Constructor. */
@@ -100,5 +100,5 @@ protected:
     /** Copies the data from the height map into memory. */
     void fillTerrainHeights(int xDiv, int zDiv);
 
-    Vec4 getpixel24(SDL_Surface *surface, int x, int y);
+    Vec3 getpixel24(SDL_Surface *surface, int x, int y);
 };

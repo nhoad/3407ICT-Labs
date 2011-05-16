@@ -1,11 +1,8 @@
-varying vec4 position;
-varying vec3 normal;
-varying float diffuse;
+varying vec3 diffuse;
+varying vec3 ambience;
+varying vec3 specular;
 
 void main()
 {
-   vec3 n = normal;
-   vec3 light = vec3(5);
-
-   gl_FragColor = diffuse;
+   gl_FragColor.xyz = ambience + diffuse + specular;
 }

@@ -1,17 +1,31 @@
-varying vec4 position;
-varying vec3 normal;
-varying float diffuse;
+varying vec3 diffuse;
+varying vec3 ambience;
+varying vec3 specular;
+
+uniform vec3 bg_colour;
 
 void main()
 {
+   gl_Position = gl_ModelViewMatrix * gl_Vertex;
+   gl_Position = gl_Position / gl_Position.w;
+
    vec3 light = vec3(3, 4, 1);
-   vec3 light_dir = gl_ModelViewMatrix * vec4(light, 0.0);
+   vec3 light_dir = (gl_ModelViewMatrix * vec4(light, 0.0));
+   vec3 normal = gl_NormalMatrix * gl_Normal;
 
-   normal = gl_NormalMatrix * gl_Normal;
+   vec3 ambient_colour = bg_colour;
+   vec3 eye_to_vertex = normalize(-gl_Position);
+   vec3 half_vector = normalize(eye_to_vertex + light_dir);
 
-   position = gl_Vertex;
-   gl_Position = gl_ModelViewProjectionMatrix * position;
+   float shininess = 0.5;
+   float ambient_intensity = 0.5;
+   float diffuse_intensity = 0.5;
+   float specular_intensity = pow(max(dot(half_vector, normal), 0), shininess);
 
-   diffuse = max(dot(normalize(normal), normalize(light_dir)), 0.05) * 0.5;
+   ambience = ambient_colour * ambient_intensity;
 
+   diffuse = max(dot(normalize(normal), normalize(light_dir)), 0) * diffuse_intensity;
+   //specular = specular_intensity * ambient_colour;
+
+   gl_Position = gl_ProjectionMatrix * gl_Position;
 }
