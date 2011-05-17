@@ -7,6 +7,8 @@ uniform vec3 light_position;
 
 void main()
 {
+   gl_TexCoord[0] = gl_MultiTexCoord0;
+
    gl_Position = gl_ModelViewMatrix * gl_Vertex;
 
    vec3 light = vec3(1, 1, 5);
@@ -23,8 +25,7 @@ void main()
    float specular_intensity = pow(max(dot(half_vector, normalize(normal)), 0), shininess);
 
    ambience = ambient_colour * ambient_intensity;
-
-   diffuse = max(dot(normalize(normal), normalize(light_dir)), 0) * diffuse_intensity;
+   diffuse = max(dot(normalize(normal), normalize(light_dir)), 0) * diffuse_intensity ;
    specular = specular_intensity * ambient_colour;
 
    gl_Position = gl_ProjectionMatrix * gl_Position;

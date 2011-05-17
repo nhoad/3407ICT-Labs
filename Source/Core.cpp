@@ -132,7 +132,7 @@ void Core::preprocess()
 {
 
 	this->objects.push_back(new Object("Assets/Person.obj"));
-	this->objects.push_back(new Object("Assets/Cube_CubeMapped.obj", "", Mat4::translate(0, 0, 4)));
+	this->objects.push_back(new Object("Assets/Cube_CubeMapped.obj", "Assets/wood_floor.png", Mat4::translate(0, 0, 4)));
 
 	// Load objects here
 	camera.setSpeed(0.5);
@@ -153,7 +153,6 @@ void Core::preprocess()
 	//gluLookAt(323, 318, 33, 0, 0, 0, 0, 1, 0);
 
 	// Enable any OpenGL feature you like, such as backface culling and depth testing, here.
-	glEnable(GL_DEPTH_TEST);
 
 	vShader = Loader::loadShader("Assets/basic_shader_v.glsl", GL_VERTEX_SHADER);
 	fShader = Loader::loadShader("Assets/basic_shader_f.glsl", GL_FRAGMENT_SHADER);
@@ -170,6 +169,8 @@ void Core::preprocess()
 	glClearColor(bg_colour[0], bg_colour[1], bg_colour[2], bg_colour[3]);
 
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 
 	createVBOs();
 }
@@ -208,15 +209,26 @@ void Core::render()
 		glPushMatrix();
 		glMultMatrixf(objects[i]->matrix * Mat4::rotateY(-50));
 
+		glNormalPointer(GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].nx);
+
+		if (objects[i]->texture != 0)
+		{
+			glBindTexture(GL_TEXTURE_2D, objects[i]->texture);
+		}
+
 		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
 		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), 0);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-		glNormalPointer(GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].nx);
-
 		glDrawArrays(GL_QUADS, 0, objects[i]->mesh.size());
 
 		glPopMatrix();
+
+		if (objects[i]->texture != 0)
+		{
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+
 
 	}
 
