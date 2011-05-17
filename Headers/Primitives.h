@@ -93,12 +93,9 @@ class Object
 	public:
 		Mesh mesh;
 		Mat4 matrix;
+		unsigned int shader, vbo, texture;
 
-		GLuint vbo;
-		unsigned int shaderProgram;
-
-		Object();
-
+		Object(std::string meshFile= "", std::string textureFile = "", Mat4 m = Mat4());
 
 		/**
 			return centre point of cube on the x axis.

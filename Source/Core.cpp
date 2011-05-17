@@ -131,9 +131,8 @@ void Core::start()
 void Core::preprocess()
 {
 
-	Object * o = new Object;
-	o->mesh = Loader::readMesh("Assets/Person.obj");
-	this->objects.push_back(o);
+	this->objects.push_back(new Object("Assets/Person.obj"));
+	this->objects.push_back(new Object("Assets/Cube_CubeMapped.obj", "", Mat4::translate(0, 0, 4)));
 
 	// Load objects here
 	camera.setSpeed(0.5);
@@ -170,7 +169,7 @@ void Core::preprocess()
 	glUniform3fv(bg_colour_id, 1, bg_colour);
 	glClearColor(bg_colour[0], bg_colour[1], bg_colour[2], bg_colour[3]);
 
-
+	glEnable(GL_TEXTURE_2D);
 
 	createVBOs();
 }

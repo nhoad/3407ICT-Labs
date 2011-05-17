@@ -26,6 +26,8 @@ using std::cerr;
 #include <cstring>
 #include <cstdlib>
 
+#include "SDL_image.h"
+
 #include "StringFunctions.h"
 #include "Loader.h"
 #include "Vec2.h"
@@ -244,4 +246,22 @@ unsigned int Loader::linkShader(unsigned int vertex, unsigned int fragment)
 	//glValidateProgram(?);
 
 	return id;
+}
+
+unsigned int Loader::loadTexture(std::string file)
+{
+	SDL_Surface * img = IMG_Load(file.c_str());
+
+	unsigned int result;
+
+	glGenTextures(1, &result);
+	glBindTexture(GL_TEXTURE_2D, result);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img->w, img->h, 0, GL_RGB, GL_UNSIGNED_BYTE, img->pixels);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	SDL_FreeSurface(img);
+
+	return result;
 }

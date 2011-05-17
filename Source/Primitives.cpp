@@ -8,12 +8,22 @@
 using std::vector;
 
 #include "Primitives.h"
+#include "Loader.h"
 
 #include <iostream>
 using std::ostream;
 
-Object::Object()
+using std::string;
+
+Object::Object(string meshFile, string textureFile, Mat4 m)
 {
+	if (meshFile.size() > 0)
+		this->mesh = Loader::readMesh(meshFile);
+
+	if (textureFile.size() > 0)
+		this->texture = Loader::loadTexture(textureFile);
+
+	this->matrix = m;
 }
 
 float Object::centre(int k)

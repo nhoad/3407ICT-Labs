@@ -30,7 +30,7 @@ class Loader
 			\return the script from input file as a string string.
 		*/
 		std::string static readGLSL(const std::string filename);
-		
+
 		/**
 			Create a shader from a script.
 
@@ -39,5 +39,13 @@ class Loader
 		*/
 		unsigned int static loadShader(std::string script, int shaderType);
 
+		/**
+		 * Link a vertex and a fragment shader.
+		 * \param vertex the id of the vertex shader returned by loadShader()
+		 * \param fragment id of the fragment shader returns by laodShader()
+		 * \return program id of the resulting shader program
+		 */
 		unsigned int static linkShader(unsigned int vertex, unsigned int fragment);
+
+		unsigned int static loadTexture(std::string file);
 };
