@@ -3,6 +3,7 @@ varying vec3 ambience;
 varying vec3 specular;
 
 uniform vec3 bg_colour;
+uniform vec3 light_position;
 
 void main()
 {

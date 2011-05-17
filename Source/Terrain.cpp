@@ -130,12 +130,12 @@ void Core::preprocess()
 {
 	// Load any images here
 
-	terrainHeightMap = IMG_Load("Assets/heightMap_gradient.png");
+	terrainHeightMap = IMG_Load("Assets/pacmanHeightmap.png");
 
 	// Height map
 
 	// Define your terrain detail levels (divisions)
-	float xDiv = 6;
+	float xDiv = 3;
 	float zDiv = xDiv;
 
 	if (!terrainHeightMap)
@@ -174,7 +174,6 @@ void Core::preprocess()
 	glEnable(GL_DEPTH_TEST);
 	//glPolygonMode(GL_FRONT, GL_LINE);
 
-	glClearColor(1,1,1,0);
 }
 
 void Core::render()
@@ -221,12 +220,23 @@ void Core::cleanup()
 
 float Core::getHeight(vector<float> * heights, int x, int y, int size)
 {
-	return (*heights)[x + (y * size)] * 2;
+	return (*heights)[x + (y * size)];
+}
+
+Vec3 Core::getColour(vector<float> * heights, int x, int y, int size)
+{
+	float height = (*heights)[x + (y * size)];
+
+	if (height == 0)
+		return Vec3(0, 0, 0);
+
+	return Vec3(0.13, 0.26, (height / 255.0) + 0.25);
+
 }
 
 Vec3 Core::getColour(SDL_Surface * colourMap, int x, int y)
 {
-	Vec3 result = getpixel24(colourMap, x, y);
+	Vec3 result = getpixel24(colourMap, y, x);
 
 	for (int i=0; i < 4; i++)
 		result(i) /= 255.0;
@@ -244,8 +254,6 @@ void Core::createTerrain(int xDiv, int zDiv, Object* _terrain, vector<float> hei
 	int w = sqrt(heights.size());
 	int depth = w;
 
-	SDL_Surface * colourMap = IMG_Load("Assets/islandColours.png");
-
 	// -1 because going to the absolute last means you're going into unchartered memory.
 	for (int z=0; z  < w; z++)
 	{
@@ -262,6 +270,14 @@ void Core::createTerrain(int xDiv, int zDiv, Object* _terrain, vector<float> hei
 			polygon.push_back(Vec3(curX+xDiv, getHeight(&heights, x+1, z, w), curZ));
 			polygon.push_back(Vec3(curX+xDiv, getHeight(&heights, x+1, z+1, w), curZ+zDiv));
 
+			colors.push_back(getColour(&heights, x, z, w));
+			colors.push_back(getColour(&heights, x+1, z+1, w));
+			colors.push_back(getColour(&heights, x, z+1, w));
+
+			colors.push_back(getColour(&heights, x, z, w));
+			colors.push_back(getColour(&heights, x+1, z, w));
+			colors.push_back(getColour(&heights, x+1, z+1, w));
+/*
 			colors.push_back(getColour(colourMap, x, z));
 			colors.push_back(getColour(colourMap, x+1, z+1));
 			colors.push_back(getColour(colourMap, x, z+1));
@@ -315,7 +331,7 @@ void Core::fillTerrainHeights(int xDiv, int zDiv)
 		{
 			Vec3 color = getpixel24(terrainHeightMap, i, j);
 
-			float height = (color(0) + color(1) + color(2) ) / 3.0;
+			float height = color(0);
 			terrainHeights.push_back(height);
 		}
 

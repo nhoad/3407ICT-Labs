@@ -59,6 +59,7 @@ class Core
 	 */
 	 float getHeight(std::vector<float> * heights, int x, int y, int size);
 
+	 Vec3 getColour(std::vector<float> * heights, int x, int y, int size);
 	 Vec3 getColour(SDL_Surface * colourMap, int x, int y);
 
 	 Camera camera;
