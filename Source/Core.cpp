@@ -105,7 +105,7 @@ void Core::initialise()
 	}
 
 //	SDL_WarpMouse(0, 0);
-	SDL_WM_GrabInput(SDL_GRAB_ON);
+//	SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -132,7 +132,7 @@ void Core::preprocess()
 {
 
 	this->objects.push_back(new Object("Assets/Person.obj"));
-	this->objects.push_back(new Object("Assets/Cube_CubeMapped.obj", "Assets/wood_floor.png", Mat4::translate(0, 0, 4)));
+	this->objects.push_back(new Object("Assets/Cube_CubeMapped.obj", "", Mat4::translate(0, 0, 4)));
 
 	// Load objects here
 	camera.setSpeed(0.5);
@@ -158,19 +158,28 @@ void Core::preprocess()
 	fShader = Loader::loadShader("Assets/basic_shader_f.glsl", GL_FRAGMENT_SHADER);
 
 	shaderProgram = Loader::linkShader(vShader, fShader);
-
 	glUseProgram(shaderProgram);
 
 	float bg_colour[] = {0.1f, 0.2f, 0.4f, 0.0f};
 
 	int bg_colour_id = glGetUniformLocation(shaderProgram, "bg_colour");
-	int tex_id = glGetUniformLocation(shaderProgram, "tex");
 
 	glUniform3fv(bg_colour_id, 1, bg_colour);
 	glClearColor(bg_colour[0], bg_colour[1], bg_colour[2], bg_colour[3]);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_TEXTURE_2D);
+
+	SDL_Surface * img = IMG_Load("Assets/Checkerboard.png");
+
+	unsigned int texture_id;
+	glGenTextures(1, &texture_id);
+	glBindTexture(GL_TEXTURE_2D, texture_id);
+	glTexImage2D(GL_TEXTURE_2D, 0, img->format->BytesPerPixel, img->w, img->h, 0, GL_RGB, GL_UNSIGNED_BYTE, img->pixels);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	createVBOs();
 }
@@ -198,6 +207,8 @@ void Core::render()
 	// Enable vertex array and such
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
 
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
@@ -209,13 +220,9 @@ void Core::render()
 		glPushMatrix();
 		glMultMatrixf(objects[i]->matrix * Mat4::rotateY(-50));
 
-		glNormalPointer(GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].nx);
+		glTexCoordPointer(2, GL_FLOAT, 0, &objects[i]->mesh[0].tx);
 
-		if (objects[i]->texture != 0)
-		{
-			glBindTexture(GL_TEXTURE_2D, objects[i]->texture);
-			glTexCoordPointer(2, GL_FLOAT, 0, &objects[i]->mesh[0].tx);
-		}
+		glNormalPointer(GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].nx);
 
 		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
 		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), 0);
@@ -230,6 +237,7 @@ void Core::render()
 	// Pop the matrix from the stack.
 	glPopMatrix();
 
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 
