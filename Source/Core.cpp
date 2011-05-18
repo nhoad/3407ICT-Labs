@@ -176,10 +176,10 @@ void Core::preprocess()
 	unsigned int texture_id;
 	glGenTextures(1, &texture_id);
 	glBindTexture(GL_TEXTURE_2D, texture_id);
-	glTexImage2D(GL_TEXTURE_2D, 0, img->format->BytesPerPixel, img->w, img->h, 0, GL_RGB, GL_UNSIGNED_BYTE, img->pixels);
 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, img->format->BytesPerPixel, img->w, img->h, 0, GL_RGB, GL_UNSIGNED_BYTE, img->pixels);
 
 	createVBOs();
 }
@@ -209,7 +209,6 @@ void Core::render()
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
 
@@ -220,7 +219,7 @@ void Core::render()
 		glPushMatrix();
 		glMultMatrixf(objects[i]->matrix * Mat4::rotateY(-50));
 
-		glTexCoordPointer(2, GL_FLOAT, 0, &objects[i]->mesh[0].tx);
+		glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].tx);
 
 		glNormalPointer(GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].nx);
 
