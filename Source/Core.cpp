@@ -164,11 +164,11 @@ void Core::preprocess()
 	float bg_colour[] = {0.1f, 0.2f, 0.4f, 0.0f};
 
 	int bg_colour_id = glGetUniformLocation(shaderProgram, "bg_colour");
+	int tex_id = glGetUniformLocation(shaderProgram, "tex");
 
 	glUniform3fv(bg_colour_id, 1, bg_colour);
 	glClearColor(bg_colour[0], bg_colour[1], bg_colour[2], bg_colour[3]);
 
-	glEnable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 
@@ -214,6 +214,7 @@ void Core::render()
 		if (objects[i]->texture != 0)
 		{
 			glBindTexture(GL_TEXTURE_2D, objects[i]->texture);
+			glTexCoordPointer(2, GL_FLOAT, 0, &objects[i]->mesh[0].tx);
 		}
 
 		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
@@ -223,12 +224,6 @@ void Core::render()
 		glDrawArrays(GL_QUADS, 0, objects[i]->mesh.size());
 
 		glPopMatrix();
-
-		if (objects[i]->texture != 0)
-		{
-			glBindTexture(GL_TEXTURE_2D, 0);
-		}
-
 
 	}
 

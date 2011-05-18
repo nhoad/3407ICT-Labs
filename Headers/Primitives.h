@@ -96,6 +96,7 @@ class Object
 		unsigned int shader, vbo, texture;
 
 		Object(std::string meshFile= "", std::string textureFile = "", Mat4 m = Mat4());
+		Object(Mesh mesh, Mat4 m = Mat4());
 
 		/**
 			return centre point of cube on the x axis.

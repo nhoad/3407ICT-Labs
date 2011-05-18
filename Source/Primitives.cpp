@@ -22,8 +22,18 @@ Object::Object(string meshFile, string textureFile, Mat4 m)
 
 	if (textureFile.size() > 0)
 		this->texture = Loader::loadTexture(textureFile);
+	else
+		this->texture = 0;
 
 	this->matrix = m;
+}
+
+Object::Object(Mesh mesh, Mat4 m)
+{
+	this->mesh = mesh;
+	this->texture = 0;
+	this->matrix = m;
+
 }
 
 float Object::centre(int k)
