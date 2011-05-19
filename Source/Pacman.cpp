@@ -110,22 +110,22 @@ void Pacman::move(int direction)
 	{
 		case UP:
 		{
-			coordinates(0)--;
+			coordinates(0) -= .1;
 			break;
 		}
 		case DOWN:
 		{
-			coordinates(0)++;
+			coordinates(0) += .1;
 			break;
 		}
 		case LEFT:
 		{
-			coordinates(2)++;
+			coordinates(2) += .1;
 			break;
 		}
 		case RIGHT:
 		{
-			coordinates(2)--;
+			coordinates(2) -= .1;
 			break;
 		}
 	}

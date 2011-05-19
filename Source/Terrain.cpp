@@ -138,7 +138,7 @@ void Core::preprocess()
 	for (int i=0; i < 256; i++)
 		keys[i] = false;
 
-	terrain = Loader::loadTerrain("Assets/pacmanHeightmap.png", 1);
+	terrain = Loader::loadTerrain("Assets/pacman.png", 1);
 
 	camera.setSpeed(1);
 	camera.setPosition(Vec3(300, 400, 320));
@@ -156,7 +156,7 @@ void Core::preprocess()
 	player = new Pacman();
 	player->obj->buffer();
 
-	food = Pacman::loadFood("Assets/Cube.obj", 50);
+	//food = Pacman::loadFood("Assets/Cube.obj", 50);
 }
 
 void Core::render()
@@ -184,9 +184,9 @@ void Core::render()
 
 	player->draw();
 
-	for (int i=0; i < food.size(); i++)
+	/*for (int i=0; i < food.size(); i++)
 		food[i]->draw();
-
+*/
 	glPopMatrix();
 
 	// Pop the matrix from the stack.
@@ -239,28 +239,16 @@ void Core::handleEvents()
 		camera.move(RIGHT);
 
 	if (keys[SDLK_w])
-	{
 		player->move(UP);
-		keys[SDLK_w] = false;
-	}
 
 	if (keys[SDLK_s])
-	{
 		player->move(DOWN);
-		keys[SDLK_s] = false;
-	}
 
 	if (keys[SDLK_a])
-	{
 		player->move(LEFT);
-		keys[SDLK_a] = false;
-	}
 
 	if (keys[SDLK_d])
-	{
 		player->move(RIGHT);
-		keys[SDLK_d] = false;
-	}
 
 }
 
