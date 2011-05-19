@@ -44,22 +44,33 @@ vector<Food*> Pacman::loadFood(std::string meshFile, int count)
 {
 	Mesh m = Loader::readMesh(meshFile);
 	vector<Food*> food;
-	// slam the mesh to the vbo
-
-	// we use the players vbo because they're both the same object
-	//unsigned int buffer = player->vbo;
 
 	unsigned buffer;
+
+	glGenBuffers(1, &buffer);
+
+	glBindBuffer(GL_ARRAY_BUFFER, buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * m.size(),
+		&m[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 	for (int i=0; i < count; i++)
 	{
 		Food * f = new Food(m, 10);
 
-		if (i % 10 == 0)
-			f->points = 20;
-
 		// this needs to be modified to put them in the correct place
-		f->obj->matrix = Mat4::translate(0, 1, 1);
+		f->coordinates = Vec3(0, 0, i * 2);
+		f->obj->matrix = Mat4::scale(20, 20, 20);
 		f->obj->vbo = buffer;
+		f->color = Vec3(0, 1, 1);
+
+		if (i % 10 == 0)
+		{
+			f->points = 20;
+			f->color = Vec3(0, 1, 0);
+			f->obj->matrix = Mat4::scale(20, 20, 20);
+		}
+
 
 		food.push_back(f);
 	}
@@ -69,7 +80,7 @@ vector<Food*> Pacman::loadFood(std::string meshFile, int count)
 
 GameEntity* Pacman::loadPlayer(std::string meshFile, std::string textureFile)
 {
-	GameEntity * player = new GameEntity(meshFile, textureFile, Mat4::translate(0, 0, 0));
+	GameEntity * player = new GameEntity(meshFile, textureFile);
 
 	glGenBuffers(1, &player->vbo);
 
@@ -88,8 +99,7 @@ Pacman::Pacman()
 
 	obj->matrix = Mat4::scale(20, 20, 20);
 
-	/*Pacman::loadGhosts("Assets/Ghost.obj", "Assets/Ghost.png", 4);
-	Pacman::loadFood("Assets/Ball.obj", 50);*/
+	//Pacman::loadGhosts("Assets/Ghost.obj", "Assets/Ghost.png", 4);
 }
 
 void Pacman::move(int direction)
@@ -119,13 +129,30 @@ void Pacman::move(int direction)
 	}
 }
 
-void Pacman::draw()
+void Ghost::draw()
 {
 	Mat4 m = obj->matrix;
 	obj->matrix = Mat4::translate(coordinates) * m;
 	obj->draw();
 	obj->matrix = m;
+}
 
+void Food::draw()
+{
+	Mat4 m = obj->matrix;
+	obj->matrix = Mat4::translate(coordinates) * m;
+	glColor3f(color(0), color(1), color(2));
+	obj->draw();
+	obj->matrix = m;
+}
+
+void Pacman::draw()
+{
+	Mat4 m = obj->matrix;
+	obj->matrix = Mat4::translate(coordinates) * m;
+	glColor3f(1,1,0);
+	obj->draw();
+	obj->matrix = m;
 }
 
 void Pacman::drawHUD()

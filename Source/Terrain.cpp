@@ -155,6 +155,8 @@ void Core::preprocess()
 
 	player = new Pacman();
 	player->obj->buffer();
+
+	food = Pacman::loadFood("Assets/Cube.obj", 50);
 }
 
 void Core::render()
@@ -176,10 +178,15 @@ void Core::render()
 	terrain.draw();
 
 	glDisableClientState(GL_COLOR_ARRAY);
+
 	for (int i=0; i < objects.size(); i++)
 		objects[i]->draw();
 
 	player->draw();
+
+	for (int i=0; i < food.size(); i++)
+		food[i]->draw();
+
 	glPopMatrix();
 
 	// Pop the matrix from the stack.

@@ -17,6 +17,9 @@ class Ghost
 	bool scared;
 	bool visible;
 	GameEntity * obj;
+	Vec3 coordinates;
+
+	void draw();
 };
 
 class Food
@@ -27,6 +30,9 @@ class Food
 
 	bool visible;
 	GameEntity * obj;
+	Vec3 coordinates, color;
+
+	void draw();
 };
 
 class Pacman

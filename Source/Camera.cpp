@@ -42,11 +42,6 @@ void Camera::load()
 	float xRot = rotation(0);
 	float yRot = rotation(1);
 
-	cout << xpos << endl;
-	cout << ypos << endl;
-	cout << zpos << endl;
-	cout << endl;
-
 	Mat4 m = Mat4::translate(-xpos, -ypos, -zpos);
 	m *= Mat4::rotateY(yRot);
 	m *= Mat4::rotateX(xRot);

@@ -62,6 +62,9 @@ class Core
 
 	 Pacman * player;
 
+	 std::vector<Ghost*> ghosts;
+	 std::vector<Food*> food;
+
 public:
     /** Constructor. */
     Core(int width=800, int height=600, bool fullscreen=false);
