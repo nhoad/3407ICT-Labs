@@ -54,12 +54,14 @@ vector<Food*> Pacman::loadFood(std::string meshFile, int count)
 		&m[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	int x = 3;
+
 	for (int i=0; i < count; i++)
 	{
 		Food * f = new Food(m, 10);
 
 		// this needs to be modified to put them in the correct place
-		f->coordinates = Vec3(0, 0, i * 2);
+		f->coordinates = Vec3(x, 0, 3 + (i * 2));
 		f->obj->matrix = Mat4::scale(20, 20, 20);
 		f->obj->vbo = buffer;
 		f->color = Vec3(0, 1, 1);
