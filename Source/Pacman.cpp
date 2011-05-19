@@ -73,3 +73,9 @@ void Pacman::loadPlayer(std::string meshFile, std::string textureFile)
 		&player->mesh[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
+
+void Pacman::drawHUD()
+{
+
+
+}

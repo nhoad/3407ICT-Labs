@@ -267,3 +267,85 @@ unsigned int Loader::loadTexture(std::string file)
 
 	return result;
 }
+
+Vec3 Loader::getPixel(SDL_Surface * img, int x, int y)
+{
+	float r, g, b;
+	Uint8 * p = (Uint8 *)img->pixels + y * img->pitch + x * img->format->BytesPerPixel;
+#if defined(__MACH__) && defined(__APPLE__)
+	b = p[0];
+	g = p[1];
+	r = p[2];
+#else
+	b = p[2];
+	g = p[1];
+	r = p[0];
+#endif
+
+	return Vec3(r, g, b);
+}
+
+Terrain Loader::loadTerrain(string heightmap, float divisions)
+{
+	SDL_Surface * img = IMG_Load(heightmap.c_str());
+
+	float xDiv = divisions, zDiv = xDiv;
+	unsigned int vbo, color_vbo;
+
+	vector<float> heights;
+	vector<Vec3> polygon, colors;
+
+	SDL_LockSurface(img);
+
+	int width = img->w, depth = img->h;
+
+	for (int i=0; i < img->w; i++)
+		for (int j=0; j < img->h; j++)
+		{
+			Vec3 color = Loader::getPixel(img, i, j);
+			heights.push_back(color(0));
+		}
+
+	SDL_UnlockSurface(img);
+	SDL_FreeSurface(img);
+
+	for (int z=0; z < width; z++)
+		for (int x=0; x < depth; x++)
+		{
+			int curX = x * xDiv, curZ = z * zDiv;
+
+			polygon.push_back(Vec3(curX, Terrain::getHeight(&heights, x, z, width), curZ));
+			polygon.push_back(Vec3(curX+xDiv, Terrain::getHeight(&heights, x+1, z+1, width), curZ+zDiv));
+			polygon.push_back(Vec3(curX, Terrain::getHeight(&heights, x, z+1, width), curZ+zDiv));
+
+			polygon.push_back(Vec3(curX, Terrain::getHeight(&heights, x, z, width), curZ));
+			polygon.push_back(Vec3(curX+xDiv, Terrain::getHeight(&heights, x+1, z, width), curZ));
+			polygon.push_back(Vec3(curX+xDiv, Terrain::getHeight(&heights, x+1, z+1, width), curZ+zDiv));
+
+			colors.push_back(Terrain::getColour(&heights, x, z, width));
+			colors.push_back(Terrain::getColour(&heights, x+1, z+1, width));
+			colors.push_back(Terrain::getColour(&heights, x, z+1, width));
+
+			colors.push_back(Terrain::getColour(&heights, x, z, width));
+			colors.push_back(Terrain::getColour(&heights, x+1, z, width));
+			colors.push_back(Terrain::getColour(&heights, x+1, z+1, width));
+		}
+
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, polygon.size() * sizeof(Vec3), &polygon[0](0), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glGenBuffers(1, &color_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
+	glBufferData(GL_ARRAY_BUFFER, polygon.size() * sizeof(Vec3), &colors[0](0), GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	Terrain t;
+
+	t.vbo = vbo;
+	t.color_vbo = color_vbo;
+	t.size = colors.size();
+
+	return t;
+}

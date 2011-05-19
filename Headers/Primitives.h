@@ -8,6 +8,7 @@
 #include <iostream>
 
 #include "Mat4.h"
+#include "Vec3.h"
 
 #include "SDL.h"
 #include "glut.h"
@@ -122,5 +123,24 @@ class Object
 		/**
 		 * Make openGL calls to draw this object
 		 */
+		void draw();
+
+		/**
+		 * Send the mesh to the VBO and set vbo variable accordingly
+		 */
+		void buffer();
+};
+
+class Terrain
+{
+	public:
+		Terrain();
+		~Terrain();
+
+		int vbo, color_vbo, size;
+
+		static float getHeight(std::vector<float> * heights, int x, int y, int y_step);
+		static Vec3 getColour(std::vector<float> * heights, int x, int y, int y_step);
+
 		void draw();
 };

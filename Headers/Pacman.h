@@ -40,6 +40,8 @@ class Pacman
 		static void loadGhosts(std::string meshFile, std::string textureFile, int count);
 		static void loadFood(std::string meshFile, int count);
 		static void loadPlayer(std::string meshFile, std::string textureFile);
+
+		static void drawHUD();
 };
 
 std::vector<Food*> Pacman::food;

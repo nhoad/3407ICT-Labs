@@ -35,18 +35,11 @@ class Core
     /** Mainloop control toggle */
     bool running;
 
-    /** Images */
-    SDL_Surface *terrainHeightMap;
-
-    /** Objects */
-    Object terrain;
-
     /** Height map array */
     std::vector<float> terrainHeights;
 
     /** List of Objects */ // Optional but helpful
-    // std::list<Object*> objects;
-	 GLuint buffer;
+    std::vector<Object*> objects;
 
 	 /**
 	  Get a height from the heightmap using nice x and y coordinates
@@ -57,12 +50,10 @@ class Core
 	  \param size the width or height of the height map (same size)
 	  \return heightmap value at x and y
 	 */
-	 float getHeight(std::vector<float> * heights, int x, int y, int size);
-
-	 Vec3 getColour(std::vector<float> * heights, int x, int y, int size);
-	 Vec3 getColour(SDL_Surface * colourMap, int x, int y);
 
 	 Camera camera;
+
+	 Terrain terrain;
 
 	 std::vector<Vec3> colors;
 

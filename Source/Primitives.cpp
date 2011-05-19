@@ -11,6 +11,7 @@ using std::vector;
 
 #include "Primitives.h"
 #include "Loader.h"
+#include "Vec3.h"
 
 #include <iostream>
 using std::ostream;
@@ -116,4 +117,61 @@ void Object::draw()
 
 	glPopMatrix();
 
+}
+
+void Object::buffer()
+{
+	if (mesh.size() == 0)
+		return;
+
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh.size(), &mesh[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+}
+
+float Terrain::getHeight(std::vector<float> * heights, int x, int y, int y_step)
+{
+	return (*heights)[x + (y * y_step)];
+}
+
+Vec3 Terrain::getColour(std::vector<float> * heights, int x, int y, int y_step)
+{
+	float height = Terrain::getHeight(heights, x, y, y_step);
+
+	if (height == 0)
+		return Vec3();
+
+	return Vec3(0.13, 0.24, (height / 255.0) + 0.1);
+}
+
+Terrain::Terrain()
+{
+	size = 0;
+}
+
+Terrain::~Terrain()
+{
+
+}
+
+void Terrain::draw()
+{
+	if (size == 0)
+		return;
+
+	glPushMatrix();
+
+	glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
+	glColorPointer(3, GL_FLOAT, sizeof(Vec3), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexPointer(3, GL_FLOAT, sizeof(Vec3), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glDrawArrays(GL_TRIANGLES, 0, size);
+
+	glPopMatrix();
 }
