@@ -1,3 +1,5 @@
+#include "glew.h"
+
 #include "Pacman.h"
 #include "Loader.h"
 
@@ -25,8 +27,8 @@ Ghost::Ghost(int color, Object * object)
 void Pacman::initialise()
 {
 	Pacman::loadGhosts("Assets/Ghost.obj", "Assets/Ghost.png", 4);
-	Pacman::loadFood("Assets/Ball.obj", 50);
 	Pacman::loadPlayer("Assets/Ball.obj", "Assets/Pacman.png");
+	Pacman::loadFood("Assets/Ball.obj", 50);
 }
 
 void Pacman::loadGhosts(string meshFile, string textureFile, int count)
@@ -42,6 +44,9 @@ void Pacman::loadFood(std::string meshFile, int count)
 	Mesh m = Loader::readMesh(meshFile);
 	// slam the mesh to the vbo
 
+	// we use the players vbo because they're both the same object
+	unsigned int buffer = player->vbo;
+
 	for (int i=0; i < count; i++)
 	{
 		Food * f = new Food(m, 10);
@@ -51,6 +56,7 @@ void Pacman::loadFood(std::string meshFile, int count)
 
 		// this needs to be modified to put them in the correct place
 		f->obj->matrix = Mat4::translate(0, 1, 1);
+		f->obj->vbo = buffer;
 
 		Pacman::food.push_back(f);
 	}
@@ -58,5 +64,12 @@ void Pacman::loadFood(std::string meshFile, int count)
 
 void Pacman::loadPlayer(std::string meshFile, std::string textureFile)
 {
-	player = new Object("Assets/ball.obj", "", Mat4::translate(0, 0, 0));
+	player = new Object(meshFile, textureFile, Mat4::translate(0, 0, 0));
+
+	glGenBuffers(1, &player->vbo);
+
+	glBindBuffer(GL_ARRAY_BUFFER, player->vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * player->mesh.size(),
+		&player->mesh[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }

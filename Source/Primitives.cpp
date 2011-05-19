@@ -4,6 +4,8 @@
  * @author Nathan Hoad (nathan@getoffmalawn.com)
  * Student Number: s2754580
  */
+#include "glew.h"
+
 #include <vector>
 using std::vector;
 
@@ -96,4 +98,22 @@ ostream & operator<<(ostream & o, const Vertex & v)
 	}
 
 	return o;
+}
+
+void Object::draw()
+{
+	glPushMatrix();
+
+	glMultMatrixf(matrix);
+	glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &mesh[0].tx);
+	glNormalPointer(GL_FLOAT, sizeof(Vertex), &mesh[0].nx);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glDrawArrays(GL_QUADS, 0, mesh.size());
+
+	glPopMatrix();
+
 }

@@ -104,8 +104,8 @@ void Core::initialise()
 		SDL_Quit();
 	}
 
-//	SDL_WarpMouse(0, 0);
-//	SDL_WM_GrabInput(SDL_GRAB_ON);
+	SDL_WarpMouse(0, 0);
+	SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -139,11 +139,6 @@ void Core::preprocess()
 	camera.setPosition(Vec4(0, 0, 5, 1));
 	camera.setTarget(Vec4(0, 0, 0, 1));
 
-	// Add all renderable mesh to the list of objects (see header file)
-	// Optional but helpful //
-
-	// Define your projection matrix here, and your initial camera view.
-	// Feel free to either use the built-in OpenGL transforms or your own ;]
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45, ((float) width / height), 1, 50);
@@ -151,8 +146,6 @@ void Core::preprocess()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	//gluLookAt(323, 318, 33, 0, 0, 0, 0, 1, 0);
-
-	// Enable any OpenGL feature you like, such as backface culling and depth testing, here.
 
 	vShader = Loader::loadShader("Assets/basic_shader_v.glsl", GL_VERTEX_SHADER);
 	fShader = Loader::loadShader("Assets/basic_shader_f.glsl", GL_FRAGMENT_SHADER);
@@ -209,31 +202,14 @@ void Core::render()
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
 
+	// set up the camera
 	camera.load();
 
 	for (int i=0; i < objects.size(); i++)
-	{
-		glPushMatrix();
-		glMultMatrixf(objects[i]->matrix * Mat4::rotateY(-50));
+		objects[i]->draw();
 
-		glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].tx);
-
-		glNormalPointer(GL_FLOAT, sizeof(Vertex), &objects[i]->mesh[0].nx);
-
-		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
-		glVertexPointer(4, GL_FLOAT, sizeof(Vertex), 0);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-		glDrawArrays(GL_QUADS, 0, objects[i]->mesh.size());
-
-		glPopMatrix();
-
-	}
-
-	// Pop the matrix from the stack.
 	glPopMatrix();
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -246,7 +222,6 @@ void Core::render()
 
 void Core::cleanup()
 {
-
 	for (int i=0; i < objects.size(); i++)
 		delete objects[i];
 

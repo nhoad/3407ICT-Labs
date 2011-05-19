@@ -49,6 +49,7 @@ class Core
 
 	void createVBOs();
 
+
 public:
     /** Constructor. */
     Core(int width=800, int height=600, bool fullscreen=false);

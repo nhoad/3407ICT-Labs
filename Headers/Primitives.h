@@ -119,4 +119,8 @@ class Object
 		*/
 		float centreZ();
 
+		/**
+		 * Make openGL calls to draw this object
+		 */
+		void draw();
 };

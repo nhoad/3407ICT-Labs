@@ -89,9 +89,9 @@ void Core::initialise()
 		SDL_Quit();
 	}
 
-	if (SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL))
+	/*if (SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL))
 		cerr << "couldn't enable key repeat!" << endl;
-
+*/
 	// Initialises SDL_image, an image reading wrapper on many popular formats.
 	// SDL_image supports more than just these two formats. Have a look at the
 	// documentation page linked in the #include comments.
@@ -128,6 +128,8 @@ void Core::start()
 
 void Core::preprocess()
 {
+	for (int i=0; i < 256; i++)
+		keys[i] = false;
 	// Load any images here
 
 	terrainHeightMap = IMG_Load("Assets/pacmanHeightmap.png");
@@ -154,7 +156,7 @@ void Core::preprocess()
 
 	// Load objects here
 	camera.setSpeed(50);
-	camera.setPosition(Vec4(0, 0, 0, 1));
+	camera.setPosition(Vec4(0, 150, 0, 1));
 	camera.setTarget(Vec4(384, 55, 384, 1));
 
 	// Create any VBO here
@@ -349,15 +351,17 @@ void Core::handleEvents()
 				running = false;
 				break;
 			case SDL_KEYUP:
-				switch (e.key.keysym.sym) {
-					case SDLK_ESCAPE:
-						running = false;
-						break;
-					default: break;
-				}
+				keys[e.key.keysym.sym] = false;
+				if (SDLK_ESCAPE == e.key.keysym.sym)
+					running = false;
+				break;
 			case SDL_KEYDOWN:
-				switch (e.key.keysym.sym) {
+				keys[e.key.keysym.sym] = true;
+				break;
+/*				switch (e.key.keysym.sym) {
+					keys[
 					case SDLK_w:
+						keys[SDLK_w] = true;
 						camera.move(FORWARD);
 						break;
 					case SDLK_s:
@@ -389,13 +393,28 @@ void Core::handleEvents()
 						break;
 					default: break;
 				}
-				break;
+				break;*/
 			case SDL_MOUSEMOTION:
 				camera.handleMouse(e.motion.xrel, e.motion.yrel);
 //				SDL_WarpMouse(width / 2, height / 2);
 			default: break;
 		}
 	}
+
+	if (keys[SDLK_w])
+		camera.move(FORWARD);
+
+	if (keys[SDLK_s])
+		camera.move(BACKWARD);
+
+	if (keys[SDLK_a])
+		camera.move(LEFT);
+
+	if (keys[SDLK_d])
+		camera.move(RIGHT);
+
+	if (keys[SDLK_s])
+		camera.move(BACKWARD);
 }
 
 Vec3 Core::getpixel24(SDL_Surface *surface, int x, int y)
