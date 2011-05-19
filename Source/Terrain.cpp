@@ -19,6 +19,7 @@
 #include "Mat4.h"
 #include "Camera.h"
 #include "Loader.h"
+#include "StringFunctions.h"
 
 #include <iostream>
 #include <fstream>
@@ -121,6 +122,7 @@ void Core::start()
 	while (running) {
 		render();
 		handleEvents();
+		SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(t.getFPS(1))).c_str(), "");
 		elapsedTime = t.getSeconds();
 		t.start();
 	}
