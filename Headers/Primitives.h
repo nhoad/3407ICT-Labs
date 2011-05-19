@@ -74,9 +74,9 @@ class Vertex
 };
 
 /**
-	Object class.
+	GameEntity class.
 */
-class Object
+class GameEntity
 {
 	private:
 		/**
@@ -96,8 +96,8 @@ class Object
 		Mat4 matrix;
 		unsigned int shader, vbo, texture;
 
-		Object(std::string meshFile= "", std::string textureFile = "", Mat4 m = Mat4());
-		Object(Mesh mesh, Mat4 m = Mat4());
+		GameEntity(std::string meshFile= "", std::string textureFile = "", Mat4 m = Mat4());
+		GameEntity(Mesh mesh, Mat4 m = Mat4());
 
 		/**
 			return centre point of cube on the x axis.

@@ -1,5 +1,10 @@
 #include "glew.h"
 
+#define LEFT 2
+#define RIGHT 3
+#define UP 4
+#define DOWN 5
+
 #include "Pacman.h"
 #include "Loader.h"
 
@@ -12,11 +17,11 @@ using std::string;
 Food::Food(Mesh mesh, int points)
 {
 	this->points = points;
-	this->obj = new Object(mesh);
+	this->obj = new GameEntity(mesh);
 }
 
 
-Ghost::Ghost(int color, Object * object)
+Ghost::Ghost(int color, GameEntity * object)
 {
 	this->color = color;
 	scared = false;
@@ -24,29 +29,27 @@ Ghost::Ghost(int color, Object * object)
 	obj = object;
 }
 
-void Pacman::initialise()
-{
-	Pacman::loadGhosts("Assets/Ghost.obj", "Assets/Ghost.png", 4);
-	Pacman::loadPlayer("Assets/Ball.obj", "Assets/Pacman.png");
-	Pacman::loadFood("Assets/Ball.obj", 50);
-}
-
-void Pacman::loadGhosts(string meshFile, string textureFile, int count)
+vector<Ghost*> Pacman::loadGhosts(string meshFile, string textureFile, int count)
 {
 	Mesh mesh = Loader::readMesh(meshFile);
+	vector<Ghost*> ghosts;
 
 	for (int i=0; i < 4; i++)
-		ghosts.push_back(new Ghost(i, new Object(mesh)));
+		ghosts.push_back(new Ghost(i, new GameEntity(mesh)));
+
+	return ghosts;
 }
 
-void Pacman::loadFood(std::string meshFile, int count)
+vector<Food*> Pacman::loadFood(std::string meshFile, int count)
 {
 	Mesh m = Loader::readMesh(meshFile);
+	vector<Food*> food;
 	// slam the mesh to the vbo
 
 	// we use the players vbo because they're both the same object
-	unsigned int buffer = player->vbo;
+	//unsigned int buffer = player->vbo;
 
+	unsigned buffer;
 	for (int i=0; i < count; i++)
 	{
 		Food * f = new Food(m, 10);
@@ -58,13 +61,15 @@ void Pacman::loadFood(std::string meshFile, int count)
 		f->obj->matrix = Mat4::translate(0, 1, 1);
 		f->obj->vbo = buffer;
 
-		Pacman::food.push_back(f);
+		food.push_back(f);
 	}
+
+	return food;
 }
 
-void Pacman::loadPlayer(std::string meshFile, std::string textureFile)
+GameEntity* Pacman::loadPlayer(std::string meshFile, std::string textureFile)
 {
-	player = new Object(meshFile, textureFile, Mat4::translate(0, 0, 0));
+	GameEntity * player = new GameEntity(meshFile, textureFile, Mat4::translate(0, 0, 0));
 
 	glGenBuffers(1, &player->vbo);
 
@@ -72,6 +77,55 @@ void Pacman::loadPlayer(std::string meshFile, std::string textureFile)
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * player->mesh.size(),
 		&player->mesh[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	return player;
+}
+
+Pacman::Pacman()
+{
+	obj = Pacman::loadPlayer("Assets/Cube.obj", "");
+	coordinates = Vec3(14, 1, 13);
+
+	obj->matrix = Mat4::scale(20, 20, 20);
+
+	/*Pacman::loadGhosts("Assets/Ghost.obj", "Assets/Ghost.png", 4);
+	Pacman::loadFood("Assets/Ball.obj", 50);*/
+}
+
+void Pacman::move(int direction)
+{
+	switch (direction)
+	{
+		case UP:
+		{
+			coordinates(0)--;
+			break;
+		}
+		case DOWN:
+		{
+			coordinates(0)++;
+			break;
+		}
+		case LEFT:
+		{
+			coordinates(2)++;
+			break;
+		}
+		case RIGHT:
+		{
+			coordinates(2)--;
+			break;
+		}
+	}
+}
+
+void Pacman::draw()
+{
+	Mat4 m = obj->matrix;
+	obj->matrix = Mat4::translate(coordinates) * m;
+	obj->draw();
+	obj->matrix = m;
+
 }
 
 void Pacman::drawHUD()

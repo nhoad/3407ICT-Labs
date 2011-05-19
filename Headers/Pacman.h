@@ -1,3 +1,4 @@
+#pragma once
 #include <string>
 #include <vector>
 
@@ -10,12 +11,12 @@
 class Ghost
 {
 	public:
-	Ghost(int color, Object * object);
+	Ghost(int color, GameEntity * object);
 
 	int color;
 	bool scared;
 	bool visible;
-	Object * obj;
+	GameEntity * obj;
 };
 
 class Food
@@ -25,25 +26,24 @@ class Food
 	int points;
 
 	bool visible;
-	Object * obj;
+	GameEntity * obj;
 };
 
 class Pacman
 {
 	public:
-		static std::vector<Ghost *> ghosts;
-		static std::vector<Food *> food;
-		static Object * player;
-		static int score, lives;
+		Pacman();
+		int score;
+		int lives;
+		GameEntity * obj;
+		Vec3 coordinates;
 
-		static void initialise();
-		static void loadGhosts(std::string meshFile, std::string textureFile, int count);
-		static void loadFood(std::string meshFile, int count);
-		static void loadPlayer(std::string meshFile, std::string textureFile);
+		static std::vector<Ghost *> loadGhosts(std::string meshFile, std::string textureFile, int count);
+		static std::vector<Food *> loadFood(std::string meshFile, int count);
+		static GameEntity * loadPlayer(std::string meshFile, std::string textureFile);
 
 		static void drawHUD();
+		void move(int direction);
+		void draw();
 };
 
-std::vector<Food*> Pacman::food;
-std::vector<Ghost*> Pacman::ghosts;
-Object * Pacman::player;

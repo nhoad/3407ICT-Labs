@@ -90,6 +90,16 @@ Vec4 Mat4::mul(const Mat4& m, const Vec4& v)
 	return r;
 }
 
+Mat4 Mat4::translate(Vec3 coords)
+{
+	Mat4 r;
+
+	for (int i=0; i < 3; i++)
+		r(3, i) = coords(i);
+
+	return r;
+}
+
 Mat4 Mat4::translate(float x, float y, float z)
 {
 	Mat4 r;

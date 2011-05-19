@@ -19,6 +19,7 @@
 #include "Mat4.h"
 #include "Camera.h"
 #include "Loader.h"
+#include "Pacman.h"
 #include "StringFunctions.h"
 
 #include <iostream>
@@ -33,6 +34,7 @@ using namespace std;
 ///
 int main(int argc, char* argv[])
 {
+
 	Core example;
 	example.start();
 	return 0;
@@ -45,6 +47,8 @@ int main(int argc, char* argv[])
 : width(width), height(height), fullscreen(fullscreen),
 	elapsedTime(0), running(true), terrain(), camera(FPS)//, objects()
 {
+
+
 }
 
 Core::~Core()
@@ -134,27 +138,23 @@ void Core::preprocess()
 	for (int i=0; i < 256; i++)
 		keys[i] = false;
 
-	terrain = Loader::loadTerrain("Assets/pacmanHeightmap.png", 3);
+	terrain = Loader::loadTerrain("Assets/pacmanHeightmap.png", 1);
 
-	// Load objects here
 	camera.setSpeed(1);
-	camera.setPosition(Vec3(1600, 1300, 720));
+	camera.setPosition(Vec3(300, 400, 320));
 	camera.setViewAngle(60, 270, 0);
 
-	// Define your projection matrix here, and your initial camera view.
-	// Feel free to either use the built-in OpenGL transforms or your own ;]
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45, ((float) width / height), 1, 2000000);
 	glMatrixMode(GL_MODELVIEW);
 
-	// Enable any OpenGL feature you like, such as backface culling and depth testing, here.
 	glEnable(GL_DEPTH_TEST);
-	//glPolygonMode(GL_FRONT, GL_LINE);
 
-	objects.push_back(new Object("Assets/Cube.obj"));
-	objects[0]->buffer();
-	objects[0]->matrix = Mat4::scale(5,5,5);
+//	objects.push_back(new Object("Assets/Cube.obj"));
+
+	player = new Pacman();
+	player->obj->buffer();
 }
 
 void Core::render()
@@ -169,34 +169,32 @@ void Core::render()
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
 
-	// Multiply the matrix by the object's transformation matrix.
-
+	// load the camera's matrix to set our position
 	camera.load();
-	// Bind the VBO
-	// Pass vertex information
 
+	// draw our terrain
 	terrain.draw();
 
-	glColor3f(1,1,1);
+	glDisableClientState(GL_COLOR_ARRAY);
 	for (int i=0; i < objects.size(); i++)
 		objects[i]->draw();
 
+	player->draw();
 	glPopMatrix();
 
 	// Pop the matrix from the stack.
 
 	// Diable vertex array and such
-	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
 	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
-
 }
 
 void Core::cleanup()
 {
-
+	for (int i=0; i < objects.size(); i++)
+		delete objects[i];
 }
 
 void Core::handleEvents()
@@ -215,63 +213,48 @@ void Core::handleEvents()
 			case SDL_KEYDOWN:
 				keys[e.key.keysym.sym] = true;
 				break;
-/*				switch (e.key.keysym.sym) {
-					keys[
-					case SDLK_w:
-						keys[SDLK_w] = true;
-						camera.move(FORWARD);
-						break;
-					case SDLK_s:
-						camera.move(BACKWARD);
-						break;
-					case SDLK_a:
-						camera.move(LEFT);
-						break;
-					case SDLK_d:
-						camera.move(RIGHT);
-						break;
-					case SDLK_SPACE:
-						camera.move(UP);
-						break;
-					case SDLK_LSHIFT:
-						camera.move(DOWN);
-						break;
-					case SDLK_r:
-						camera.look(UP);
-						break;
-					case SDLK_f:
-						camera.look(DOWN);
-						break;
-					case SDLK_q:
-						camera.look(LEFT);
-						break;
-					case SDLK_e:
-						camera.look(RIGHT);
-						break;
-					default: break;
-				}
-				break;*/
 			case SDL_MOUSEMOTION:
 				camera.handleMouse(e.motion.xrel, e.motion.yrel);
-//				SDL_WarpMouse(width / 2, height / 2);
 			default: break;
 		}
 	}
 
-	if (keys[SDLK_w])
+	if (keys[SDLK_UP])
 		camera.move(FORWARD);
 
-	if (keys[SDLK_s])
+	if (keys[SDLK_DOWN])
 		camera.move(BACKWARD);
 
-	if (keys[SDLK_a])
+	if (keys[SDLK_LEFT])
 		camera.move(LEFT);
 
-	if (keys[SDLK_d])
+	if (keys[SDLK_RIGHT])
 		camera.move(RIGHT);
 
+	if (keys[SDLK_w])
+	{
+		player->move(UP);
+		keys[SDLK_w] = false;
+	}
+
 	if (keys[SDLK_s])
-		camera.move(BACKWARD);
+	{
+		player->move(DOWN);
+		keys[SDLK_s] = false;
+	}
+
+	if (keys[SDLK_a])
+	{
+		player->move(LEFT);
+		keys[SDLK_a] = false;
+	}
+
+	if (keys[SDLK_d])
+	{
+		player->move(RIGHT);
+		keys[SDLK_d] = false;
+	}
+
 }
 
 Vec3 Core::getpixel24(SDL_Surface *surface, int x, int y)

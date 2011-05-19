@@ -11,6 +11,7 @@
 #include "Vec3.h"
 #include "Primitives.h"
 #include "Camera.h"
+#include "Pacman.h"
 
 // Include your headers here
 // #include "Primitives.h"
@@ -38,8 +39,8 @@ class Core
     /** Height map array */
     std::vector<float> terrainHeights;
 
-    /** List of Objects */ // Optional but helpful
-    std::vector<Object*> objects;
+    /** List of GameEntitys */ // Optional but helpful
+    std::vector<GameEntity*> objects;
 
 	 /**
 	  Get a height from the heightmap using nice x and y coordinates
@@ -58,6 +59,8 @@ class Core
 	 std::vector<Vec3> colors;
 
 	 bool keys[256];
+
+	 Pacman * player;
 
 public:
     /** Constructor. */
@@ -89,7 +92,7 @@ protected:
         xDiv and yDiv determines the number of polygon divisions on the plane.
         heights is the height map array.
         Result is stored in obj. */ //                       v- You may also use std::vector<float>
-    void createTerrain(int xDiv, int zDiv, Object* _terrain, std::vector<float> heights);
+    void createTerrain(int xDiv, int zDiv, GameEntity* _terrain, std::vector<float> heights);
 
     /** Copies the data from the height map into memory. */
     void fillTerrainHeights(int xDiv, int zDiv);

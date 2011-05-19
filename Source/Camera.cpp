@@ -125,22 +125,25 @@ void Camera::setViewAngle(float x_angle, float y_angle, float z_angle)
 
 void Camera::handleMouse(int x, int y)
 {
-	if (first)
+	if (mode == FPS)
 	{
-		first = false;
-		return;
+		if (first)
+		{
+			first = false;
+			return;
+		}
+
+		rotation(0) += y;
+		rotation(1) += x;
+
+		if (rotation(1) > 360.0)
+			rotation(1) -= 360.0;
+
+		if (rotation(0) > 80.0)
+			rotation(0) = 80.0;
+
+		if (rotation(0) < -30.0)
+			rotation(0) = -30.0;
 	}
-
-	rotation(0) += y;
-	rotation(1) += x;
-
-	if (rotation(1) > 360.0)
-		rotation(1) -= 360.0;
-
-	if (rotation(0) > 80.0)
-		rotation(0) = 80.0;
-
-	if (rotation(0) < -30.0)
-		rotation(0) = -30.0;
 
 }

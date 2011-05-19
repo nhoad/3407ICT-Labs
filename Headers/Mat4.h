@@ -1,5 +1,6 @@
 #pragma once
 #include "Vec4.h"
+#include "Vec3.h"
 
 /**
 	Mat4 class representing a 4x4 matrix.
@@ -127,6 +128,14 @@ class Mat4
 			\return translation matrix with x, y and z at elements 12, 13 and 14 (0 based).
 		*/
 		static Mat4 translate(float x, float y, float z);
+
+		/**
+			Construct a translation matrix.
+
+			\param coords the x, y and z coordinates to translate by.
+			\return translation matrix with x, y and z at elements 12, 13 and 14 (0 based).
+		*/
+		static Mat4 translate(Vec3 coords);
 
 		/**
 			Rotation matrix on x axis.

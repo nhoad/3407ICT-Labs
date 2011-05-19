@@ -9,6 +9,10 @@
 #include <vector>
 using std::vector;
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 #include "Primitives.h"
 #include "Loader.h"
 #include "Vec3.h"
@@ -18,7 +22,7 @@ using std::ostream;
 
 using std::string;
 
-Object::Object(string meshFile, string textureFile, Mat4 m)
+GameEntity::GameEntity(string meshFile, string textureFile, Mat4 m)
 {
 	if (meshFile.size() > 0)
 		this->mesh = Loader::readMesh(meshFile);
@@ -31,7 +35,7 @@ Object::Object(string meshFile, string textureFile, Mat4 m)
 	this->matrix = m;
 }
 
-Object::Object(Mesh mesh, Mat4 m)
+GameEntity::GameEntity(Mesh mesh, Mat4 m)
 {
 	this->mesh = mesh;
 	this->texture = 0;
@@ -39,7 +43,7 @@ Object::Object(Mesh mesh, Mat4 m)
 
 }
 
-float Object::centre(int k)
+float GameEntity::centre(int k)
 {
 	float minK, maxK;
 
@@ -58,17 +62,17 @@ float Object::centre(int k)
 	return (minK + maxK) / 2.0f;
 }
 
-float Object::centreY()
+float GameEntity::centreY()
 {
 	return centre(1);
 }
 
-float Object::centreZ()
+float GameEntity::centreZ()
 {
 	return centre(2);
 }
 
-float Object::centreX()
+float GameEntity::centreX()
 {
 	return centre(0);
 }
@@ -101,11 +105,12 @@ ostream & operator<<(ostream & o, const Vertex & v)
 	return o;
 }
 
-void Object::draw()
+void GameEntity::draw()
 {
 	glPushMatrix();
 
 	glMultMatrixf(matrix);
+
 	glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &mesh[0].tx);
 	glNormalPointer(GL_FLOAT, sizeof(Vertex), &mesh[0].nx);
 
@@ -119,7 +124,7 @@ void Object::draw()
 
 }
 
-void Object::buffer()
+void GameEntity::buffer()
 {
 	if (mesh.size() == 0)
 		return;
@@ -143,7 +148,7 @@ Vec3 Terrain::getColour(std::vector<float> * heights, int x, int y, int y_step)
 	if (height == 0)
 		return Vec3();
 
-	return Vec3(0.13, 0.24, (height / 255.0) + 0.1);
+	return Vec3(0.13, 0.24, (height / 255.0)+ 0.2);
 }
 
 Terrain::Terrain()
@@ -162,6 +167,7 @@ void Terrain::draw()
 		return;
 
 	glPushMatrix();
+	glTranslatef(5, 0, 4);
 
 	glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
 	glColorPointer(3, GL_FLOAT, sizeof(Vec3), 0);
