@@ -10,7 +10,7 @@
 
 #define FPS 0
 #define THIRD_PERSON 1
-#include "Vec4.h"
+#include "Vec3.h"
 
 
 class Camera
@@ -20,15 +20,14 @@ class Camera
 		virtual ~Camera();
 		void move(int direction);
 		void look(int direction);
-		void setPosition(Vec4 v);
-		void setTarget(Vec4 v);
-		void setUp(Vec4 v);
+		void setPosition(Vec3 v);
 		void load();
 		void setSpeed(float speed);
+		void setViewAngle(float x_angle, float y_angle, float z_angle);
 		void handleMouse(int x, int y);
 
 	private:
-		Vec4 target, position, rotation;
+		Vec3 position, rotation;
 		float speed;
 		int mode;
 		bool first;

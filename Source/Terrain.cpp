@@ -105,8 +105,8 @@ void Core::initialise()
 		SDL_Quit();
 	}
 
-	//SDL_WM_GrabInput(SDL_GRAB_ON);
-	//SDL_ShowCursor(SDL_DISABLE);
+	SDL_WM_GrabInput(SDL_GRAB_ON);
+	SDL_ShowCursor(SDL_DISABLE);
 }
 
 ///
@@ -137,9 +137,9 @@ void Core::preprocess()
 	terrain = Loader::loadTerrain("Assets/pacmanHeightmap.png", 3);
 
 	// Load objects here
-	camera.setSpeed(50);
-	camera.setPosition(Vec4(0, 150, 0, 1));
-	camera.setTarget(Vec4(384, 55, 384, 1));
+	camera.setSpeed(1);
+	camera.setPosition(Vec3(1600, 1300, 720));
+	camera.setViewAngle(60, 270, 0);
 
 	// Define your projection matrix here, and your initial camera view.
 	// Feel free to either use the built-in OpenGL transforms or your own ;]
@@ -191,6 +191,7 @@ void Core::render()
 
 	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
+
 }
 
 void Core::cleanup()

@@ -42,29 +42,19 @@ void Camera::load()
 	float xRot = rotation(0);
 	float yRot = rotation(1);
 
-	//cout << "x rot: " << xRot << endl;
-	//cout << "y rot: " << yRot << endl;
+	cout << xpos << endl;
+	cout << ypos << endl;
+	cout << zpos << endl;
+	cout << endl;
 
 	Mat4 m = Mat4::translate(-xpos, -ypos, -zpos);
 	m *= Mat4::rotateY(yRot);
 	m *= Mat4::rotateX(xRot);
 
 	glMultMatrixf(m);
-
-//	glMultMatrixf(Mat4::lookAt(position, target, up));
 }
 
-void Camera::setUp(Vec4 v)
-{
-	//up = v;
-}
-
-void Camera::setTarget(Vec4 v)
-{
-	target = v;
-}
-
-void Camera::setPosition(Vec4 v)
+void Camera::setPosition(Vec3 v)
 {
 	position = v;
 }
@@ -124,6 +114,13 @@ void Camera::look(int direction)
 			break;
 
 	}
+}
+
+void Camera::setViewAngle(float x_angle, float y_angle, float z_angle)
+{
+	rotation(0) = x_angle;
+	rotation(1) = y_angle;
+	rotation(2) = z_angle;
 }
 
 void Camera::handleMouse(int x, int y)
