@@ -13,6 +13,11 @@
 
 #include <vector>
 
+#define GAME_PLAY 0
+#define GAME_QUIT 1
+#define GAME_PAUSE 2
+#define GAME_MENU 3
+
 class GameEntity;
 
 /**
@@ -22,9 +27,9 @@ class GameEntity;
 class Game
 {
 	private:
-		std::vector<GameEntity *> gameEntities;
-		GameEntity * player;
+		std::vector<GameEntity *> entities;
 		int shader;
+		int gameState;
 
 	public:
 		/// Constructor. Does nothing, override initialise instead.
@@ -47,16 +52,17 @@ class Game
 		virtual void update();
 
 		/**
-		  draw the Heads up display to the user.
-		*/
-		virtual void drawHUD();
+		 * Draw the game. This method draws your GameEntities, so you should still call Game::draw();
+		 */
+		virtual void draw();
 
 		/**
-		 * Draw all of the game entities, and the player.
+		 * Add an entity to the game.
+		 * You should NOT add the player object. Sort that out in your own Game class!
 		 *
-		 * You shouldn't really need to override this, but if you do, call Game::drawGameEntities()
+		 * \param entity the new entity to add
 		 */
-		virtual void drawGameEntities();
+		void addGameEntity(GameEntity * entity);
 
 		/**
 		 * links and compiles the vertex and fragment shaders for this game
@@ -65,6 +71,17 @@ class Game
 		 * \param fragmentShaderScript filepath to the vertex shader script to load
 		 */
 		void loadShader(std::string vertexShaderScript, std::string fragmentShaderScript);
+
+		/**
+		 * Set the game state to one of many states
+		 * Supports GAME_QUIT, GAME_PAUSE, GAME_MENU, or GAME_PLAY.
+		 */
+		void setGameState(int state);
+
+		/**
+		 * Get the current game state
+		 */
+		int getGameState();
 };
 
 class GameEntity
@@ -98,8 +115,13 @@ class GameEntity
 
 		/**
 		 * Constructor. Takes a pointer to a preloaded mesh and preloaded transformation matrix
+		 *
+		 * \param mesh pointer to the mesh
+		 * \param m pointer to the transformation matrix
+		 * \param texture id of the texture to use
+		 * \param startPosition Vec3 containing location coordinates
 		 */
-		GameEntity(Mesh * mesh, Mat4 * m);
+		GameEntity(Mesh * mesh, Mat4 * m, unsigned int texture, Vec3 * startPosition);
 
 		/// Destructor
 		virtual ~GameEntity();

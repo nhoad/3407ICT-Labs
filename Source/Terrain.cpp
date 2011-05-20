@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 ///
 	Core::Core(int width, int height, bool fullscreen)
 : width(width), height(height), fullscreen(fullscreen),
-	elapsedTime(0), running(true), terrain(), camera(FPS)//, objects()
+	elapsedTime(0), running(true)
 {
 
 
@@ -121,27 +121,18 @@ void Core::start()
 	initialise();
 	Time t;
 	t.start();
-	int frameCount = 0;
-	float oldTime = 0;
 
 	preprocess();
+	timeframe = 0.001;
 
 	while (running) {
 		render();
 		handleEvents();
 
-		frameCount++;
-
-		oldTime = elapsedTime;
+		elapsedTime = t.getSeconds();
 		t.start();
 
-		timeframe = 0.001;
-
-		if (frameCount == 30)
-		{
-			SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(t.getFPS(1))).c_str(), "");
-			frameCount = 0;
-		}
+		SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(t.getFPS(1))).c_str(), "");
 
 	}
 	cleanup();
@@ -149,28 +140,17 @@ void Core::start()
 
 void Core::preprocess()
 {
-	for (int i=0; i < 256; i++)
-		keys[i] = false;
-
-	terrain = Loader::loadTerrain("Assets/pacman.png", 4);
-
-	camera.setSpeed(0.1);
-	camera.setPosition(Vec3(80, 300, 70));
-	camera.setViewAngle(90, 270, 0);
-
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(45, ((float) width / height), 1, 2000000);
 	glMatrixMode(GL_MODELVIEW);
 
 	glEnable(GL_DEPTH_TEST);
+	game = new PacmanGame();
+	game->initialise();
 
-	objects.push_back(new GameEntity("Assets/Cube.obj"));
-
-	player = new Pacman();
-	player->obj->buffer();
-
-	//food = Pacman::loadFood("Assets/Cube.obj", 50);
+	//camera.setPosition(Vec3(80, 300, 70));
+	//camera.setViewAngle(90, 270, 0);
 }
 
 void Core::render()
@@ -185,85 +165,27 @@ void Core::render()
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
 
-	// load the camera's matrix to set our position
-	camera.load();
+	game->draw();
 
-	// draw our terrain
-	terrain.draw();
-
-	glDisableClientState(GL_COLOR_ARRAY);
-
-	for (int i=0; i < objects.size(); i++)
-		objects[i]->draw();
-
-	player->draw(timeframe);
-
-	/*for (int i=0; i < food.size(); i++)
-		food[i]->draw();
-*/
 	glPopMatrix();
 
-	// Pop the matrix from the stack.
-
-	// Diable vertex array and such
+	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
 
-	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
 }
 
 void Core::cleanup()
 {
-	for (int i=0; i < objects.size(); i++)
-		delete objects[i];
+	delete game;
 }
 
 void Core::handleEvents()
 {
-	SDL_Event e;
-	while (SDL_PollEvent(&e)) {
-		switch (e.type) {
-			case SDL_QUIT:
-				running = false;
-				break;
-			case SDL_KEYUP:
-				keys[e.key.keysym.sym] = false;
-				if (SDLK_ESCAPE == e.key.keysym.sym)
-					running = false;
-				break;
-			case SDL_KEYDOWN:
-				keys[e.key.keysym.sym] = true;
-				break;
-			case SDL_MOUSEMOTION:
-				camera.handleMouse(e.motion.xrel, e.motion.yrel);
-			default: break;
-		}
-	}
+	game->update();
 
-	if (keys[SDLK_UP])
-		camera.move(FORWARD);
-
-	if (keys[SDLK_DOWN])
-		camera.move(BACKWARD);
-
-	if (keys[SDLK_LEFT])
-		camera.move(LEFT);
-
-	if (keys[SDLK_RIGHT])
-		camera.move(RIGHT);
-
-	if (keys[SDLK_w])
-		player->move(UP);
-
-	if (keys[SDLK_s])
-		player->move(DOWN);
-
-	if (keys[SDLK_a])
-		player->move(LEFT);
-
-	if (keys[SDLK_d])
-		player->move(RIGHT);
-
+	if (game->getGameState() == GAME_QUIT)
+		running = false;
 }
 
 Vec3 Core::getpixel24(SDL_Surface *surface, int x, int y)

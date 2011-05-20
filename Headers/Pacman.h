@@ -50,13 +50,21 @@ class Pacman : public GameEntity
 		virtual ~Pacman();
 
 		void move(int direction);
-		void draw(float timeFrame);
 };
 
 class PacmanGame : public Game
 {
+	private:
+		bool keys[256];
+		Pacman * pacman;
+		Terrain * terrain;
+		void loadGhosts();
+		void loadFood();
+		void loadPlayer();
+		void loadMap();
+
 	public:
-		void loadGhosts(std::string meshFile, std::string textureFile, int count);
-		void loadFood(std::string meshFile, int count);
-		Pacman * loadPlayer(std::string meshFile, std::string textureFile);
+		~PacmanGame();
+		void initialise();
+		void draw();
 };
