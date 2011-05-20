@@ -83,11 +83,12 @@ class Vertex
 */
 class Terrain
 {
-	public:
-		Terrain();
-		~Terrain();
-
+	private:
 		int vbo, color_vbo, size;
+
+	public:
+		Terrain(unsigned int vbo, unsigned int color_vbo, unsigned int size);
+		~Terrain();
 
 		static float getHeight(std::vector<float> * heights, int x, int y, int y_step);
 		static Vec3 getColour(std::vector<float> * heights, int x, int y, int y_step);

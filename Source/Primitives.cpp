@@ -50,6 +50,13 @@ ostream & operator<<(ostream & o, const Vertex & v)
 	return o;
 }
 
+Terrain::Terrain(unsigned int vbo, unsigned int color_vbo, unsigned int size)
+{
+	this->vbo = vbo;
+	this->color_vbo = color_vbo;
+	this->size = size;
+}
+
 float Terrain::getHeight(std::vector<float> * heights, int x, int y, int y_step)
 {
 	return (*heights)[x + (y * y_step)];
@@ -63,11 +70,6 @@ Vec3 Terrain::getColour(std::vector<float> * heights, int x, int y, int y_step)
 		return Vec3();
 
 	return Vec3(0.13, 0.24, (height / 255.0) * 12);
-}
-
-Terrain::Terrain()
-{
-	size = 0;
 }
 
 Terrain::~Terrain()

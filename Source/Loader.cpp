@@ -33,12 +33,12 @@ using std::cerr;
 #include "Vec2.h"
 #include "Vec3.h"
 
-Mesh Loader::readMesh(const string filename)
+Mesh * Loader::readMesh(const string filename)
 {
-	Mesh mesh;
+	Mesh * mesh = new Mesh;
 
 	cout << "Loading model: " << filename << endl;
-	mesh.clear();
+	mesh->clear();
 
 	ifstream file(filename.c_str());
 
@@ -143,7 +143,7 @@ Mesh Loader::readMesh(const string filename)
 		ny = normals[add_order[i+2]-1](1);
 		nz = normals[add_order[i+2]-1](2);
 
-		mesh.push_back(Vertex(x, y, z, nx, ny, nz, tx, ty));
+		mesh->push_back(Vertex(x, y, z, nx, ny, nz, tx, ty));
 	}
 
 	return mesh;
@@ -285,7 +285,7 @@ Vec3 Loader::getPixel(SDL_Surface * img, int x, int y)
 	return Vec3(r, g, b);
 }
 
-Terrain Loader::loadTerrain(string heightmap, float divisions)
+Terrain * Loader::loadTerrain(string heightmap, float divisions)
 {
 	SDL_Surface * img = IMG_Load(heightmap.c_str());
 
@@ -341,11 +341,7 @@ Terrain Loader::loadTerrain(string heightmap, float divisions)
 	glBufferData(GL_ARRAY_BUFFER, polygon.size() * sizeof(Vec3), &colors[0](0), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	Terrain t;
-
-	t.vbo = vbo;
-	t.color_vbo = color_vbo;
-	t.size = colors.size();
+	Terrain * t = new Terrain(vbo, color_vbo, colors.size());
 
 	return t;
 }

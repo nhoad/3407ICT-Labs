@@ -21,7 +21,7 @@ class Loader
 			\param filename the path to the file containing the object
 			\return the mesh from input file.
 		*/
-		static Mesh readMesh(const std::string filename);
+		static Mesh * readMesh(const std::string filename);
 
 		/**
 			Read a GLSL script in from a file.
@@ -49,7 +49,7 @@ class Loader
 
 		static unsigned int loadTexture(std::string file);
 
-		static Terrain loadTerrain(std::string heightmap, float divisions);
+		static Terrain * loadTerrain(std::string heightmap, float divisions);
 
 		static Vec3 getPixel(SDL_Surface * img, int x, int y);
 };

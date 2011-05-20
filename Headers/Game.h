@@ -114,7 +114,7 @@ class GameEntity
 		GameEntity(std::string meshFile, std::string textureFile, Mat4 * m, Vec3 * startPosition);
 
 		/**
-		 * Constructor. Takes a pointer to a preloaded mesh and preloaded transformation matrix
+		 * Constructor. Takes a pointer to a preloaded mesh, transformation matrix, texture and start position
 		 *
 		 * \param mesh pointer to the mesh
 		 * \param m pointer to the transformation matrix
