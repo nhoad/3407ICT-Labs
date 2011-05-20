@@ -109,7 +109,7 @@ void Core::initialise()
 		SDL_Quit();
 	}
 
-	SDL_WM_GrabInput(SDL_GRAB_ON);
+//	SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(SDL_DISABLE);
 }
 

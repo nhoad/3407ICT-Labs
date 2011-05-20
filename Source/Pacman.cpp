@@ -14,6 +14,14 @@ using std::vector;
 #include <string>
 using std::string;
 
+#include <cmath>
+
+#include <iostream>
+using std::cout;
+using std::endl;
+
+#include <iomanip>
+
 Food::Food(Mesh mesh, int points)
 {
 	this->points = points;
@@ -96,8 +104,9 @@ GameEntity* Pacman::loadPlayer(std::string meshFile, std::string textureFile)
 
 Pacman::Pacman()
 {
-	obj = Pacman::loadPlayer("Assets/Cube.obj", "");
-	coordinates = Vec3(14, 1, 13);
+	obj = Pacman::loadPlayer("Assets/Cube_CubeMapped.obj", "");
+	coordinates = Vec3(15, 1, 12);
+	direction = 6;
 
 	obj->matrix = Mat4::scale(20, 20, 20);
 
@@ -106,29 +115,7 @@ Pacman::Pacman()
 
 void Pacman::move(int direction)
 {
-	switch (direction)
-	{
-		case UP:
-		{
-			coordinates(0) -= .1;
-			break;
-		}
-		case DOWN:
-		{
-			coordinates(0) += .1;
-			break;
-		}
-		case LEFT:
-		{
-			coordinates(2) += .1;
-			break;
-		}
-		case RIGHT:
-		{
-			coordinates(2) -= .1;
-			break;
-		}
-	}
+	this->direction = direction;
 }
 
 void Ghost::draw()
@@ -150,11 +137,60 @@ void Food::draw()
 
 void Pacman::draw()
 {
+	switch (direction)
+	{
+		case UP:
+		{
+			coordinates(0) -= 0.1;
+
+			int a = coordinates(0) * 10;
+			int b = round(coordinates(0)) * 10;
+
+			if (a == b)
+				direction = 6;
+			break;
+		}
+		case DOWN:
+		{
+			coordinates(0) += 0.1;
+
+			int a = coordinates(0) * 10;
+			int b = round(coordinates(0)) * 10;
+
+			if (a == b)
+				direction = 6;
+			break;
+		}
+		case LEFT:
+		{
+			coordinates(2) += 0.1;
+
+			int a = coordinates(2) * 10;
+			int b = round(coordinates(2)) * 10;
+
+			if (a == b)
+				direction = 6;
+			break;
+		}
+		case RIGHT:
+		{
+			coordinates(2) -= 0.1;
+
+			int a = coordinates(2) * 10;
+			int b = round(coordinates(2)) * 10;
+
+			if (a == b)
+				direction = 6;
+			break;
+		}
+	}
+
 	Mat4 m = obj->matrix;
 	obj->matrix = Mat4::translate(coordinates) * m;
 	glColor3f(1,1,0);
 	obj->draw();
 	obj->matrix = m;
+
 }
 
 void Pacman::drawHUD()
@@ -162,3 +198,9 @@ void Pacman::drawHUD()
 
 
 }
+
+/*void Pacman::collsionCheck(vector<Ghost*> * ghosts, vector<Food*> food, Pacman * player, vector<Vec3> * terrain)
+{
+
+
+}*/

@@ -4,6 +4,8 @@
  * @author Nathan Hoad (nathan@getoffmalawn.com)
  * Student Number: s2754580
  */
+
+#pragma once
 #include <vector>
 #include <iostream>
 
@@ -11,9 +13,12 @@
 #include "Vec3.h"
 
 #include "SDL.h"
-#include "glut.h"
+#include "glew.h"
 
-#pragma once
+#define X_AXIS 0
+#define Y_AXIS 1
+#define Z_AXIS 2
+
 class Vertex;
 
 typedef std::vector<Vertex> Mesh;
@@ -82,11 +87,7 @@ class GameEntity
 		/**
 			Returns the centre point for an axis.
 
-			For centre point of x axis, use 0.
-			For centre point of y axis, use 1.
-			For centre point of z axis, use 2.
-
-			\param k the axis to get the centre point for.
+			\param k the axis to get the centre point of, using either X_AXIS, Y_AXIS or Z_AXIS.
 			\return centre point of axis k.
 		*/
 		float centre(int k);

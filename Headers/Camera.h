@@ -7,6 +7,7 @@
 #define RIGHT 3
 #define UP 4
 #define DOWN 5
+#define STOP 6
 
 #define FPS 0
 #define THIRD_PERSON 1

@@ -40,7 +40,7 @@ class Pacman
 	public:
 		Pacman();
 		int score;
-		int lives;
+		int lives, direction;
 		GameEntity * obj;
 		Vec3 coordinates;
 
