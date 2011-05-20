@@ -22,11 +22,6 @@ using std::endl;
 
 #include <iomanip>
 
-Food::Food(Mesh mesh, int points)
-{
-	this->points = points;
-	this->obj = new GameEntity(mesh);
-}
 
 vector<Ghost*> Pacman::loadGhosts(string meshFile, string textureFile, int count)
 {

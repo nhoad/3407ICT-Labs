@@ -33,7 +33,7 @@ class Ghost : public GameEntity
 class Food : public GameEntity
 {
 	public:
-		Food(Mesh mesh, int points);
+		Food(int points);
 		~Food();
 
 		int points;
