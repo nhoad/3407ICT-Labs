@@ -303,7 +303,7 @@ Terrain Loader::loadTerrain(string heightmap, float divisions)
 		for (int j=0; j < img->h; j++)
 		{
 			Vec3 color = Loader::getPixel(img, i, j);
-			heights.push_back(color(0) / (divisions / 2));
+			heights.push_back(color(0) / (divisions / 4));
 		}
 
 	SDL_UnlockSurface(img);

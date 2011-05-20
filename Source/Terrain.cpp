@@ -141,8 +141,8 @@ void Core::preprocess()
 	terrain = Loader::loadTerrain("Assets/pacman.png", 4);
 
 	camera.setSpeed(1);
-	camera.setPosition(Vec3(0, 300, 70));
-	camera.setViewAngle(75, 90, 0);
+	camera.setPosition(Vec3(80, 300, 70));
+	camera.setViewAngle(90, 270, 0);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
