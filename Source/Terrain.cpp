@@ -148,8 +148,7 @@ void Core::preprocess()
 	glEnable(GL_DEPTH_TEST);
 	game = new PacmanGame();
 	game->initialise();
-
-	//camera.setPosition(Vec3(80, 300, 70));
+	gluLookAt(80, 300, 70, 0, 0, 0, 0, 1, 0);
 	//camera.setViewAngle(90, 270, 0);
 }
 

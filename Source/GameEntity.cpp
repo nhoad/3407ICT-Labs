@@ -8,6 +8,10 @@ using std::vector;
 #include <string>
 using std::string;
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 GameEntity::GameEntity(string meshFile, string textureFile, Mat4 * m, Vec3 * startPosition)
 {
 	this->mesh = Loader::readMesh(meshFile);
@@ -75,13 +79,14 @@ void GameEntity::draw()
 
 	glMultMatrixf(temp);
 
-	glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &(*mesh)[0].tx);
+//	glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &(*mesh)[0].tx);
 	glNormalPointer(GL_FLOAT, sizeof(Vertex), &(*mesh)[0].nx);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	cout << "before draw " << endl;
 	glDrawArrays(GL_QUADS, 0, mesh->size());
 
 	glPopMatrix();
