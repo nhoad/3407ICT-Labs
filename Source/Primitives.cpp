@@ -148,7 +148,7 @@ Vec3 Terrain::getColour(std::vector<float> * heights, int x, int y, int y_step)
 	if (height == 0)
 		return Vec3();
 
-	return Vec3(0.13, 0.24, (height / 255.0)+ 0.2);
+	return Vec3(0.13, 0.24, (height / 255.0) * 12);
 }
 
 Terrain::Terrain()

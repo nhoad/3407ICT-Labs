@@ -138,11 +138,11 @@ void Core::preprocess()
 	for (int i=0; i < 256; i++)
 		keys[i] = false;
 
-	terrain = Loader::loadTerrain("Assets/pacman.png", 1);
+	terrain = Loader::loadTerrain("Assets/pacman.png", 4);
 
 	camera.setSpeed(1);
-	camera.setPosition(Vec3(300, 400, 320));
-	camera.setViewAngle(60, 270, 0);
+	camera.setPosition(Vec3(0, 300, 70));
+	camera.setViewAngle(75, 90, 0);
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();

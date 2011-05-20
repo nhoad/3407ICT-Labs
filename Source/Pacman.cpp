@@ -105,10 +105,10 @@ GameEntity* Pacman::loadPlayer(std::string meshFile, std::string textureFile)
 Pacman::Pacman()
 {
 	obj = Pacman::loadPlayer("Assets/Cube_CubeMapped.obj", "");
-	coordinates = Vec3(15, 1, 12);
+	coordinates = Vec3(15, 4, 12);
 	direction = 6;
 
-	obj->matrix = Mat4::scale(20, 20, 20);
+	obj->matrix = Mat4::scale(4, 4, 4);
 
 	//Pacman::loadGhosts("Assets/Ghost.obj", "Assets/Ghost.png", 4);
 }

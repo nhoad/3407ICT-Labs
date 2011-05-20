@@ -303,14 +303,14 @@ Terrain Loader::loadTerrain(string heightmap, float divisions)
 		for (int j=0; j < img->h; j++)
 		{
 			Vec3 color = Loader::getPixel(img, i, j);
-			heights.push_back(color(0));
+			heights.push_back(color(0) / (divisions / 2));
 		}
 
 	SDL_UnlockSurface(img);
 	SDL_FreeSurface(img);
 
-	for (int z=0; z < width; z++)
-		for (int x=0; x < depth; x++)
+	for (int z=0; z < width -1; z++)
+		for (int x=0; x < depth -1; x++)
 		{
 			int curX = x * xDiv, curZ = z * zDiv;
 
