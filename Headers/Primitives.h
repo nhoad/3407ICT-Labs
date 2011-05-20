@@ -81,57 +81,6 @@ class Vertex
 /**
 	GameEntity class.
 */
-class GameEntity
-{
-	private:
-		/**
-			Returns the centre point for an axis.
-
-			\param k the axis to get the centre point of, using either X_AXIS, Y_AXIS or Z_AXIS.
-			\return centre point of axis k.
-		*/
-		float centre(int k);
-
-	public:
-		Mesh mesh;
-		Mat4 matrix;
-		unsigned int shader, vbo, texture;
-
-		GameEntity(std::string meshFile= "", std::string textureFile = "", Mat4 m = Mat4());
-		GameEntity(Mesh mesh, Mat4 m = Mat4());
-
-		/**
-			return centre point of cube on the x axis.
-
-			\return x axis centroid.
-		*/
-		float centreX();
-
-		/**
-			return centre point of cube on the y axis.
-
-			\return y axis centroid.
-		*/
-		float centreY();
-
-		/**
-			return centre point of cube on the z axis.
-
-			\return z axis centroid.
-		*/
-		float centreZ();
-
-		/**
-		 * Make openGL calls to draw this object
-		 */
-		void draw();
-
-		/**
-		 * Send the mesh to the VBO and set vbo variable accordingly
-		 */
-		void buffer();
-};
-
 class Terrain
 {
 	public:

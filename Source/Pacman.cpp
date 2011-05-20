@@ -28,7 +28,6 @@ Food::Food(Mesh mesh, int points)
 	this->obj = new GameEntity(mesh);
 }
 
-
 Ghost::Ghost(int color, GameEntity * object)
 {
 	this->color = color;
@@ -135,13 +134,13 @@ void Food::draw()
 	obj->matrix = m;
 }
 
-void Pacman::draw()
+void Pacman::draw(float timeFrame)
 {
 	switch (direction)
 	{
 		case UP:
 		{
-			coordinates(0) -= 0.1;
+			coordinates(0) -= 1 * timeFrame;
 
 			int a = coordinates(0) * 10;
 			int b = round(coordinates(0)) * 10;
@@ -152,7 +151,7 @@ void Pacman::draw()
 		}
 		case DOWN:
 		{
-			coordinates(0) += 0.1;
+			coordinates(0) += 1 * timeFrame;
 
 			int a = coordinates(0) * 10;
 			int b = round(coordinates(0)) * 10;
@@ -163,7 +162,7 @@ void Pacman::draw()
 		}
 		case LEFT:
 		{
-			coordinates(2) += 0.1;
+			coordinates(2) += 1 * timeFrame;
 
 			int a = coordinates(2) * 10;
 			int b = round(coordinates(2)) * 10;
@@ -174,7 +173,7 @@ void Pacman::draw()
 		}
 		case RIGHT:
 		{
-			coordinates(2) -= 0.1;
+			coordinates(2) -= 1 * timeFrame;
 
 			int a = coordinates(2) * 10;
 			int b = round(coordinates(2)) * 10;

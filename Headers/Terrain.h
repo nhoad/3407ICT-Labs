@@ -65,6 +65,8 @@ class Core
 	 std::vector<Ghost*> ghosts;
 	 std::vector<Food*> food;
 
+	 float timeframe;
+
 public:
     /** Constructor. */
     Core(int width=800, int height=600, bool fullscreen=false);

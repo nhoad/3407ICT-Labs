@@ -1,55 +1,62 @@
+/**
+	Pacman classes.
+	Author: Nathan Hoad
+	Date: 20th May 2011
+
+	Description: This is a set of all the classes I use for Pacman. I know that
+	some will say it's poor design to put so many classes in a header file, but
+	I'm not creating 4 new files for tiny, 8 line classes.
+*/
+
 #pragma once
+
+#include "Game.h"
+
 #include <string>
 #include <vector>
-
-#include "Primitives.h"
 
 #define GHOST_PINK 1
 #define GHOST_GREEN 2
 #define GHOST_BLUE 3
 #define GHOST_RED 4
-class Ghost
+
+class Ghost : public GameEntity
 {
 	public:
-	Ghost(int color, GameEntity * object);
+		Ghost(int color);
+		virtual ~Ghost();
 
-	int color;
-	bool scared;
-	bool visible;
-	GameEntity * obj;
-	Vec3 coordinates;
-
-	void draw();
+		bool scared;
+		bool visible;
 };
 
-class Food
+class Food : public GameEntity
 {
 	public:
-	Food(Mesh mesh, int points);
-	int points;
+		Food(Mesh mesh, int points);
+		virtual ~Food();
 
-	bool visible;
-	GameEntity * obj;
-	Vec3 coordinates, color;
-
-	void draw();
+		int points;
+		bool visible;
 };
 
-class Pacman
+class Pacman : public GameEntity
 {
+	private:
+		int score, lives, direction;
+
 	public:
 		Pacman();
-		int score;
-		int lives, direction;
-		GameEntity * obj;
-		Vec3 coordinates;
+		virtual ~Pacman();
 
-		static std::vector<Ghost *> loadGhosts(std::string meshFile, std::string textureFile, int count);
-		static std::vector<Food *> loadFood(std::string meshFile, int count);
-		static GameEntity * loadPlayer(std::string meshFile, std::string textureFile);
-
-		static void drawHUD();
 		void move(int direction);
-		void draw();
+		void draw(float timeFrame);
 };
 
+class PacmanGame : public Game
+{
+	public:
+		void loadGhosts(std::string meshFile, std::string textureFile, int count);
+		void loadFood(std::string meshFile, int count);
+		Pacman * loadPlayer(std::string meshFile, std::string textureFile);
+};

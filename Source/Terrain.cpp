@@ -121,14 +121,28 @@ void Core::start()
 	initialise();
 	Time t;
 	t.start();
+	int frameCount = 0;
+	float oldTime = 0;
 
 	preprocess();
+
 	while (running) {
 		render();
 		handleEvents();
-		SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(t.getFPS(1))).c_str(), "");
-		elapsedTime = t.getSeconds();
+
+		frameCount++;
+
+		oldTime = elapsedTime;
 		t.start();
+
+		timeframe = 0.001;
+
+		if (frameCount == 30)
+		{
+			SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(t.getFPS(1))).c_str(), "");
+			frameCount = 0;
+		}
+
 	}
 	cleanup();
 }
@@ -140,7 +154,7 @@ void Core::preprocess()
 
 	terrain = Loader::loadTerrain("Assets/pacman.png", 4);
 
-	camera.setSpeed(1);
+	camera.setSpeed(0.1);
 	camera.setPosition(Vec3(80, 300, 70));
 	camera.setViewAngle(90, 270, 0);
 
@@ -151,7 +165,7 @@ void Core::preprocess()
 
 	glEnable(GL_DEPTH_TEST);
 
-//	objects.push_back(new Object("Assets/Cube.obj"));
+	objects.push_back(new GameEntity("Assets/Cube.obj"));
 
 	player = new Pacman();
 	player->obj->buffer();
@@ -182,7 +196,7 @@ void Core::render()
 	for (int i=0; i < objects.size(); i++)
 		objects[i]->draw();
 
-	player->draw();
+	player->draw(timeframe);
 
 	/*for (int i=0; i < food.size(); i++)
 		food[i]->draw();
