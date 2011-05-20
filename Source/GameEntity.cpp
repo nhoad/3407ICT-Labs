@@ -1,22 +1,23 @@
-GameEntity::GameEntity(string meshFile, string textureFile, Mat4 m)
+#include "Game.h"
+
+#include "Loader.h"
+
+#include <vector>
+using std::vector;
+
+GameEntity::GameEntity(string meshFile, string textureFile, Mat4 * m, Vec3 * startPosition)
 {
-	if (meshFile.size() > 0)
-		this->mesh = Loader::readMesh(meshFile);
-
-	if (textureFile.size() > 0)
-		this->texture = Loader::loadTexture(textureFile);
-	else
-		this->texture = 0;
-
+	this->mesh = Loader::readMesh(meshFile);
+	this->texture = (textureFile.size() > 0) ? Loader::loadTexture(textureFile) : 0;
 	this->matrix = m;
+	this->coordinates = startPosition;
 }
 
-GameEntity::GameEntity(Mesh mesh, Mat4 m)
+GameEntity::GameEntity(Mesh * mesh, Mat4 * m)
 {
 	this->mesh = mesh;
-	this->texture = 0;
 	this->matrix = m;
-
+	this->texture = texture;
 }
 
 float GameEntity::centre(int k)
@@ -57,7 +58,10 @@ void GameEntity::draw()
 {
 	glPushMatrix();
 
-	glMultMatrixf(matrix);
+	// move our matrix to it's world coordinates
+	Mat4 temp = Mat4::translate(*coordinates) * m;
+
+	glMultMatrixf(temp);
 
 	glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &mesh[0].tx);
 	glNormalPointer(GL_FLOAT, sizeof(Vertex), &mesh[0].nx);
@@ -81,6 +85,19 @@ void GameEntity::buffer()
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh.size(), &mesh[0], GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-
 }
 
+void GameEntity::setVBO(unsigned int vbo)
+{
+	this->vbo = vbo;
+}
+
+void GameEntity::setTexture(unsigned int texture)
+{
+	this->texture = texture;
+}
+
+void GameEntity::transform(Mat4 * m)
+{
+	(*this->matrix) *= m;
+}

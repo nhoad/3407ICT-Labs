@@ -13,6 +13,12 @@
 
 #include <vector>
 
+class GameEntity;
+
+/**
+ * "Game" class representing a game, containing all the entities and player, shader, etc.
+ * All methods do nothing unless otherwise stated
+ */
 class Game
 {
 	private:
@@ -21,8 +27,17 @@ class Game
 		int shader;
 
 	public:
+		/// Constructor. Does nothing, override initialise instead.
+		Game();
+
 		/**
-		 * Initialise the game. You should create your palyer and game entities here.
+		 * Destructor. Deletes all game entities, and the player. If you overload
+		 * this make sure you call Game::~Game()
+		 */
+		virtual ~Game();
+
+		/**
+		 * Initialise the game. You should create your player and game entities here.
 		 */
 		virtual void initialise();
 
@@ -37,7 +52,9 @@ class Game
 		virtual void drawHUD();
 
 		/**
-		 * Draw all of the game entities, and the player
+		 * Draw all of the game entities, and the player.
+		 *
+		 * You shouldn't really need to override this, but if you do, call Game::drawGameEntities()
 		 */
 		virtual void drawGameEntities();
 
@@ -66,16 +83,18 @@ class GameEntity
 		Vec3 * coordinates;
 
 		unsigned int vbo, texture;
+
 	public:
 
 		/**
-		 * Constructor. Loads a mesh and texture from file, and buffers them.
+		 * Constructor. Loads a mesh and texture from file. Mesh will NOT be loaded to a VBO.
 		 *
 		 * \param meshFile filepath to the mesh
 		 * \param textureFile filepath to the texture
-		 * \param m pointer to the matrix
+		 * \param m pointer to this objects transformation matrix
+		 * \param startPosition the starting position of this object
 		 */
-		GameEntity(std::string meshFile= "", std::string textureFile = "", Mat4 * m);
+		GameEntity(std::string meshFile, std::string textureFile, Mat4 * m, Vec3 * startPosition);
 
 		/**
 		 * Constructor. Takes a pointer to a preloaded mesh and preloaded transformation matrix
@@ -107,12 +126,14 @@ class GameEntity
 		float centreZ();
 
 		/**
-		 * Make openGL calls to draw this object
+		 * Draw this object. Makes appropriate glPush, glMult, various pointers and
+		 * bindings, and calls glDrawArrays with a glPopMatrix to finish it all off.
+		 * Unless you're doing something fancy, I wouldn't recommend overloading this
 		 */
-		void draw();
+		virtual void draw();
 
 		/**
-		 * Send the mesh to the VBO and set vbo variable accordingly
+		 * Send the mesh to a VBO
 		 */
 		void buffer();
 
@@ -123,4 +144,27 @@ class GameEntity
 		 * \param vbo the new vbo identifier to set for this class
 		 */
 		void setVBO(unsigned int vbo);
+
+		/**
+		 * Set the texture ID. This is ONLY to be used when you're loading the same
+		 * texture onto multiple objects and want to save space.
+		 *
+		 * \param texture the new texture identifier to set for this class
+		 */
+		void setTexture(unsigned int texture);
+
+		/**
+		 * Transform this objects current transformation matrix by m. You should NOT
+		 * store the coordinates in this matrix, they're computed by draw() using the coordinates vector.
+		 *
+		 * Stores current_matrix * m
+		 *
+		 * \param m pointer to the transformation matrix to multiply current matrix by.
+		 */
+		void transform(Mat4 * m);
+
+		/**
+		 * Reset the transformation matrix to an identity matrix
+		 */
+		void loadIdentity();
 };

@@ -28,14 +28,6 @@ Food::Food(Mesh mesh, int points)
 	this->obj = new GameEntity(mesh);
 }
 
-Ghost::Ghost(int color, GameEntity * object)
-{
-	this->color = color;
-	scared = false;
-	visible = false;
-	obj = object;
-}
-
 vector<Ghost*> Pacman::loadGhosts(string meshFile, string textureFile, int count)
 {
 	Mesh mesh = Loader::readMesh(meshFile);
@@ -121,15 +113,6 @@ void Ghost::draw()
 {
 	Mat4 m = obj->matrix;
 	obj->matrix = Mat4::translate(coordinates) * m;
-	obj->draw();
-	obj->matrix = m;
-}
-
-void Food::draw()
-{
-	Mat4 m = obj->matrix;
-	obj->matrix = Mat4::translate(coordinates) * m;
-	glColor3f(color(0), color(1), color(2));
 	obj->draw();
 	obj->matrix = m;
 }

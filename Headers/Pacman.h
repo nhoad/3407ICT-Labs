@@ -24,7 +24,7 @@ class Ghost : public GameEntity
 {
 	public:
 		Ghost(int color);
-		virtual ~Ghost();
+		~Ghost();
 
 		bool scared;
 		bool visible;
@@ -34,7 +34,7 @@ class Food : public GameEntity
 {
 	public:
 		Food(Mesh mesh, int points);
-		virtual ~Food();
+		~Food();
 
 		int points;
 		bool visible;
