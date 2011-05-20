@@ -24,6 +24,14 @@ GameEntity::GameEntity(Mesh * mesh, Mat4 * m, unsigned int texture, Vec3 * start
 	this->coordinates = startPosition;
 }
 
+GameEntity::~GameEntity()
+{
+	delete mesh;
+	delete matrix;
+	delete coordinates;
+
+}
+
 float GameEntity::centre(int k)
 {
 	float minK, maxK;
@@ -104,4 +112,9 @@ void GameEntity::setTexture(unsigned int texture)
 void GameEntity::transform(Mat4 * m)
 {
 	(*this->matrix) *= (*m);
+}
+
+void GameEntity::loadIdentity()
+{
+	(*this->matrix) = Mat4();
 }

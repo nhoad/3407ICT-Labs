@@ -93,7 +93,7 @@ class GameEntity
 			\param k the axis to get the centre point of, using either X_AXIS, Y_AXIS or Z_AXIS.
 			\return centre point of axis k.
 		*/
-		float centre(int k);
+		virtual float centre(int k);
 
 		Mesh * mesh;
 		Mat4 * matrix;
@@ -131,21 +131,21 @@ class GameEntity
 
 			\return x axis centroid.
 		*/
-		float centreX();
+		virtual float centreX();
 
 		/**
 			return centre point of cube on the y axis.
 
 			\return y axis centroid.
 		*/
-		float centreY();
+		virtual float centreY();
 
 		/**
 			return centre point of cube on the z axis.
 
 			\return z axis centroid.
 		*/
-		float centreZ();
+		virtual float centreZ();
 
 		/**
 		 * Draw this object. Makes appropriate glPush, glMult, various pointers and
@@ -157,7 +157,7 @@ class GameEntity
 		/**
 		 * Send the mesh to a VBO
 		 */
-		void buffer();
+		virtual void buffer();
 
 		/**
 		 * Set the VBO. This is ONLY to be used when you're loading multiple objects
@@ -165,7 +165,7 @@ class GameEntity
 		 *
 		 * \param vbo the new vbo identifier to set for this class
 		 */
-		void setVBO(unsigned int vbo);
+		virtual void setVBO(unsigned int vbo);
 
 		/**
 		 * Set the texture ID. This is ONLY to be used when you're loading the same
@@ -173,7 +173,7 @@ class GameEntity
 		 *
 		 * \param texture the new texture identifier to set for this class
 		 */
-		void setTexture(unsigned int texture);
+		virtual void setTexture(unsigned int texture);
 
 		/**
 		 * Transform this objects current transformation matrix by m. You should NOT
@@ -183,10 +183,10 @@ class GameEntity
 		 *
 		 * \param m pointer to the transformation matrix to multiply current matrix by.
 		 */
-		void transform(Mat4 * m);
+		virtual void transform(Mat4 * m);
 
 		/**
 		 * Reset the transformation matrix to an identity matrix
 		 */
-		void loadIdentity();
+		virtual void loadIdentity();
 };

@@ -20,6 +20,12 @@
 #define GHOST_BLUE 3
 #define GHOST_RED 4
 
+#define STOPPED 0
+#define UP 1
+#define DOWN 2
+#define LEFT 3
+#define RIGHT 4
+
 class Ghost : public GameEntity
 {
 	public:
@@ -46,9 +52,8 @@ class Pacman : public GameEntity
 		int score, lives, direction;
 
 	public:
-		Pacman();
-		virtual ~Pacman();
-
+		Pacman(int lives);
+		~Pacman();
 		void move(int direction);
 };
 
@@ -67,4 +72,5 @@ class PacmanGame : public Game
 		~PacmanGame();
 		void initialise();
 		void draw();
+		void update();
 };
