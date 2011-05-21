@@ -78,17 +78,16 @@ void GameEntity::draw()
 
 	glMultMatrixf(temp);
 
-//	glBindTexture(GL_TEXTURE_2D, texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
 	glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), &(*mesh)[0].tx);
 	glNormalPointer(GL_FLOAT, sizeof(Vertex), &(*mesh)[0].nx);
 
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glDrawArrays(GL_QUADS, 0, mesh->size());
-//	glBindTexture(GL_TEXTURE_2D, 0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopMatrix();
 
