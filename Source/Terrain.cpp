@@ -142,14 +142,19 @@ void Core::preprocess()
 {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45, ((float) width / height), 1, 2000000);
-	glMatrixMode(GL_MODELVIEW);
+	gluPerspective(45, ((float) width / height), 1, 2000);
 
-	glEnable(GL_DEPTH_TEST);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(80, 300, 70, 0, 0, 0, 0, 1, 0);
+
+	//camera.setViewAngle(90, 270, 0);
+
 	game = new PacmanGame();
 	game->initialise();
-	gluLookAt(80, 300, 70, 0, 0, 0, 0, 1, 0);
-	//camera.setViewAngle(90, 270, 0);
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_TEXTURE_2D);
 }
 
 void Core::render()
@@ -159,7 +164,8 @@ void Core::render()
 
 	// Enable vertex array and such
 	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
@@ -168,8 +174,9 @@ void Core::render()
 
 	glPopMatrix();
 
-	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 
 	SDL_GL_SwapBuffers();
 }

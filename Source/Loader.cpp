@@ -153,8 +153,6 @@ string Loader::readGLSL(string filename)
 {
 	string script = "";
 
-	cout << "Loading GLSL script: " << filename << endl;
-
 	ifstream file(filename.c_str());
 
 	vector<string> lines;
@@ -188,7 +186,7 @@ unsigned int Loader::loadShader(string scriptFile, int shaderType)
 {
 	string script = Loader::readGLSL(scriptFile);
 
-	cout << "ShaderLoader: Loading Script: " << scriptFile << endl;
+	cout << "Loader: Loading GLSL Script: " << scriptFile << endl;
 
 	unsigned int id = glCreateShader(shaderType);
 
@@ -207,11 +205,10 @@ unsigned int Loader::loadShader(string scriptFile, int shaderType)
 
 		glGetShaderInfoLog(id, result, &result, errorMessage);
 
-		cerr << "ShaderLoader: Could not compile " << scriptFile << ": " << endl << errorMessage << endl;
+		cerr << "Loader: Could not compile " << scriptFile << ": " << endl << errorMessage << endl;
 
 		delete errorMessage;
-		glDeleteShader(id);
-		return -1;
+		return 0;
 	}
 
 	return id;
@@ -223,7 +220,6 @@ unsigned int Loader::linkShader(unsigned int vertex, unsigned int fragment)
 
 	glAttachShader(id, vertex);
 	glAttachShader(id, fragment);
-
 	glLinkProgram(id);
 
 	int result;
@@ -236,14 +232,11 @@ unsigned int Loader::linkShader(unsigned int vertex, unsigned int fragment)
 
 		glGetShaderInfoLog(id, result, &result, errorMessage);
 
-		cerr << "ShaderLoader: Could not compile script " << errorMessage << endl;
+		cerr << "Loader: Could not link shaders: " << errorMessage << endl;
 
 		delete errorMessage;
-		glDeleteShader(id);
 		return 0;
 	}
-
-	//glValidateProgram(?);
 
 	return id;
 }
@@ -254,14 +247,12 @@ unsigned int Loader::loadTexture(std::string file)
 
 	unsigned int result;
 
+	glEnable(GL_TEXTURE_2D);
 	glGenTextures(1, &result);
-	glActiveTexture(GL_TEXTURE0 + 0);
 	glBindTexture(GL_TEXTURE_2D, result);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexImage2D(GL_TEXTURE_2D, 0, img->format->BytesPerPixel, img->w, img->h, 0, GL_RGB, GL_UNSIGNED_BYTE, img->pixels);
-
-	glBindTexture(GL_TEXTURE_2D, 0);
 
 	SDL_FreeSurface(img);
 

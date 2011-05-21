@@ -26,9 +26,10 @@ class GameEntity;
  */
 class Game
 {
+	protected:
+		unsigned int shader;
 	private:
 		std::vector<GameEntity *> entities;
-		int shader;
 		int gameState;
 
 	public:
