@@ -88,6 +88,7 @@ void GameEntity::draw()
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glDrawArrays(GL_QUADS, 0, mesh->size());
+//	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glPopMatrix();
 
