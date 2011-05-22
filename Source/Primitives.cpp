@@ -50,6 +50,57 @@ ostream & operator<<(ostream & o, const Vertex & v)
 	return o;
 }
 
+Mesh::Mesh()
+{
+	use_normals = false;
+	use_texture = false;
+}
+
+void Mesh::useTextureCoords()
+{
+	use_texture = true;
+}
+
+void Mesh::useNormals()
+{
+	use_normals = true;
+}
+
+void Mesh::push_back(Vertex v)
+{
+	points.push_back(v);
+}
+
+void Mesh::clear()
+{
+	points.clear();
+}
+
+int Mesh::size()
+{
+	return points.size();
+}
+
+bool Mesh::textures()
+{
+	return use_texture;
+}
+
+bool Mesh::normals()
+{
+	return use_normals;
+}
+
+Vertex& Mesh::operator[](int x)
+{
+	return points[x];
+}
+
+Vertex Mesh::operator[](int x) const
+{
+	return points[x];
+}
+
 Terrain::Terrain(unsigned int vbo, unsigned int color_vbo, unsigned int size)
 {
 	this->vbo = vbo;

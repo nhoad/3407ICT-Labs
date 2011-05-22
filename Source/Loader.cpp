@@ -92,6 +92,7 @@ Mesh * Loader::readMesh(const string filename)
 		}
 		else if (type == "vn")
 		{
+			mesh->useNormals();
 			x = stringToType<float>(split_line[1]);
 			y = stringToType<float>(split_line[2]);
 			z = stringToType<float>(split_line[3]);
@@ -100,6 +101,7 @@ Mesh * Loader::readMesh(const string filename)
 		}
 		else if (type == "vt")
 		{
+			mesh->useTextureCoords();
 			x = stringToType<float>(split_line[1]);
 			y = stringToType<float>(split_line[2]);
 
@@ -107,18 +109,32 @@ Mesh * Loader::readMesh(const string filename)
 		}
 		else if (type == "f")
 		{
+			cout << "reading faces" << endl;
 			face_sizes.push_back(split_line.size() - 1);
 
 			for (unsigned i=1; i < split_line.size(); i++)
 			{
-				vector<string> split_face = tokenize(split_line[i], "/");
-				int face_number = stringToType<int>(split_face[0]);
-				int texture_number = stringToType<int>(split_face[1]);
-				int normal_number = stringToType<int>(split_face[2]);
+				vector<string> split_face = tokenize(split_line[i], "\/");
+				cout << split_line[i] << endl;
 
-				add_order.push_back(face_number);
-				add_order.push_back(texture_number);
-				add_order.push_back(normal_number);
+				// add the face
+				add_order.push_back(stringToType<int>(split_face[0]));
+
+				if (mesh->textures())
+				{
+					// add the texture
+					add_order.push_back(stringToType<int>(split_face[1]));
+				}
+
+				if (mesh->normals())
+				{
+					// add the normal
+					if (mesh->textures())
+						add_order.push_back(stringToType<int>(split_face[2]));
+					else
+						add_order.push_back(stringToType<int>(split_face[1]));
+
+				}
 			}
 		}
 
@@ -136,12 +152,18 @@ Mesh * Loader::readMesh(const string filename)
 		y = vertices[add_order[i]-1](1);
 		z = vertices[add_order[i]-1](2);
 
-		tx = texture_coords[add_order[i+1]-1](0);
-		ty = texture_coords[add_order[i+1]-1](1);
+		if (mesh->textures())
+		{
+			tx = texture_coords[add_order[i+1]-1](0);
+			ty = texture_coords[add_order[i+1]-1](1);
+		}
 
-		nx = normals[add_order[i+2]-1](0);
-		ny = normals[add_order[i+2]-1](1);
-		nz = normals[add_order[i+2]-1](2);
+		if (mesh->normals())
+		{
+			nx = normals[add_order[i+2]-1](0);
+			ny = normals[add_order[i+2]-1](1);
+			nz = normals[add_order[i+2]-1](2);
+		}
 
 		mesh->push_back(Vertex(x, y, z, nx, ny, nz, tx, ty));
 	}

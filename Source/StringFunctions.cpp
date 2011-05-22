@@ -14,6 +14,10 @@ using std::istringstream;
 #include "StringFunctions.h"
 using std::vector;
 
+#include <iostream>
+using std::cout;
+using std::endl;
+
 string strip(string line)
 {
 	size_t trim_pos = line.find_first_not_of(" \n\t");
@@ -33,19 +37,20 @@ string strip(string line)
 
 vector<string> tokenize(const string text, const string pattern)
 {
-	vector<string> result;
+	vector<string> results;
 
-	size_t lastPos = text.find_first_not_of(pattern, 0);
-	size_t firstPos = text.find_first_of(pattern, lastPos);
+	string str = text;
 
-	while (firstPos != string::npos)
+	int cutAt;
+	while( (cutAt = str.find_first_of(pattern)) != string::npos )
 	{
-		result.push_back(text.substr(lastPos, firstPos - lastPos));
-		lastPos = text.find_first_not_of(pattern, firstPos);
-		firstPos = text.find_first_of(pattern, lastPos);
+		if(cutAt > 0)
+			results.push_back(str.substr(0, cutAt));
+
+		str = str.substr(cutAt+1);
 	}
+	if(str.length() > 0)
+		results.push_back(str);
 
-	result.push_back(text.substr(lastPos, firstPos - lastPos));
-
-	return result;
+	return results;
 }

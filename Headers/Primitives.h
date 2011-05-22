@@ -21,7 +21,26 @@
 
 class Vertex;
 
-typedef std::vector<Vertex> Mesh;
+class Mesh
+{
+	private:
+		bool use_normals, use_texture;
+		std::vector<Vertex> points;
+
+	public:
+		Mesh();
+		void push_back(Vertex v);
+		int size();
+		void clear();
+		void useTextureCoords();
+		void useNormals();
+
+		bool textures();
+		bool normals();
+
+		Vertex operator[](int x) const;
+		Vertex& operator[](int x);
+};
 
 /**
 	Compare two vertices on their Y values. Used for sorting points in a triangle for edge list generation.
