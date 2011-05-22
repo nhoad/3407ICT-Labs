@@ -39,7 +39,7 @@ class Ghost : public GameEntity
 class Food : public GameEntity
 {
 	public:
-		Food(int points);
+		Food(int points, Mesh * mesh, Mat4 * matrix, Vec3 * start, unsigned int vbo, unsigned int texture);
 		~Food();
 
 		int points;

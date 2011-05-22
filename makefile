@@ -9,7 +9,7 @@ CC = g++
 TARGET = Core
 VPATH = Source
 
-_OBJS = HPTime.o Pacman.o Terrain.o Mat4.o Vec2.o Vec3.o Vec4.o Primitives.o Loader.o StringFunctions.o GameEntity.o Game.o PacmanGame.o Camera.o
+_OBJS = HPTime.o Pacman.o Terrain.o Mat4.o Vec2.o Vec3.o Vec4.o Primitives.o Loader.o StringFunctions.o GameEntity.o Game.o PacmanGame.o Camera.o Food.o
 OBJDIR = Intermediates
 
 # Optional to build examples

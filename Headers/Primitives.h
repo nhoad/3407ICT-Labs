@@ -41,6 +41,8 @@ class Mesh
 
 		Vertex operator[](int x) const;
 		Vertex& operator[](int x);
+
+		std::vector<Vertex> data();
 };
 
 /**

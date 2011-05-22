@@ -91,6 +91,11 @@ bool Mesh::normals()
 	return use_normals;
 }
 
+vector<Vertex> Mesh::data()
+{
+	return points;
+}
+
 Vertex& Mesh::operator[](int x)
 {
 	return points[x];

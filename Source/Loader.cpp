@@ -395,3 +395,17 @@ Terrain * Loader::loadTerrain(string heightmap, float divisions)
 
 	return t;
 }
+
+unsigned int Loader::buffer(Mesh * mesh)
+{
+	unsigned int vbo;
+
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * mesh->size(), &mesh->data()[0], GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	return vbo;
+
+
+}

@@ -52,4 +52,6 @@ class Loader
 		static Terrain * loadTerrain(std::string heightmap, float divisions);
 
 		static Vec3 getPixel(SDL_Surface * img, int x, int y);
+
+		static unsigned int buffer(Mesh * mesh);
 };
