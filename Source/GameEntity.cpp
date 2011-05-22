@@ -91,7 +91,7 @@ void GameEntity::draw()
 	glVertexPointer(4, GL_FLOAT, sizeof(Vertex), 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glDrawArrays(GL_QUADS, 0, mesh->size());
+	glDrawArrays(GL_TRIANGLES, 0, mesh->size());
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	if (!mesh->textures())

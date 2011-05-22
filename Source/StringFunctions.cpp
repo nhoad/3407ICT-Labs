@@ -14,10 +14,6 @@ using std::istringstream;
 #include "StringFunctions.h"
 using std::vector;
 
-#include <iostream>
-using std::cout;
-using std::endl;
-
 string strip(string line)
 {
 	size_t trim_pos = line.find_first_not_of(" \n\t");

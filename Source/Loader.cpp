@@ -23,6 +23,7 @@ using std::endl;
 using std::cerr;
 
 #include <cerrno>
+#include <cassert>
 #include <cstring>
 #include <cstdlib>
 
@@ -70,8 +71,7 @@ Mesh * Loader::readMesh(const string filename)
 	vector<Vec2> texture_coords;
 	vector<Vec3> normals, vertices;
 
-	vector<int> face_sizes;
-	vector<int> add_order;
+	vector<int> face_sizes, v_add_order, vn_add_order, vt_add_order;
 
 	for (int i=0; i < lines.size(); i++)
 	{
@@ -109,41 +109,78 @@ Mesh * Loader::readMesh(const string filename)
 		}
 		else if (type == "f")
 		{
-			cout << "reading faces" << endl;
 			face_sizes.push_back(split_line.size() - 1);
 
 			for (unsigned i=1; i < split_line.size(); i++)
 			{
-				vector<string> split_face = tokenize(split_line[i], "\/");
-				cout << split_line[i] << endl;
+				vector<string> split_face = tokenize(split_line[i], "/");
 
 				// add the face
-				add_order.push_back(stringToType<int>(split_face[0]));
+				v_add_order.push_back(stringToType<int>(split_face[0]));
 
+				// add the texture
 				if (mesh->textures())
-				{
-					// add the texture
-					add_order.push_back(stringToType<int>(split_face[1]));
-				}
+					vt_add_order.push_back(stringToType<int>(split_face[1]));
 
+				// add the normal
 				if (mesh->normals())
 				{
-					// add the normal
 					if (mesh->textures())
-						add_order.push_back(stringToType<int>(split_face[2]));
+						vn_add_order.push_back(stringToType<int>(split_face[2]));
 					else
-						add_order.push_back(stringToType<int>(split_face[1]));
-
+						vn_add_order.push_back(stringToType<int>(split_face[1]));
 				}
 			}
 		}
-
 	}
 
 	cout << "Loaded " << vertices.size() << " vertices" << endl;
 	cout << "Loaded " << texture_coords.size() << " texture coordinates" << endl;
 	cout << "Loaded " << normals.size() << " normals" << endl;
 
+	for (int j=0, lastFaceEndPos=0; j < face_sizes.size(); j++)
+	{
+		vector<Vertex> face;
+
+		for (int i=lastFaceEndPos; i < face_sizes[j] + lastFaceEndPos; i++)
+		{
+			Vec3 coords = vertices[v_add_order[i]-1];
+			Vec3 normal;
+			Vec2 tex;
+
+			if (mesh->textures())
+				tex = texture_coords[vt_add_order[i]-1];
+
+			if (mesh->normals())
+				normal = normals[vn_add_order[i]-1];
+
+			face.push_back(Vertex(coords, normal, tex));
+		}
+
+		lastFaceEndPos += face_sizes[j];
+
+		// decompose to triangles
+		if (face.size() > 3)
+		{
+			vector<Vertex> decomposed;
+
+			for (int i=1, max = face.size() - 1; i < max; i++)
+			{
+				decomposed.push_back(face[0]);
+				decomposed.push_back(face[i]);
+				decomposed.push_back(face[i+1]);
+			}
+
+			for (int i=0; i < decomposed.size(); i++)
+				mesh->push_back(decomposed[i]);
+		}
+		else
+			for (int i=0; i < face.size(); i++)
+				mesh->push_back(face[i]);
+	}
+
+	cout << "final mesh size: " << mesh->size() << endl;
+/*
 	for (int i=0; i < add_order.size(); i+= 3)
 	{
 		float x, y, z, tx, ty, nx, ny, nz;
@@ -167,7 +204,7 @@ Mesh * Loader::readMesh(const string filename)
 
 		mesh->push_back(Vertex(x, y, z, nx, ny, nz, tx, ty));
 	}
-
+*/
 	return mesh;
 }
 

@@ -11,6 +11,7 @@
 
 #include "Mat4.h"
 #include "Vec3.h"
+#include "Vec2.h"
 
 #include "SDL.h"
 #include "glew.h"
@@ -77,6 +78,21 @@ class Vertex
 		};
 		float tex[2];
 	};
+
+	Vertex(Vec3 coords, Vec3 normals, Vec2 tex)
+	{
+		this->x = coords(0);
+		this->y = coords(1);
+		this->z = coords(2);
+		this->w = 1;
+
+		this->nx = normals(0);
+		this->ny = normals(1);
+		this->nz = normals(2);
+
+		this->tx = tex(0);
+		this->ty = tex(1);
+	}
 
 	Vertex(float x=0.0, float y=0.0, float z=0.0,
 			 float nx=0.0, float ny=0.0, float nz=1.0,
