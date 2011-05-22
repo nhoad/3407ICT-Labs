@@ -49,8 +49,10 @@ class Game
 
 		/**
 		 * Update the games parameters. This could be handling User input, moving objects, collisions, anything.
+		 *
+		 * \param elapsedTime the amount of time passed since the previous frame was drawn, in microseconds
 		 */
-		virtual void update();
+		virtual void update(double elapsedTime);
 
 		/**
 		 * Draw the game. This method draws your GameEntities, so you should still call Game::draw();
@@ -198,5 +200,5 @@ class GameEntity
 			\param y_amount the amount to move this object on the y axis.
 			\param z_amount the amount to move this object on the z axis.
 		*/
-		virtual void move(int x_amount, int y_amount, int z_amount);
+		virtual void move(double x_amount, double y_amount, double z_amount);
 };

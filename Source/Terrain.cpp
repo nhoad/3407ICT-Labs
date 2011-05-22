@@ -132,7 +132,7 @@ void Core::start()
 		elapsedTime = t.getSeconds();
 		t.start();
 
-		SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(t.getFPS(1))).c_str(), "");
+//		SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(t.getFPS(1))).c_str(), "");
 
 	}
 	cleanup();
@@ -188,7 +188,7 @@ void Core::cleanup()
 
 void Core::handleEvents()
 {
-	game->update();
+	game->update(elapsedTime);
 
 	if (game->getGameState() == GAME_QUIT)
 		running = false;

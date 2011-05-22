@@ -73,7 +73,7 @@ void GameEntity::draw()
 {
 	glPushMatrix();
 
-	// move our matrix to it's world coordinates
+	// double our matrix to it's world coordinates
 	Mat4 temp = Mat4::translate(*coordinates) * (*matrix);
 
 	glMultMatrixf(temp);
@@ -132,7 +132,7 @@ void GameEntity::loadIdentity()
 	(*this->matrix) = Mat4();
 }
 
-void GameEntity::move(int x_amount, int y_amount, int z_amount)
+void GameEntity::move(double x_amount, double y_amount, double z_amount)
 {
 	(*coordinates)(X_AXIS) += x_amount;
 	(*coordinates)(Y_AXIS) += y_amount;

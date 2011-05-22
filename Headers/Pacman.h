@@ -54,7 +54,7 @@ class Pacman : public GameEntity
 	public:
 		Pacman(int lives);
 		~Pacman();
-		void move(int direction);
+		void move(int direction, double elapsedTime);
 };
 
 class PacmanGame : public Game
@@ -72,5 +72,5 @@ class PacmanGame : public Game
 		~PacmanGame();
 		void initialise();
 		void draw();
-		void update();
+		void update(double elapsedTime);
 };

@@ -1,6 +1,4 @@
 #include "Pacman.h"
-#include <iostream>
-using namespace std;
 
 Pacman::Pacman(int lives) : GameEntity("Assets/sphere.obj", "Assets/Checkerboard.png", new Mat4(), new Vec3())
 {
@@ -16,26 +14,24 @@ Pacman::~Pacman()
 
 }
 
-void Pacman::move(int direction)
+void Pacman::move(int direction, double elapsedTime)
 {
-	cout << "moving" << endl;
-	cout << direction << endl;
+	double speed = 1 * elapsedTime;
 	switch (direction)
 	{
 		case UP:
-			GameEntity::move(-1, 0, 0);
+			GameEntity::move(-speed, 0, 0);
 			break;
 		case DOWN:
-			GameEntity::move(1, 0, 0);
+			GameEntity::move(speed, 0, 0);
 			break;
 		case LEFT:
-			GameEntity::move(0, 0, 1);
+			GameEntity::move(0, 0, speed);
 			break;
 		case RIGHT:
-			GameEntity::move(0, 0, -1);
+			GameEntity::move(0, 0, -speed);
 			break;
 		default:
-			cout << "ntohing" << endl;
 			break;
 	}
 
