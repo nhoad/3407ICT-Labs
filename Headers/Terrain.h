@@ -15,6 +15,7 @@
 
 #include "Game.h"
 #include "Pacman.h"
+#include "Camera.h"
 
 /**
  * Top-tier class, handles mainloop, events, and other classes.
@@ -47,6 +48,8 @@ class Core
 	Game * game;
 
 	float timeframe;
+
+	Camera camera;
 
 	public:
 	/** Constructor. */

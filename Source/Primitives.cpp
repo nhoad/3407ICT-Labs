@@ -138,7 +138,6 @@ void Terrain::draw()
 	glEnableClientState(GL_COLOR_ARRAY);
 
 	glPushMatrix();
-	glTranslatef(0.5, 0, 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
 	glColorPointer(3, GL_FLOAT, sizeof(Vec3), 0);

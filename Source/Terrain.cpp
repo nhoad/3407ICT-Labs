@@ -45,7 +45,7 @@ int main(int argc, char* argv[])
 ///
 	Core::Core(int width, int height, bool fullscreen)
 : width(width), height(height), fullscreen(fullscreen),
-	elapsedTime(0), running(true)
+	elapsedTime(0), running(true), camera(FPS)
 {
 
 
@@ -123,7 +123,9 @@ void Core::start()
 	t.start();
 
 	preprocess();
-	timeframe = 0.001;
+
+	double avg = 0;
+	int count = 0;
 
 	while (running) {
 		render();
@@ -132,7 +134,17 @@ void Core::start()
 		elapsedTime = t.getSeconds();
 		t.start();
 
-//		SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(t.getFPS(1))).c_str(), "");
+		if (avg < 1)
+		{
+			avg += elapsedTime;
+			count++;
+		}
+		else
+		{
+			SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(count)).c_str(), "");
+			avg = 0;
+			count = 0;
+		}
 
 	}
 	cleanup();
@@ -146,9 +158,9 @@ void Core::preprocess()
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(80, 300, 70, 0, 0, 0, 0, 1, 0);
 
-	//camera.setViewAngle(90, 270, 0);
+	camera.setPosition(Vec3(350, 950, 300));
+	camera.setViewAngle(90, 270, 0);
 
 	game = new PacmanGame();
 	game->initialise();
@@ -169,6 +181,7 @@ void Core::render()
 
 	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
+	camera.load();
 
 	game->draw();
 

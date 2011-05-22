@@ -16,7 +16,7 @@ Pacman::~Pacman()
 
 void Pacman::move(int direction, double elapsedTime)
 {
-	double speed = 1 * elapsedTime;
+	double speed = 3 * elapsedTime;
 	switch (direction)
 	{
 		case UP:
