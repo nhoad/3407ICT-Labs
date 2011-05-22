@@ -131,3 +131,10 @@ void GameEntity::loadIdentity()
 {
 	(*this->matrix) = Mat4();
 }
+
+void GameEntity::move(int x_amount, int y_amount, int z_amount)
+{
+	(*coordinates)(X_AXIS) += x_amount;
+	(*coordinates)(Y_AXIS) += y_amount;
+	(*coordinates)(Z_AXIS) += z_amount;
+}

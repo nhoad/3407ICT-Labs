@@ -133,6 +133,10 @@ void Terrain::draw()
 	if (size == 0)
 		return;
 
+	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+
 	glPushMatrix();
 	glTranslatef(0.5, 0, 0);
 
@@ -147,4 +151,7 @@ void Terrain::draw()
 	glDrawArrays(GL_TRIANGLES, 0, size);
 
 	glPopMatrix();
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 }

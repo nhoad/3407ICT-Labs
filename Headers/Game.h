@@ -190,4 +190,13 @@ class GameEntity
 		 * Reset the transformation matrix to an identity matrix
 		 */
 		virtual void loadIdentity();
+
+		/**
+		   Move the current object by these amounts
+
+			\param x_amount the amount to move this object on the x axis.
+			\param y_amount the amount to move this object on the y axis.
+			\param z_amount the amount to move this object on the z axis.
+		*/
+		virtual void move(int x_amount, int y_amount, int z_amount);
 };

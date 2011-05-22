@@ -60,7 +60,7 @@ class Pacman : public GameEntity
 class PacmanGame : public Game
 {
 	private:
-		bool keys[256];
+		bool keys[350];
 		Pacman * pacman;
 		Terrain * terrain;
 		void loadGhosts();
