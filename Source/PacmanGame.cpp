@@ -101,6 +101,12 @@ void PacmanGame::draw()
 			food_entities[i]->draw();
 	}
 
+	for (int i=0; i < ghost_entities.size(); i++)
+	{
+		if (ghost_entities[i]->visible)
+			ghost_entities[i]->draw();
+	}
+
 	pacman->draw();
 
 	glUseProgram(0);
@@ -115,15 +121,15 @@ void PacmanGame::loadMap()
 void PacmanGame::loadGhosts()
 {
 	Mesh * mesh = Loader::readMesh("Assets/Ghost.obj");
-	Mat4 * matrix = new Mat4(Mat4::scale(28, 28, 28));
+	Mat4 * matrix = new Mat4(Mat4::scale(20, 20, 20));
 
 	unsigned int texture = Loader::loadTexture("Assets/foodTexture.png");
 	unsigned int vbo = Loader::buffer(mesh);
 
-	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(), vbo, Loader::loadTexture("Assets/ghostRed.png")));
-	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(), vbo, Loader::loadTexture("Assets/ghostGreen.png")));
-	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(), vbo, Loader::loadTexture("Assets/ghostBlue.png")));
-	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(), vbo, Loader::loadTexture("Assets/ghostRed.png")));
+	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(25, 0, 20), vbo, Loader::loadTexture("Assets/ghostRed.png")));
+	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(25, 0, 22), vbo, Loader::loadTexture("Assets/ghostGreen.png")));
+	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(25, 0, 24), vbo, Loader::loadTexture("Assets/ghostBlue.png")));
+	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(23, 0, 22), vbo, Loader::loadTexture("Assets/ghostOrange.png")));
 }
 
 void PacmanGame::loadFood()

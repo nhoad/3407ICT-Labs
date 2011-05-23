@@ -5,10 +5,8 @@ Ghost::Ghost(Mesh * mesh, Mat4 * matrix, Vec3 * start, unsigned int vbo, unsigne
 {
 	setVBO(vbo);
 	scared = false;
-	visible = false;
+	visible = true;
 }
 
 
-Ghost::~Ghost()
-{
-}
+Ghost::~Ghost() { }

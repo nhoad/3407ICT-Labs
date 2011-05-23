@@ -17,6 +17,7 @@ Pacman::~Pacman()
 
 void Pacman::move(int direction, double elapsedTime)
 {
+	cout << *coordinates << endl;
 	double speed = 3 * elapsedTime;
 	switch (direction)
 	{
