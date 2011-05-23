@@ -64,6 +64,7 @@ class PacmanGame : public Game
 		int lives, score;
 		unsigned int pacmanShader;
 
+		void loadWalls();
 		void loadGhosts();
 		void loadFood();
 		void loadPlayer();

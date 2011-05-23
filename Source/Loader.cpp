@@ -361,7 +361,7 @@ Terrain * Loader::loadTerrain(string heightmap, float divisions)
 	glBufferData(GL_ARRAY_BUFFER, polygon.size() * sizeof(Vec3), &colors[0](0), GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	Terrain * t = new Terrain(vbo, color_vbo, colors.size());
+	Terrain * t = new Terrain(vbo, color_vbo, polygon);
 
 	return t;
 }

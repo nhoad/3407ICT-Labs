@@ -106,12 +106,11 @@ Vertex Mesh::operator[](int x) const
 	return points[x];
 }
 
-Terrain::Terrain(unsigned int vbo, unsigned int color_vbo, unsigned int size)
+Terrain::Terrain(unsigned int vbo, unsigned int color_vbo, vector<Vec3> mesh)
 {
-	cout << "terrain size: " << size << endl;
 	this->vbo = vbo;
 	this->color_vbo = color_vbo;
-	this->size = size;
+	this->mesh = mesh;
 }
 
 float Terrain::getHeight(std::vector<float> * heights, int x, int y, int y_step)
@@ -136,7 +135,7 @@ Terrain::~Terrain()
 
 void Terrain::draw()
 {
-	if (size == 0)
+	if (mesh.size() == 0)
 		return;
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -153,10 +152,26 @@ void Terrain::draw()
 	glVertexPointer(3, GL_FLOAT, sizeof(Vec3), 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, size);
+	glDrawArrays(GL_TRIANGLES, 0, mesh.size());
 
 	glPopMatrix();
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 	glDisableClientState(GL_COLOR_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
+}
+
+bool Terrain::collisionAt(Vec3 v)
+{
+	int step_size = 20;
+	for (int i=0; i < mesh.size(); i++)
+	{
+		if (mesh[i].y != 0 && v.x > mesh[i].x-step_size && v.x < mesh[i].x+step_size && v.z > mesh[i].z-step_size && v.z < mesh[i].z+step_size)
+			return true;
+	}
+	return false;
+}
+
+int Terrain::size()
+{
+	return mesh.size();
 }

@@ -8,5 +8,4 @@ Ghost::Ghost(Mesh * mesh, Mat4 * matrix, Vec3 * start, unsigned int vbo, unsigne
 	visible = true;
 }
 
-
 Ghost::~Ghost() { }

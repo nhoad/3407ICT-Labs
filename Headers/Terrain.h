@@ -6,6 +6,7 @@
 #include "SDL_ttf.h"
 // http://www.libsdl.org/projects/SDL_image/
 #include "SDL_image.h"
+#include "SDL_mixer.h"
 // http://glew.sourceforge.net/
 
 #include "glew.h"

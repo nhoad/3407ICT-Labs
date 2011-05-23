@@ -131,7 +131,8 @@ class GameEntity
 		/**
 		 * Delete all items in this entity without deleting itself.
 		 *
-		 * Note that this leaves this entity UNDRAWABLE. Any objects sharing elements with this object will also be undrawable.
+		 * Note that this leaves this entity UNDRAWABLE. Any objects sharing resources with this object will
+		 * also be UNDRAWABLE.
 		 */
 		virtual void cleanUp();
 

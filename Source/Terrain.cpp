@@ -57,6 +57,7 @@ Core::~Core()
 		TTF_Quit();
 	if (SDL_WasInit(SDL_INIT_VIDEO))
 		SDL_Quit();
+
 	IMG_Quit();
 }
 
@@ -66,7 +67,7 @@ Core::~Core()
 void Core::initialise()
 {
 	// Initialise SDL with C-style error checking
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 		cerr << SDL_GetError() << endl;
 		SDL_Quit();
 	}
@@ -167,6 +168,7 @@ void Core::preprocess()
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
+	glDepthMask(GL_TRUE);
 }
 
 void Core::render()

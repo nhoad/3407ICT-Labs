@@ -26,6 +26,7 @@ void PacmanGame::initialise()
 	loadFood();
 	loadPlayer();
 	loadMap();
+	loadWalls();
 
 	pacman->buffer();
 }
@@ -65,6 +66,42 @@ void PacmanGame::update(double elapsedTime)
 		}
 	}
 
+	if (keys[SDLK_SPACE])
+	{
+		if (getGameState() == GAME_PAUSE)
+		{
+			setGameState(GAME_PLAY);
+		}
+		else
+			setGameState(GAME_PAUSE);
+	}
+
+	if (keys[SDLK_ESCAPE])
+		setGameState(GAME_QUIT);
+
+	if (getGameState() == GAME_PAUSE)
+		return;
+
+	for (int i=0; i < ghost_entities.size(); i++)
+	{
+		if (ghost_entities[i]->visible && pacman->collidesWith(ghost_entities[i]))
+			lives--;
+	}
+
+	for (int i=0; i < food_entities.size(); i++)
+	{
+		if (food_entities[i]->visible && pacman->collidesWith(food_entities[i]))
+		{
+			food_entities[i]->visible = false;
+			score += food_entities[i]->points;
+		}
+	}
+
+	if (terrain->collisionAt(pacman->getCoordinates()))
+	{
+		return;
+	}
+
 	if (keys[SDLK_UP] || keys[SDLK_w])
 		pacman->move(UP, elapsedTime);
 
@@ -77,26 +114,6 @@ void PacmanGame::update(double elapsedTime)
 	if (keys[SDLK_RIGHT] || keys[SDLK_d])
 		pacman->move(RIGHT, elapsedTime);
 
-	if (keys[SDLK_ESCAPE])
-		setGameState(GAME_QUIT);
-
-	for (int i=0; i < ghost_entities.size(); i++)
-	{
-		if (ghost_entities[i]->visible && pacman->collidesWith(ghost_entities[i]))
-		{
-			lives--;
-		}
-	}
-
-	for (int i=0; i < food_entities.size(); i++)
-	{
-		if (food_entities[i]->visible && pacman->collidesWith(food_entities[i]))
-		{
-			food_entities[i]->visible = false;
-			score += food_entities[i]->points;
-		}
-	}
-
 }
 
 void PacmanGame::draw()
@@ -105,16 +122,12 @@ void PacmanGame::draw()
 	Game::draw();
 
 	for (int i=0; i < food_entities.size(); i++)
-	{
 		if (food_entities[i]->visible)
 			food_entities[i]->draw();
-	}
 
 	for (int i=0; i < ghost_entities.size(); i++)
-	{
 		if (ghost_entities[i]->visible)
 			ghost_entities[i]->draw();
-	}
 
 	pacman->draw();
 
@@ -125,6 +138,16 @@ void PacmanGame::draw()
 void PacmanGame::loadMap()
 {
 	terrain = Loader::loadTerrain("Assets/pacman.png", 12);
+}
+
+void PacmanGame::loadWalls()
+{
+	Mesh * mesh = Loader::readMesh("Assets/Cube_CubeMapped.obj");
+	Mat4 * matrix = new Mat4(Mat4::scale(200, 200, 200));
+
+	unsigned int vbo = Loader::buffer(mesh);
+	unsigned int texture = Loader::loadTexture("Assets/foodTexture.png");
+
 }
 
 void PacmanGame::loadGhosts()
