@@ -66,6 +66,7 @@ class PacmanGame : public Game
 		Terrain * terrain;
 		std::vector<Food*> food_entities;
 		int lives, score;
+		unsigned int pacmanShader;
 
 		void loadGhosts();
 		void loadFood();

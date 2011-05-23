@@ -17,7 +17,8 @@ void PacmanGame::initialise()
 	for (int i=0; i < 350; i++)
 		keys[i] = false;
 
-	loadShader("Assets/basic_shader_v.glsl", "Assets/basic_shader_f.glsl");
+
+	loadShader("Assets/sphere_shader_v.glsl", "Assets/sphere_shader_f.glsl");
 
 	setGameState(GAME_PLAY);
 	cout << "Loading Pacman..." << endl;
@@ -100,6 +101,7 @@ void PacmanGame::draw()
 			food_entities[i]->draw();
 	}
 
+	glUseProgram(pacmanShader);
 	pacman->draw();
 	glUseProgram(0);
 	terrain->draw();
@@ -112,16 +114,21 @@ void PacmanGame::loadMap()
 
 void PacmanGame::loadGhosts()
 {
-	cerr << "I don't load any Ghosts yet!" << endl;
+	Mesh * mesh = Loader::readMesh("Assets/cone.obj");
+	Mat4 * matrix = new Mat4(Mat4::scale(28, 28, 28));
+
+	unsigned int texture = Loader::loadTexture("Assets/foodTexture.png");
+	unsigned int vbo = Loader::buffer(mesh);
+
+	addFood(new Food(10, mesh, matrix, new Vec3(2.3, 0, i+18), vbo, texture));
 }
 
 void PacmanGame::loadFood()
 {
 	Mesh * mesh = Loader::readMesh("Assets/cone.obj");
-
 	Mat4 * matrix = new Mat4(Mat4::scale(28, 28, 28));
 
-	unsigned int texture = Loader::loadTexture("Assets/Checkerboard.png");
+	unsigned int texture = Loader::loadTexture("Assets/foodTexture.png");
 	unsigned int vbo = Loader::buffer(mesh);
 
 	for (int i=0; i < 13; i++)

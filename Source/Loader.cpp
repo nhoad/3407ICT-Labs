@@ -134,10 +134,6 @@ Mesh * Loader::readMesh(const string filename)
 		}
 	}
 
-	cout << "Loaded " << vertices.size() << " vertices" << endl;
-	cout << "Loaded " << texture_coords.size() << " texture coordinates" << endl;
-	cout << "Loaded " << normals.size() << " normals" << endl;
-
 	for (int j=0, lastFaceEndPos=0; j < face_sizes.size(); j++)
 	{
 		vector<Vertex> face;
@@ -179,32 +175,6 @@ Mesh * Loader::readMesh(const string filename)
 				mesh->push_back(face[i]);
 	}
 
-	cout << "final mesh size: " << mesh->size() << endl;
-/*
-	for (int i=0; i < add_order.size(); i+= 3)
-	{
-		float x, y, z, tx, ty, nx, ny, nz;
-
-		x = vertices[add_order[i]-1](0);
-		y = vertices[add_order[i]-1](1);
-		z = vertices[add_order[i]-1](2);
-
-		if (mesh->textures())
-		{
-			tx = texture_coords[add_order[i+1]-1](0);
-			ty = texture_coords[add_order[i+1]-1](1);
-		}
-
-		if (mesh->normals())
-		{
-			nx = normals[add_order[i+2]-1](0);
-			ny = normals[add_order[i+2]-1](1);
-			nz = normals[add_order[i+2]-1](2);
-		}
-
-		mesh->push_back(Vertex(x, y, z, nx, ny, nz, tx, ty));
-	}
-*/
 	return mesh;
 }
 

@@ -58,7 +58,7 @@ Mat4& Mat4::operator=(const Mat4& m)
 
 }
 
-Mat4& Mat4::operator*=(Mat4 m)
+Mat4& Mat4::operator*=(Mat4 & m)
 {
 	*this = *this * m;
 	return *this;
@@ -74,8 +74,11 @@ Mat4 Mat4::mul(const Mat4& m, const Mat4& n)
 	Mat4 r(0.0);
 	for (int row=0; row < 4; row++)
 		for (int column=0; column < 4; column++)
-			for (int i=0; i < 4; i++)
-				r(row, column) += m(row, i) * n(i, column);
+			// this looks disgusting, but unrolling the loops gave me another ~10FPS on my machine.
+			r(row, column) += m(row, 0) * n(0, column)
+			+ m(row, 1) * n(1, column)
+			+ m(row, 2) * n(2, column)
+			+ m(row, 3) * n(3, column);
 	return r;
 }
 
@@ -83,14 +86,14 @@ Vec4 Mat4::mul(const Mat4& m, const Vec4& v)
 {
 	Vec4 r(0, 0, 0, 1);
 
+	// unrolling improved my FPS a little.
 	for (int i=0; i < 4; i++)
-		for (int j=0; j < 4; j++)
-			r(i) += m(j, i) * v(j);
+		r(i) += m(0, i) * v(0) + m(1, i) * v(1) + m(2, i) * v(2) + m(3, i) * v(3);
 
 	return r;
 }
 
-Mat4 Mat4::translate(Vec3 coords)
+Mat4 Mat4::translate(Vec3& coords)
 {
 	Mat4 r;
 

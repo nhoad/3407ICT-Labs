@@ -19,6 +19,4 @@ void main()
 
    if (NdotL > 0.0)
       gl_FragColor.rgb += pow(max(0.0, dot(NN, NH)), specular_intensity);
-
-   //gl_FragColor.xyz = (ambience * tex_diffuse) + (diffuse * tex_diffuse) + specular;
 }

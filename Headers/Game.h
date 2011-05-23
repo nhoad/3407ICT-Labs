@@ -73,7 +73,7 @@ class Game
 		 * \param vertexShaderScript filepath to the vertex shader script to load
 		 * \param fragmentShaderScript filepath to the vertex shader script to load
 		 */
-		void loadShader(std::string vertexShaderScript, std::string fragmentShaderScript);
+		unsigned int loadShader(std::string vertexShaderScript, std::string fragmentShaderScript);
 
 		/**
 		 * Set the game state to one of many states

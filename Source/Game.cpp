@@ -30,12 +30,13 @@ void Game::update(double elapsedTime)
 
 }
 
-void Game::loadShader(string vertexScript, string fragmentScript)
+unsigned int Game::loadShader(string vertexScript, string fragmentScript)
 {
 	unsigned int v = Loader::loadShader(vertexScript, GL_VERTEX_SHADER);
 	unsigned int f = Loader::loadShader(fragmentScript, GL_FRAGMENT_SHADER);
 
-	shader = Loader::linkShader(v, f);
+	unsigned int result = Loader::linkShader(v, f);
+	shader = result;
 
 	glUseProgram(shader);
 
@@ -45,6 +46,9 @@ void Game::loadShader(string vertexScript, string fragmentScript)
 	glUniform3fv(bg_colour_id, 1, bg_colour);
 
 	glUseProgram(0);
+	cout << "using " << endl;
+
+	return result;
 }
 
 void Game::draw()

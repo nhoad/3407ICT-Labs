@@ -87,7 +87,7 @@ class Mat4
 			\param m matrix to multiply this against.
 			\return this * m.
 		*/
-		Mat4& operator*=(Mat4 m);
+		Mat4& operator*=(Mat4 & m);
 
 		/**
 			Overload * operator. Provides direct access to data.
@@ -135,7 +135,7 @@ class Mat4
 			\param coords the x, y and z coordinates to translate by.
 			\return translation matrix with x, y and z at elements 12, 13 and 14 (0 based).
 		*/
-		static Mat4 translate(Vec3 coords);
+		static Mat4 translate(Vec3 & coords);
 
 		/**
 			Rotation matrix on x axis.
