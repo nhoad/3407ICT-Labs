@@ -159,8 +159,8 @@ void Core::preprocess()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	camera.setPosition(Vec3(350, 950, 300));
-	camera.setViewAngle(90, 270, 0);
+	camera.setPosition(Vec3(1250, 1000, -300));
+	camera.setViewAngle(45, 225, 0);
 
 	game = new PacmanGame();
 	game->initialise();

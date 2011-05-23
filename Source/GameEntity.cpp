@@ -127,7 +127,7 @@ void GameEntity::setTexture(unsigned int texture)
 
 void GameEntity::transform(Mat4 * m)
 {
-	(*this->matrix) *= (*m);
+	(*this->matrix) = (*m) * (*this->matrix);
 }
 
 void GameEntity::loadIdentity()

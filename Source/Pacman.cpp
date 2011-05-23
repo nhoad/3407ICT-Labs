@@ -3,9 +3,9 @@
 using std::cout;
 using std::endl;
 
-Pacman::Pacman() : GameEntity("Assets/sphere.obj", "Assets/Checkerboard.png", new Mat4(), new Vec3())
+Pacman::Pacman() : GameEntity("Assets/Ghost.obj", "Assets/Checkerboard.png", new Mat4(), new Vec3(12, 0, 9))
 {
-	Mat4 m = Mat4::scale(20, 20, 20);
+	Mat4 m = Mat4::scale(50, 50, 50);
 	transform(&m);
 	this->direction = STOPPED;
 }
@@ -41,6 +41,8 @@ void Pacman::move(int direction, double elapsedTime)
 bool Pacman::collidesWith(GameEntity * g)
 {
 	Vec3 v = getCoordinates();
+	cout << *coordinates << endl;
+	cout << v << endl;
 	Vec3 o_v = g->getCoordinates();
 
 	float x, z, o_x, o_z;

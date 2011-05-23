@@ -43,7 +43,6 @@ void Game::loadShader(string vertexScript, string fragmentScript)
 	int bg_colour_id = glGetUniformLocation(shader, "bg_colour");
 
 	glUniform3fv(bg_colour_id, 1, bg_colour);
-	glClearColor(bg_colour[0], bg_colour[1], bg_colour[2], bg_colour[3]);
 
 	glUseProgram(0);
 }

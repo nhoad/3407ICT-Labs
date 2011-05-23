@@ -108,7 +108,7 @@ void PacmanGame::draw()
 
 void PacmanGame::loadMap()
 {
-	terrain = Loader::loadTerrain("Assets/pacman.png", 16);
+	terrain = Loader::loadTerrain("Assets/pacman.png", 12);
 }
 
 void PacmanGame::loadGhosts()
@@ -118,17 +118,17 @@ void PacmanGame::loadGhosts()
 
 void PacmanGame::loadFood()
 {
-	Mesh * mesh = Loader::readMesh("Assets/sphere.obj");
+	Mesh * mesh = Loader::readMesh("Assets/cheap_sphere.obj");
 
-	Mat4 * matrix = new Mat4(Mat4::scale(15, 15, 15));
+	Mat4 * matrix = new Mat4(Mat4::scale(28, 28, 28));
 
 	unsigned int texture = Loader::loadTexture("Assets/Checkerboard.png");
 	unsigned int vbo = Loader::buffer(mesh);
 
 	for (int i=0; i < 15; i++)
 	{
-		addFood(new Food(10, mesh, matrix, new Vec3(3.7, 2, i+22), vbo, texture));
-		addFood(new Food(10, mesh, matrix, new Vec3(3.7, 2, i+3.5), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(1.3, 0, i+22), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(2.3, 0, i+2.4), vbo, texture));
 	}
 
 
