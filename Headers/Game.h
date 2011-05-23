@@ -89,6 +89,9 @@ class Game
 
 class GameEntity
 {
+	protected:
+		Vec3 * coordinates;
+
 	private:
 		/**
 			Returns the centre point for an axis.
@@ -100,7 +103,6 @@ class GameEntity
 
 		Mesh * mesh;
 		Mat4 * matrix;
-		Vec3 * coordinates;
 
 		unsigned int vbo, texture;
 
@@ -125,6 +127,13 @@ class GameEntity
 		 * \param startPosition Vec3 containing location coordinates
 		 */
 		GameEntity(Mesh * mesh, Mat4 * m, unsigned int texture, Vec3 * startPosition);
+
+		/**
+		 * Delete all items in this entity without deleting itself.
+		 *
+		 * Note that this leaves this entity UNDRAWABLE. Any objects sharing elements with this object will also be undrawable.
+		 */
+		virtual void cleanUp();
 
 		/// Destructor
 		virtual ~GameEntity();
@@ -201,4 +210,6 @@ class GameEntity
 			\param z_amount the amount to move this object on the z axis.
 		*/
 		virtual void move(double x_amount, double y_amount, double z_amount);
+
+		virtual Vec3 getCoordinates();
 };

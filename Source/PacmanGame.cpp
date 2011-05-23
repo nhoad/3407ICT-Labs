@@ -78,12 +78,28 @@ void PacmanGame::update(double elapsedTime)
 
 	if (keys[SDLK_ESCAPE])
 		setGameState(GAME_QUIT);
+
+	for (int i=0; i < food_entities.size(); i++)
+	{
+		if (food_entities[i]->visible && pacman->collidesWith(food_entities[i]))
+		{
+			food_entities[i]->visible = false;
+			score += food_entities[i]->points;
+		}
+	}
 }
 
 void PacmanGame::draw()
 {
+	cout << score << endl;
 	glUseProgram(shader);
 	Game::draw();
+
+	for (int i=0; i < food_entities.size(); i++)
+	{
+		if (food_entities[i]->visible)
+			food_entities[i]->draw();
+	}
 
 	pacman->draw();
 	glUseProgram(0);
@@ -109,16 +125,37 @@ void PacmanGame::loadFood()
 	unsigned int texture = Loader::loadTexture("Assets/Checkerboard.png");
 	unsigned int vbo = Loader::buffer(mesh);
 
-	for (int i=0; i < 50; i++)
+	for (int i=0; i < 15; i++)
 	{
-		Vec3 * startPosition = new Vec3(3.7, 3, i+3.5);
-		Food * f = new Food(10, mesh, matrix, startPosition, vbo, texture);
-
-		addGameEntity(f);
+		addFood(new Food(10, mesh, matrix, new Vec3(3.7, 2, i+22), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(3.7, 2, i+3.5), vbo, texture));
 	}
+
+
+	for (int i=0; i < 30; i++)
+	{
+		if (i == 3 || i == 21)
+			i++;
+
+		addFood(new Food(10, mesh, matrix, new Vec3(i + 4.7, 2, 9.5), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(i + 4.7, 2, 30), vbo, texture));
+	}
+
+	for (int i=0; i < 34; i++)
+	{
+		addFood(new Food(10, mesh, matrix, new Vec3(7.7, 2, i+3.5), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(26, 2, i+3.5), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(38.3, 2, i+3.5), vbo, texture));
+	}
+}
+
+void PacmanGame::addFood(Food * food)
+{
+	food_entities.push_back(food);
 }
 
 void PacmanGame::loadPlayer()
 {
-	this->pacman = new Pacman(3);
+	this->pacman = new Pacman();
+	this->lives = 3;
 }

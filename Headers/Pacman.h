@@ -49,12 +49,13 @@ class Food : public GameEntity
 class Pacman : public GameEntity
 {
 	private:
-		int score, lives, direction;
+		int direction;
 
 	public:
-		Pacman(int lives);
+		Pacman();
 		~Pacman();
 		void move(int direction, double elapsedTime);
+		bool collidesWith(GameEntity * g);
 };
 
 class PacmanGame : public Game
@@ -63,10 +64,14 @@ class PacmanGame : public Game
 		bool keys[350];
 		Pacman * pacman;
 		Terrain * terrain;
+		std::vector<Food*> food_entities;
+		int lives, score;
+
 		void loadGhosts();
 		void loadFood();
 		void loadPlayer();
 		void loadMap();
+		void addFood(Food * food);
 
 	public:
 		~PacmanGame();

@@ -29,10 +29,13 @@ GameEntity::GameEntity(Mesh * mesh, Mat4 * m, unsigned int texture, Vec3 * start
 
 GameEntity::~GameEntity()
 {
+	delete coordinates;
+}
+
+void GameEntity::cleanUp()
+{
 	delete mesh;
 	delete matrix;
-	delete coordinates;
-
 }
 
 float GameEntity::centre(int k)
@@ -42,7 +45,7 @@ float GameEntity::centre(int k)
 	minK = (*mesh)[0].pos[k];
 	maxK = (*mesh)[0].pos[k];
 
-	for (unsigned i=0; i < mesh->size(); i++)
+	for (int i=0; i < mesh->size(); i++)
 	{
 		if ((*mesh)[i].pos[k] < minK)
 			minK = (*mesh)[i].pos[k];
@@ -137,4 +140,18 @@ void GameEntity::move(double x_amount, double y_amount, double z_amount)
 	(*coordinates)(X_AXIS) += x_amount;
 	(*coordinates)(Y_AXIS) += y_amount;
 	(*coordinates)(Z_AXIS) += z_amount;
+}
+
+Vec3 GameEntity::getCoordinates()
+{
+	Vec4 tmp;
+	tmp(0) = coordinates->x;
+	tmp(1) = coordinates->y;
+	tmp(2) = coordinates->z;
+	tmp(3) = 1;
+
+	tmp = Mat4::mul(*matrix, tmp);
+	Vec3 result(tmp(0), tmp(1), tmp(2));
+
+	return result;
 }

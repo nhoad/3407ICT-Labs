@@ -8,8 +8,7 @@ Food::Food(int points, Mesh * mesh, Mat4 * matrix, Vec3 * start, unsigned int vb
 {
 	setVBO(vbo);
 	this->points = points;
-
-	cout << *matrix << endl;
+	this->visible = true;
 }
 
 Food::~Food()

@@ -108,6 +108,7 @@ Vertex Mesh::operator[](int x) const
 
 Terrain::Terrain(unsigned int vbo, unsigned int color_vbo, unsigned int size)
 {
+	cout << "terrain size: " << size << endl;
 	this->vbo = vbo;
 	this->color_vbo = color_vbo;
 	this->size = size;

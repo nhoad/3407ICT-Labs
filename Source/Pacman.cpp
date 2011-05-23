@@ -1,11 +1,12 @@
 #include "Pacman.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 
-Pacman::Pacman(int lives) : GameEntity("Assets/sphere.obj", "Assets/Checkerboard.png", new Mat4(), new Vec3())
+Pacman::Pacman() : GameEntity("Assets/sphere.obj", "Assets/Checkerboard.png", new Mat4(), new Vec3())
 {
 	Mat4 m = Mat4::scale(20, 20, 20);
 	transform(&m);
-	this->lives = lives;
-	this->score = 0;
 	this->direction = STOPPED;
 }
 
@@ -35,4 +36,26 @@ void Pacman::move(int direction, double elapsedTime)
 			break;
 	}
 
+}
+
+bool Pacman::collidesWith(GameEntity * g)
+{
+	Vec3 v = getCoordinates();
+	Vec3 o_v = g->getCoordinates();
+
+	float x, z, o_x, o_z;
+
+	x = v.x;
+	z = v.z;
+
+	o_x = o_v.x;
+	o_z = o_v.z;
+
+	if (x > o_x - 14 && x < o_x + 14)
+	{
+		if (z > o_z - 14 && z < o_z + 14)
+			return true;
+	}
+
+	return false;
 }

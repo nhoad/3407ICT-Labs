@@ -4,7 +4,12 @@
 class Vec3
 {
 	public:
-		float data[3];
+		union {
+			struct {
+				float x, y, z;
+			};
+			float data[3];
+		};
 
 		/**
 			Constructor.
