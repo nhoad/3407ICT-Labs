@@ -118,34 +118,36 @@ void PacmanGame::loadGhosts()
 
 void PacmanGame::loadFood()
 {
-	Mesh * mesh = Loader::readMesh("Assets/cheap_sphere.obj");
+	Mesh * mesh = Loader::readMesh("Assets/cone.obj");
 
 	Mat4 * matrix = new Mat4(Mat4::scale(28, 28, 28));
 
 	unsigned int texture = Loader::loadTexture("Assets/Checkerboard.png");
 	unsigned int vbo = Loader::buffer(mesh);
 
-	for (int i=0; i < 15; i++)
+	for (int i=0; i < 13; i++)
 	{
-		addFood(new Food(10, mesh, matrix, new Vec3(1.3, 0, i+22), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(2.3, 0, i+18), vbo, texture));
 		addFood(new Food(10, mesh, matrix, new Vec3(2.3, 0, i+2.4), vbo, texture));
 	}
 
 
-	for (int i=0; i < 30; i++)
+	for (int i=0; i < 25; i++)
 	{
-		if (i == 3 || i == 21)
+		if (i == 2)
 			i++;
+		else if (i == 17)
+			i += 2;
 
-		addFood(new Food(10, mesh, matrix, new Vec3(i + 4.7, 2, 9.5), vbo, texture));
-		addFood(new Food(10, mesh, matrix, new Vec3(i + 4.7, 2, 30), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(i + 3.8, 0, 7.4), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(i + 3.8, 0, 24.5), vbo, texture));
 	}
 
-	for (int i=0; i < 34; i++)
+	for (int i=0; i < 28; i++)
 	{
-		addFood(new Food(10, mesh, matrix, new Vec3(7.7, 2, i+3.5), vbo, texture));
-		addFood(new Food(10, mesh, matrix, new Vec3(26, 2, i+3.5), vbo, texture));
-		addFood(new Food(10, mesh, matrix, new Vec3(38.3, 2, i+3.5), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(5.7, 0, i+2.4), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(21.2, 0, i+2.4), vbo, texture));
+		addFood(new Food(10, mesh, matrix, new Vec3(31.5, 0, i+2.4), vbo, texture));
 	}
 }
 

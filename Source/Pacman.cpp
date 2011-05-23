@@ -3,7 +3,7 @@
 using std::cout;
 using std::endl;
 
-Pacman::Pacman() : GameEntity("Assets/Ghost.obj", "Assets/Checkerboard.png", new Mat4(), new Vec3(12, 0, 9))
+Pacman::Pacman() : GameEntity("Assets/sphere.obj", "Assets/Checkerboard.png", new Mat4(), new Vec3(12, 0, 9))
 {
 	Mat4 m = Mat4::scale(50, 50, 50);
 	transform(&m);
