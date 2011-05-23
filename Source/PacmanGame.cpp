@@ -91,7 +91,6 @@ void PacmanGame::update(double elapsedTime)
 
 void PacmanGame::draw()
 {
-	cout << score << endl;
 	glUseProgram(shader);
 	Game::draw();
 

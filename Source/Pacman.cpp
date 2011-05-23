@@ -41,8 +41,6 @@ void Pacman::move(int direction, double elapsedTime)
 bool Pacman::collidesWith(GameEntity * g)
 {
 	Vec3 v = getCoordinates();
-	cout << *coordinates << endl;
-	cout << v << endl;
 	Vec3 o_v = g->getCoordinates();
 
 	float x, z, o_x, o_z;
