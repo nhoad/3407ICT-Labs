@@ -80,6 +80,14 @@ void PacmanGame::update(double elapsedTime)
 	if (keys[SDLK_ESCAPE])
 		setGameState(GAME_QUIT);
 
+	for (int i=0; i < ghost_entities.size(); i++)
+	{
+		if (ghost_entities[i]->visible && pacman->collidesWith(ghost_entities[i]))
+		{
+			lives--;
+		}
+	}
+
 	for (int i=0; i < food_entities.size(); i++)
 	{
 		if (food_entities[i]->visible && pacman->collidesWith(food_entities[i]))
@@ -88,6 +96,7 @@ void PacmanGame::update(double elapsedTime)
 			score += food_entities[i]->points;
 		}
 	}
+
 }
 
 void PacmanGame::draw()
