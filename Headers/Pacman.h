@@ -15,11 +15,6 @@
 #include <string>
 #include <vector>
 
-#define GHOST_PINK 1
-#define GHOST_GREEN 2
-#define GHOST_BLUE 3
-#define GHOST_RED 4
-
 #define STOPPED 0
 #define UP 1
 #define DOWN 2
@@ -29,7 +24,7 @@
 class Ghost : public GameEntity
 {
 	public:
-		Ghost(int color);
+		Ghost(Mesh * mesh, Mat4 * matrix, Vec3 * start, unsigned int vbo, unsigned int texture);
 		~Ghost();
 
 		bool scared;
@@ -65,6 +60,7 @@ class PacmanGame : public Game
 		Pacman * pacman;
 		Terrain * terrain;
 		std::vector<Food*> food_entities;
+		std::vector<Ghost*> ghost_entities;
 		int lives, score;
 		unsigned int pacmanShader;
 
@@ -73,6 +69,7 @@ class PacmanGame : public Game
 		void loadPlayer();
 		void loadMap();
 		void addFood(Food * food);
+		void addGhost(Ghost * ghost);
 
 	public:
 		~PacmanGame();

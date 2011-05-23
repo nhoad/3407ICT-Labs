@@ -1,24 +1,14 @@
 #include "Pacman.h"
 
-Ghost::Ghost(int color)
+Ghost::Ghost(Mesh * mesh, Mat4 * matrix, Vec3 * start, unsigned int vbo, unsigned int texture) :
+	GameEntity(mesh, matrix, texture, start)
 {
-	switch (color)
-	{
-		case GHOST_PINK:
-		case GHOST_GREEN:
-		case GHOST_BLUE:
-		case GHOST_RED:
-			GameEntity::GameEntity("Assets/Ghost.obj", "Assets/GhostRed.png", new Mat4());
-			break;
-	}
-	this->color = color;
+	setVBO(vbo);
 	scared = false;
 	visible = false;
-	obj = object;
 }
 
 
 Ghost::~Ghost()
 {
-	GameEntity::~GameEntity();
 }

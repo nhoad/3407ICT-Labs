@@ -101,8 +101,8 @@ void PacmanGame::draw()
 			food_entities[i]->draw();
 	}
 
-	glUseProgram(pacmanShader);
 	pacman->draw();
+
 	glUseProgram(0);
 	terrain->draw();
 }
@@ -114,13 +114,16 @@ void PacmanGame::loadMap()
 
 void PacmanGame::loadGhosts()
 {
-	Mesh * mesh = Loader::readMesh("Assets/cone.obj");
+	Mesh * mesh = Loader::readMesh("Assets/Ghost.obj");
 	Mat4 * matrix = new Mat4(Mat4::scale(28, 28, 28));
 
 	unsigned int texture = Loader::loadTexture("Assets/foodTexture.png");
 	unsigned int vbo = Loader::buffer(mesh);
 
-	addFood(new Food(10, mesh, matrix, new Vec3(2.3, 0, i+18), vbo, texture));
+	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(), vbo, Loader::loadTexture("Assets/ghostRed.png")));
+	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(), vbo, Loader::loadTexture("Assets/ghostGreen.png")));
+	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(), vbo, Loader::loadTexture("Assets/ghostBlue.png")));
+	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(), vbo, Loader::loadTexture("Assets/ghostRed.png")));
 }
 
 void PacmanGame::loadFood()
@@ -155,6 +158,11 @@ void PacmanGame::loadFood()
 		addFood(new Food(10, mesh, matrix, new Vec3(21.2, 0, i+2.4), vbo, texture));
 		addFood(new Food(10, mesh, matrix, new Vec3(31.5, 0, i+2.4), vbo, texture));
 	}
+}
+
+void PacmanGame::addGhost(Ghost * ghost)
+{
+	ghost_entities.push_back(ghost);
 }
 
 void PacmanGame::addFood(Food * food)
