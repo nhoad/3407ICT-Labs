@@ -1,5 +1,7 @@
-#include <iostream>
 #pragma once
+#include <iostream>
+
+#include "Vec4.h"
 
 class Vec3
 {
@@ -66,6 +68,8 @@ class Vec3
 			\return result of dividing components by l.
 		*/
 		Vec3 operator/(const float& l) const;
+
+		operator Vec4();
 
 		/**
 			returns the length of the vector.

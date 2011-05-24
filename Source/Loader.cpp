@@ -335,20 +335,20 @@ Terrain * Loader::loadTerrain(string heightmap, float divisions)
 			int curX = x * xDiv, curZ = z * zDiv;
 
 			polygon.push_back(Vec3(curX, Terrain::getHeight(&heights, x, z, width), curZ));
-			polygon.push_back(Vec3(curX+xDiv, Terrain::getHeight(&heights, x+1, z+1, width), curZ+zDiv));
 			polygon.push_back(Vec3(curX, Terrain::getHeight(&heights, x, z+1, width), curZ+zDiv));
+			polygon.push_back(Vec3(curX+xDiv, Terrain::getHeight(&heights, x+1, z+1, width), curZ+zDiv));
 
 			polygon.push_back(Vec3(curX, Terrain::getHeight(&heights, x, z, width), curZ));
-			polygon.push_back(Vec3(curX+xDiv, Terrain::getHeight(&heights, x+1, z, width), curZ));
 			polygon.push_back(Vec3(curX+xDiv, Terrain::getHeight(&heights, x+1, z+1, width), curZ+zDiv));
+			polygon.push_back(Vec3(curX+xDiv, Terrain::getHeight(&heights, x+1, z, width), curZ));
 
 			colors.push_back(Terrain::getColour(&heights, x, z, width));
-			colors.push_back(Terrain::getColour(&heights, x+1, z+1, width));
 			colors.push_back(Terrain::getColour(&heights, x, z+1, width));
+			colors.push_back(Terrain::getColour(&heights, x+1, z+1, width));
 
 			colors.push_back(Terrain::getColour(&heights, x, z, width));
-			colors.push_back(Terrain::getColour(&heights, x+1, z, width));
 			colors.push_back(Terrain::getColour(&heights, x+1, z+1, width));
+			colors.push_back(Terrain::getColour(&heights, x+1, z, width));
 		}
 
 	glGenBuffers(1, &vbo);

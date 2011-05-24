@@ -135,6 +135,9 @@ class Terrain
 		void draw();
 		int size();
 
-		bool collisionAt(Vec3 v);
+		bool canGoUp(Vec3 * v, Mat4 * m);
+		bool canGoDown(Vec3 * v, Mat4 * m);
+		bool canGoLeft(Vec3 * v, Mat4 * m);
+		bool canGoRight(Vec3 * v, Mat4 * m);
 
 };

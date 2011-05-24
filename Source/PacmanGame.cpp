@@ -97,21 +97,16 @@ void PacmanGame::update(double elapsedTime)
 		}
 	}
 
-	if (terrain->collisionAt(pacman->getCoordinates()))
-	{
-		return;
-	}
-
-	if (keys[SDLK_UP] || keys[SDLK_w])
+	if ((keys[SDLK_UP] || keys[SDLK_w]) && terrain->canGoUp(pacman->getLocalCoordinates(), pacman->getMatrix()))
 		pacman->move(UP, elapsedTime);
 
-	if (keys[SDLK_DOWN] || keys[SDLK_s])
+	if ((keys[SDLK_DOWN] || keys[SDLK_s]) && terrain->canGoDown(pacman->getLocalCoordinates(), pacman->getMatrix()))
 		pacman->move(DOWN, elapsedTime);
 
-	if (keys[SDLK_LEFT] || keys[SDLK_a])
+	if ((keys[SDLK_LEFT] || keys[SDLK_a]) && terrain->canGoLeft(pacman->getLocalCoordinates(), pacman->getMatrix()))
 		pacman->move(LEFT, elapsedTime);
 
-	if (keys[SDLK_RIGHT] || keys[SDLK_d])
+	if ((keys[SDLK_RIGHT] || keys[SDLK_d]) && terrain->canGoRight(pacman->getLocalCoordinates(), pacman->getMatrix()))
 		pacman->move(RIGHT, elapsedTime);
 
 }
@@ -153,7 +148,6 @@ void PacmanGame::loadWalls()
 void PacmanGame::loadGhosts()
 {
 	Mesh * mesh = Loader::readMesh("Assets/Ghost.obj");
-	Mat4 * matrix = new Mat4(Mat4::scale(20, 20, 20));
 
 	unsigned int texture = Loader::loadTexture("Assets/foodTexture.png");
 	unsigned int vbo = Loader::buffer(mesh);
@@ -161,7 +155,7 @@ void PacmanGame::loadGhosts()
 	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(25, 0, 20), vbo, Loader::loadTexture("Assets/ghostRed.png")));
 	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(25, 0, 22), vbo, Loader::loadTexture("Assets/ghostGreen.png")));
 	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(25, 0, 24), vbo, Loader::loadTexture("Assets/ghostBlue.png")));
-	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(23, 0, 22), vbo, Loader::loadTexture("Assets/ghostOrange.png")));
+	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(3, 0, 2), vbo, Loader::loadTexture("Assets/ghostOrange.png")));
 }
 
 void PacmanGame::loadFood()

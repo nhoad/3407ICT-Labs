@@ -142,7 +142,17 @@ void GameEntity::move(double x_amount, double y_amount, double z_amount)
 	(*coordinates)(Z_AXIS) += z_amount;
 }
 
-Vec3 GameEntity::getCoordinates()
+Mat4 * GameEntity::getMatrix()
+{
+	return matrix;
+}
+
+Vec3 * GameEntity::getLocalCoordinates()
+{
+	return coordinates;
+}
+
+Vec3 GameEntity::getWorldCoordinates()
 {
 	Vec4 tmp;
 	tmp(0) = coordinates->x;

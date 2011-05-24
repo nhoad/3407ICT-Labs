@@ -167,6 +167,7 @@ void Core::preprocess()
 	game->initialise();
 
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
 	glDepthMask(GL_TRUE);
 }

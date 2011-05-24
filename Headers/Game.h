@@ -212,5 +212,7 @@ class GameEntity
 		*/
 		virtual void move(double x_amount, double y_amount, double z_amount);
 
-		virtual Vec3 getCoordinates();
+		virtual Mat4 * getMatrix();
+		virtual Vec3 * getLocalCoordinates();
+		virtual Vec3 getWorldCoordinates();
 };

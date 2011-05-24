@@ -13,14 +13,14 @@ using std::vector;
 using std::cout;
 using std::endl;
 
-#include "Primitives.h"
-#include "Loader.h"
-#include "Vec3.h"
-
 #include <iostream>
 using std::ostream;
 
 using std::string;
+
+#include "Primitives.h"
+#include "Loader.h"
+#include "Vec3.h"
 
 int compareOnY(Vertex a, Vertex b)
 {
@@ -152,6 +152,7 @@ void Terrain::draw()
 	glVertexPointer(3, GL_FLOAT, sizeof(Vec3), 0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+	// disable mesh mode
 	glDrawArrays(GL_TRIANGLES, 0, mesh.size());
 
 	glPopMatrix();
@@ -160,15 +161,65 @@ void Terrain::draw()
 	glDisableClientState(GL_NORMAL_ARRAY);
 }
 
-bool Terrain::collisionAt(Vec3 v)
+#define step_size 5
+
+bool Terrain::canGoRight(Vec3 * v, Mat4 * m)
 {
-	int step_size = 20;
+	Vec4 vec = *v;
+	vec.z--;
+
+	vec = Mat4::mul(*m, vec);
+
 	for (int i=0; i < mesh.size(); i++)
-	{
-		if (mesh[i].y != 0 && v.x > mesh[i].x-step_size && v.x < mesh[i].x+step_size && v.z > mesh[i].z-step_size && v.z < mesh[i].z+step_size)
-			return true;
-	}
-	return false;
+		if (mesh[i].y > 0 && vec.x > mesh[i].x-step_size && vec.x < mesh[i].x+step_size &&
+			 vec.z > mesh[i].z-step_size && vec.z < mesh[i].z)
+			return false;
+
+	return true;
+}
+
+bool Terrain::canGoLeft(Vec3 * v, Mat4 * m)
+{
+	Vec4 vec = *v;
+	vec.z++;
+
+	vec = Mat4::mul(*m, vec);
+
+	for (int i=0; i < mesh.size(); i++)
+		if (mesh[i].y > 0 && vec.x > mesh[i].x-step_size && vec.x < mesh[i].x+step_size &&
+			 vec.z > mesh[i].z && vec.z < mesh[i].z+step_size)
+			return false;
+
+	return true;
+}
+
+bool Terrain::canGoDown(Vec3 * v, Mat4 * m)
+{
+	Vec4 vec = *v;
+	vec.x++;
+
+	vec = Mat4::mul(*m, vec);
+
+	for (int i=0; i < mesh.size(); i++)
+		if (mesh[i].y > 0 && vec.x > mesh[i].x && vec.x < mesh[i].x+step_size &&
+			 vec.z > mesh[i].z-step_size && vec.z < mesh[i].z+step_size)
+			return false;
+
+	return true;
+}
+bool Terrain::canGoUp(Vec3 * v, Mat4 * m)
+{
+	Vec4 vec = *v;
+	vec.x--;
+
+	vec = Mat4::mul(*m, vec);
+
+	for (int i=0; i < mesh.size(); i++)
+		if (mesh[i].y > 0 && vec.x > mesh[i].x-step_size && vec.x < mesh[i].x &&
+			 vec.z > mesh[i].z-step_size && vec.z < mesh[i].z+step_size)
+			return false;
+
+	return true;
 }
 
 int Terrain::size()

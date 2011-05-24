@@ -85,3 +85,14 @@ ostream & operator<<(ostream & o, const Vec3 & v)
 
 	return o;
 }
+
+Vec3::operator Vec4()
+{
+	Vec4 r;
+	r.x = this->x;
+	r.y = this->y;
+	r.z = this->z;
+	r.w = 1;
+
+	return r;
+}
