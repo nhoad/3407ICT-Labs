@@ -8,6 +8,20 @@ using std::endl;
 
 PacmanGame::~PacmanGame()
 {
+	if (food_entities.size() >= 1)
+		food_entities[0]->deinitialise();
+
+	if (ghost_entities.size() >= 1)
+		ghost_entities[0]->deinitialise();
+
+	for (int i=0; i < food_entities.size(); i++)
+		delete food_entities[i];
+
+	for (int i=0; i < ghost_entities.size(); i++)
+		delete ghost_entities[i];
+
+	pacman->deinitialise();
+
 	delete pacman;
 	delete terrain;
 }
@@ -17,8 +31,8 @@ void PacmanGame::initialise()
 	for (int i=0; i < 350; i++)
 		keys[i] = false;
 
-
 	loadShader("Assets/sphere_shader_v.glsl", "Assets/sphere_shader_f.glsl");
+	//hud = new HUD(800, 600);
 
 	setGameState(GAME_PLAY);
 	cout << "Loading Pacman..." << endl;
@@ -128,6 +142,19 @@ void PacmanGame::draw()
 
 	glUseProgram(0);
 	terrain->draw();
+
+/*
+	hud->draw();
+
+	glBegin(GL_QUADS);
+
+	glVertex2f(220, 320);
+	glVertex2f(200, 380);
+	glVertex2f(250, 310);
+	glVertex2f(550, 110);
+
+	glEnd();
+	hud->reset();*/
 }
 
 void PacmanGame::loadMap()
@@ -148,14 +175,15 @@ void PacmanGame::loadWalls()
 void PacmanGame::loadGhosts()
 {
 	Mesh * mesh = Loader::readMesh("Assets/Ghost.obj");
+	Mat4 * matrix = new Mat4(Mat4::scale(20, 20, 20));
 
 	unsigned int texture = Loader::loadTexture("Assets/foodTexture.png");
 	unsigned int vbo = Loader::buffer(mesh);
 
-	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(25, 0, 20), vbo, Loader::loadTexture("Assets/ghostRed.png")));
-	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(25, 0, 22), vbo, Loader::loadTexture("Assets/ghostGreen.png")));
-	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(25, 0, 24), vbo, Loader::loadTexture("Assets/ghostBlue.png")));
-	addGhost(new Ghost(mesh, new Mat4(Mat4::scale(20, 20, 20)), new Vec3(3, 0, 2), vbo, Loader::loadTexture("Assets/ghostOrange.png")));
+	addGhost(new Ghost(mesh, matrix, new Vec3(25, 0, 20), vbo, Loader::loadTexture("Assets/ghostRed.png")));
+	addGhost(new Ghost(mesh, matrix, new Vec3(25, 0, 22), vbo, Loader::loadTexture("Assets/ghostGreen.png")));
+	addGhost(new Ghost(mesh, matrix, new Vec3(25, 0, 24), vbo, Loader::loadTexture("Assets/ghostBlue.png")));
+	addGhost(new Ghost(mesh, matrix, new Vec3(22, 0, 22), vbo, Loader::loadTexture("Assets/ghostOrange.png")));
 }
 
 void PacmanGame::loadFood()

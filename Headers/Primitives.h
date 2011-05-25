@@ -124,7 +124,6 @@ class Terrain
 		int vbo, color_vbo;
 		std::vector<Vec3> mesh;
 
-
 	public:
 		Terrain(unsigned int vbo, unsigned int color_vbo, std::vector<Vec3> mesh);
 		~Terrain();

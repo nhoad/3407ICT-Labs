@@ -16,6 +16,10 @@ Game::Game()
 
 Game::~Game()
 {
+	// it's assumed that all objects in the entities
+	if (entities.size() >= 1)
+		entities[0]->deinitialise();
+
 	for (int i=0; i < entities.size(); i++)
 		delete entities[i];
 }

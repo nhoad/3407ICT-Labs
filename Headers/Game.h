@@ -134,7 +134,8 @@ class GameEntity
 		 * Note that this leaves this entity UNDRAWABLE. Any objects sharing resources with this object will
 		 * also be UNDRAWABLE.
 		 */
-		virtual void cleanUp();
+		virtual void deinitialise();
+
 
 		/// Destructor
 		virtual ~GameEntity();

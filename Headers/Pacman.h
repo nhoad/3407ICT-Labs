@@ -11,6 +11,7 @@
 #pragma once
 
 #include "Game.h"
+#include "HUD.h"
 
 #include <string>
 #include <vector>
@@ -63,6 +64,7 @@ class PacmanGame : public Game
 		std::vector<Ghost*> ghost_entities;
 		int lives, score;
 		unsigned int pacmanShader;
+		HUD * hud;
 
 		void loadWalls();
 		void loadGhosts();

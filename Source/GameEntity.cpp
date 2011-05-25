@@ -32,7 +32,7 @@ GameEntity::~GameEntity()
 	delete coordinates;
 }
 
-void GameEntity::cleanUp()
+void GameEntity::deinitialise()
 {
 	delete mesh;
 	delete matrix;
