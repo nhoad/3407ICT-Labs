@@ -31,8 +31,8 @@ void PacmanGame::initialise()
 	for (int i=0; i < 350; i++)
 		keys[i] = false;
 
+	hud = new HUD(800, 600);
 	loadShader("Assets/sphere_shader_v.glsl", "Assets/sphere_shader_f.glsl");
-	//hud = new HUD(800, 600);
 
 	setGameState(GAME_PLAY);
 	cout << "Loading Pacman..." << endl;
@@ -143,18 +143,22 @@ void PacmanGame::draw()
 	glUseProgram(0);
 	terrain->draw();
 
-/*
+	glDisable(GL_DEPTH_TEST);
+	glDepthMask(GL_FALSE);
 	hud->draw();
 
+	glColor3f(1,1,1);
 	glBegin(GL_QUADS);
 
-	glVertex2f(220, 320);
-	glVertex2f(200, 380);
-	glVertex2f(250, 310);
-	glVertex2f(550, 110);
+	glVertex2f(2, 320);
+	glVertex2f(2, 380);
+	glVertex2f(2, 310);
+	glVertex2f(5, 110);
 
 	glEnd();
-	hud->reset();*/
+	hud->reset();
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
 }
 
 void PacmanGame::loadMap()
