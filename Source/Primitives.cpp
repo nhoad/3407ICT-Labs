@@ -21,6 +21,7 @@ using std::string;
 #include "Primitives.h"
 #include "Loader.h"
 #include "Vec3.h"
+#include "Game.h"
 
 int compareOnY(Vertex a, Vertex b)
 {
@@ -161,66 +162,83 @@ void Terrain::draw()
 	glDisableClientState(GL_NORMAL_ARRAY);
 }
 
-#define step_size 5
-
-bool Terrain::canGoRight(Vec3 * v, Mat4 * m)
+bool Terrain::canGoRight(GameEntity * g)
 {
-	Vec4 vec = *v;
-	vec.z--;
+	bool result = true;
 
-	vec = Mat4::mul(*m, vec);
+	BoundingBox * b = g->getBoundingBox();
+
+	b->calculateWorld(Z_AXIS, -2);
 
 	for (int i=0; i < mesh.size(); i++)
-		if (mesh[i].y > 0 && vec.x > mesh[i].x-step_size && vec.x < mesh[i].x+step_size &&
-			 vec.z > mesh[i].z-step_size && vec.z < mesh[i].z)
-			return false;
+		if (mesh[i].y > 0 && b->collisionAt(&mesh[i]))
+		{
+			result = false;
+			break;
+		}
 
-	return true;
+	b->calculateWorld(Z_AXIS, 2);
+
+	return result;
 }
 
-bool Terrain::canGoLeft(Vec3 * v, Mat4 * m)
+bool Terrain::canGoLeft(GameEntity * g)
 {
-	Vec4 vec = *v;
-	vec.z++;
+	BoundingBox * b = g->getBoundingBox();
+	bool result = true;
 
-	vec = Mat4::mul(*m, vec);
+	b->calculateWorld(Z_AXIS, 2);
 
 	for (int i=0; i < mesh.size(); i++)
-		if (mesh[i].y > 0 && vec.x > mesh[i].x-step_size && vec.x < mesh[i].x+step_size &&
-			 vec.z > mesh[i].z && vec.z < mesh[i].z+step_size)
-			return false;
+		if (mesh[i].y > 0 && b->collisionAt(&mesh[i]))
+		{
+			result = false;
+			break;
+		}
 
-	return true;
+	b->calculateWorld(Z_AXIS, -2);
+
+	return result;
 }
 
-bool Terrain::canGoDown(Vec3 * v, Mat4 * m)
+bool Terrain::canGoUp(GameEntity * g)
 {
-	Vec4 vec = *v;
-	vec.x++;
+	BoundingBox * b = g->getBoundingBox();
+	bool result = true;
 
-	vec = Mat4::mul(*m, vec);
+	b->calculateWorld(X_AXIS, -4);
 
 	for (int i=0; i < mesh.size(); i++)
-		if (mesh[i].y > 0 && vec.x > mesh[i].x && vec.x < mesh[i].x+step_size &&
-			 vec.z > mesh[i].z-step_size && vec.z < mesh[i].z+step_size)
-			return false;
+		if (mesh[i].y > 0 && b->collisionAt(&mesh[i]))
+		{
+			result = false;
+			break;
+		}
 
-	return true;
+	b->calculateWorld(X_AXIS, 4);
+
+	return result;
 }
-bool Terrain::canGoUp(Vec3 * v, Mat4 * m)
-{
-	Vec4 vec = *v;
-	vec.x--;
 
-	vec = Mat4::mul(*m, vec);
+bool Terrain::canGoDown(GameEntity * g)
+{
+	BoundingBox * b = g->getBoundingBox();
+	bool result = true;
+
+	b->calculateWorld(X_AXIS, 2);
 
 	for (int i=0; i < mesh.size(); i++)
-		if (mesh[i].y > 0 && vec.x > mesh[i].x-step_size && vec.x < mesh[i].x &&
-			 vec.z > mesh[i].z-step_size && vec.z < mesh[i].z+step_size)
-			return false;
+		if (mesh[i].y > 0 && b->collisionAt(&mesh[i]))
+		{
+			result = false;
+			break;
+		}
 
-	return true;
+	b->calculateWorld(X_AXIS, -2);
+
+	return result;
 }
+
 
 int Terrain::size()
 {

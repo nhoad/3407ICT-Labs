@@ -19,6 +19,7 @@
 #define GAME_MENU 3
 
 class GameEntity;
+class BoundingBox;
 
 /**
  * "Game" class representing a game, containing all the entities and player, shader, etc.
@@ -105,6 +106,7 @@ class GameEntity
 		Mat4 * matrix;
 
 		unsigned int vbo, texture;
+		BoundingBox * boundingBox;
 
 	public:
 
@@ -216,4 +218,37 @@ class GameEntity
 		virtual Mat4 * getMatrix();
 		virtual Vec3 * getLocalCoordinates();
 		virtual Vec3 getWorldCoordinates();
+		virtual BoundingBox * getBoundingBox();
+};
+
+class BoundingBox
+{
+
+	public:
+		/**
+			Constructor. Takes an object's transformation matrix and local coordinates
+			to calculate the collisions dynamically.
+
+			\param matrix the object's transformation matrix
+			\param coordinates the object's local coordinates
+			\param mesh the object's mesh
+			\return description
+		*/
+		BoundingBox(Mat4 * matrix, Vec3 * coordinates, Mesh * mesh);
+
+		/**
+			Perform collision checking at a specific point
+
+			\param position the position to check, in world coordinates
+			\return true if a collision occurred, false otherwise
+		*/
+		bool collisionAt(Vec3 * position);
+
+		void calculateWorld(int offset_axis, float amount);
+
+	private:
+		Mat4 * matrix;
+		Vec3 * coordinates;
+		Vec3 min, max, worldMin, worldMax;
+
 };

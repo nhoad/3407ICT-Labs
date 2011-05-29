@@ -111,16 +111,16 @@ void PacmanGame::update(double elapsedTime)
 		}
 	}
 
-	if ((keys[SDLK_UP] || keys[SDLK_w]) && terrain->canGoUp(pacman->getLocalCoordinates(), pacman->getMatrix()))
+	if ((keys[SDLK_UP] || keys[SDLK_w]) && terrain->canGoUp(pacman))
 		pacman->move(UP, elapsedTime);
 
-	if ((keys[SDLK_DOWN] || keys[SDLK_s]) && terrain->canGoDown(pacman->getLocalCoordinates(), pacman->getMatrix()))
+	if ((keys[SDLK_DOWN] || keys[SDLK_s]) && terrain->canGoDown(pacman))
 		pacman->move(DOWN, elapsedTime);
 
-	if ((keys[SDLK_LEFT] || keys[SDLK_a]) && terrain->canGoLeft(pacman->getLocalCoordinates(), pacman->getMatrix()))
+	if ((keys[SDLK_LEFT] || keys[SDLK_a]) && terrain->canGoLeft(pacman))
 		pacman->move(LEFT, elapsedTime);
 
-	if ((keys[SDLK_RIGHT] || keys[SDLK_d]) && terrain->canGoRight(pacman->getLocalCoordinates(), pacman->getMatrix()))
+	if ((keys[SDLK_RIGHT] || keys[SDLK_d]) && terrain->canGoRight(pacman))
 		pacman->move(RIGHT, elapsedTime);
 
 }

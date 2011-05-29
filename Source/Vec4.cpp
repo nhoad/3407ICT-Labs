@@ -1,7 +1,9 @@
 #include "Vec4.h"
+#include "Vec3.h"
 
 #include <cmath>
 #include <iostream>
+using std::cout;
 using std::ostream;
 using std::endl;
 
@@ -89,3 +91,12 @@ ostream & operator<<(ostream & o, const Vec4 & v)
 	return o;
 }
 
+Vec4::operator Vec3()
+{
+	Vec3 r;
+	r.x = this->x;
+	r.y = this->y;
+	r.z = this->z;
+
+	return r;
+}

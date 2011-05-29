@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 
+class Vec3;
+
 /** Vec4 class repesenting a 1x4 matrix. */
 class Vec4
 {
@@ -88,4 +90,8 @@ class Vec4
 		*/
 		friend std::ostream & operator<<(std::ostream & o, const Vec4 & m);
 
+		/**
+		 	Conversion operator to turn a Vec4 into a Vec3
+		*/
+		operator Vec3();
 };

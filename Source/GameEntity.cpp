@@ -17,6 +17,8 @@ GameEntity::GameEntity(string meshFile, string textureFile, Mat4 * m, Vec3 * sta
 	this->texture = (textureFile.size() > 0) ? Loader::loadTexture(textureFile) : 0;
 	this->matrix = m;
 	this->coordinates = startPosition;
+
+	this->boundingBox = new BoundingBox(this->matrix, this->coordinates, this->mesh);
 }
 
 GameEntity::GameEntity(Mesh * mesh, Mat4 * m, unsigned int texture, Vec3 * startPosition)
@@ -25,11 +27,14 @@ GameEntity::GameEntity(Mesh * mesh, Mat4 * m, unsigned int texture, Vec3 * start
 	this->matrix = m;
 	this->texture = texture;
 	this->coordinates = startPosition;
+
+	this->boundingBox = new BoundingBox(this->matrix, this->coordinates, this->mesh);
 }
 
 GameEntity::~GameEntity()
 {
 	delete coordinates;
+	delete boundingBox;
 }
 
 void GameEntity::deinitialise()
@@ -150,6 +155,11 @@ Mat4 * GameEntity::getMatrix()
 Vec3 * GameEntity::getLocalCoordinates()
 {
 	return coordinates;
+}
+
+BoundingBox * GameEntity::getBoundingBox()
+{
+	return boundingBox;
 }
 
 Vec3 GameEntity::getWorldCoordinates()

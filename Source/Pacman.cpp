@@ -40,7 +40,7 @@ void Pacman::move(int direction, double elapsedTime)
 
 bool Pacman::collidesWith(GameEntity * g)
 {
-	Vec3 v = getWorldCoordinates();
+/*	Vec3 v = getWorldCoordinates();
 	Vec3 o_v = g->getWorldCoordinates();
 
 	float x, z, o_x, o_z;
@@ -57,5 +57,8 @@ bool Pacman::collidesWith(GameEntity * g)
 			return true;
 	}
 
-	return false;
+	return false;*/
+
+	Vec3 o_v = g->getWorldCoordinates();
+	return this->getBoundingBox()->collisionAt(&o_v);
 }

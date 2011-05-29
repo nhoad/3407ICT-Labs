@@ -19,7 +19,9 @@
 #define X_AXIS 0
 #define Y_AXIS 1
 #define Z_AXIS 2
+#define NONE_AXIS 4
 
+class GameEntity;
 class Vertex;
 
 class Mesh
@@ -134,9 +136,9 @@ class Terrain
 		void draw();
 		int size();
 
-		bool canGoUp(Vec3 * v, Mat4 * m);
-		bool canGoDown(Vec3 * v, Mat4 * m);
-		bool canGoLeft(Vec3 * v, Mat4 * m);
-		bool canGoRight(Vec3 * v, Mat4 * m);
+		bool canGoUp(GameEntity * g);
+		bool canGoDown(GameEntity * g);
+		bool canGoLeft(GameEntity * g);
+		bool canGoRight(GameEntity * g);
 
 };

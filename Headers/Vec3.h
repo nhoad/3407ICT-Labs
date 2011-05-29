@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
 
-#include "Vec4.h"
+class Vec4;
 
 class Vec3
 {
@@ -69,6 +69,9 @@ class Vec3
 		*/
 		Vec3 operator/(const float& l) const;
 
+		/**
+			Conversion operator to turn a Vec3 into a Vec4
+		*/
 		operator Vec4();
 
 		/**
