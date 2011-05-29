@@ -206,7 +206,7 @@ bool Terrain::canGoUp(GameEntity * g)
 	BoundingBox * b = g->getBoundingBox();
 	bool result = true;
 
-	b->calculateWorld(X_AXIS, -4);
+	b->calculateWorld(X_AXIS, -2);
 
 	for (int i=0; i < mesh.size(); i++)
 		if (mesh[i].y > 0 && b->collisionAt(&mesh[i]))
@@ -215,7 +215,7 @@ bool Terrain::canGoUp(GameEntity * g)
 			break;
 		}
 
-	b->calculateWorld(X_AXIS, 4);
+	b->calculateWorld(X_AXIS, 2);
 
 	return result;
 }

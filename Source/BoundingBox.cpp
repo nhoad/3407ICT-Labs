@@ -42,12 +42,6 @@ void BoundingBox::calculateWorld(int offset_axis, float amount)
 	worldMin = min;
 	worldMax = max;
 
-	if (offset_axis != NONE_AXIS)
-	{
-		worldMin(offset_axis) -= amount;
-		worldMin(offset_axis) += amount;
-	}
-
 	worldMax.x += coordinates->x;
 	worldMax.y += coordinates->y;
 	worldMax.z += coordinates->z;
@@ -58,6 +52,12 @@ void BoundingBox::calculateWorld(int offset_axis, float amount)
 
 	worldMin = Mat4::mul(*matrix, worldMin);
 	worldMax = Mat4::mul(*matrix, worldMax);
+
+	if (offset_axis != NONE_AXIS)
+	{
+		worldMin(offset_axis) += amount;
+		worldMax(offset_axis) += amount;
+	}
 }
 
 bool BoundingBox::collisionAt(Vec3 * position)
