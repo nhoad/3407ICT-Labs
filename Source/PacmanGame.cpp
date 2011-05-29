@@ -40,7 +40,6 @@ void PacmanGame::initialise()
 	loadFood();
 	loadPlayer();
 	loadMap();
-	loadWalls();
 
 	pacman->buffer();
 }
@@ -164,16 +163,6 @@ void PacmanGame::draw()
 void PacmanGame::loadMap()
 {
 	terrain = Loader::loadTerrain("Assets/pacman.png", 12);
-}
-
-void PacmanGame::loadWalls()
-{
-	Mesh * mesh = Loader::readMesh("Assets/Cube_CubeMapped.obj");
-	Mat4 * matrix = new Mat4(Mat4::scale(200, 200, 200));
-
-	unsigned int vbo = Loader::buffer(mesh);
-	unsigned int texture = Loader::loadTexture("Assets/foodTexture.png");
-
 }
 
 void PacmanGame::loadGhosts()

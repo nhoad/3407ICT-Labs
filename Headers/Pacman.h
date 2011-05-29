@@ -12,6 +12,7 @@
 
 #include "Game.h"
 #include "HUD.h"
+#include "Terrain.h"
 
 #include <string>
 #include <vector>
@@ -66,7 +67,6 @@ class PacmanGame : public Game
 		unsigned int pacmanShader;
 		HUD * hud;
 
-		void loadWalls();
 		void loadGhosts();
 		void loadFood();
 		void loadPlayer();

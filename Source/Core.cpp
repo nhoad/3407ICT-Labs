@@ -19,6 +19,8 @@
 #include "Mat4.h"
 #include "Camera.h"
 #include "Loader.h"
+#include "Pacman.h"
+#include "StringFunctions.h"
 
 #include <iostream>
 #include <fstream>
@@ -32,6 +34,7 @@ using namespace std;
 ///
 int main(int argc, char* argv[])
 {
+
 	Core example;
 	example.start();
 	return 0;
@@ -42,8 +45,10 @@ int main(int argc, char* argv[])
 ///
 	Core::Core(int width, int height, bool fullscreen)
 : width(width), height(height), fullscreen(fullscreen),
-	elapsedTime(0), running(true), terrain(), camera(FPS)//, objects()
+	elapsedTime(0), running(true), camera(FPS)
 {
+
+
 }
 
 Core::~Core()
@@ -52,6 +57,7 @@ Core::~Core()
 		TTF_Quit();
 	if (SDL_WasInit(SDL_INIT_VIDEO))
 		SDL_Quit();
+
 	IMG_Quit();
 }
 
@@ -61,7 +67,7 @@ Core::~Core()
 void Core::initialise()
 {
 	// Initialise SDL with C-style error checking
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 		cerr << SDL_GetError() << endl;
 		SDL_Quit();
 	}
@@ -90,9 +96,9 @@ void Core::initialise()
 		SDL_Quit();
 	}
 
-	if (SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL))
+	/*if (SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL))
 		cerr << "couldn't enable key repeat!" << endl;
-
+*/
 	// Initialises SDL_image, an image reading wrapper on many popular formats.
 	// SDL_image supports more than just these two formats. Have a look at the
 	// documentation page linked in the #include comments.
@@ -104,8 +110,7 @@ void Core::initialise()
 		SDL_Quit();
 	}
 
-	SDL_WarpMouse(0, 0);
-	SDL_WM_GrabInput(SDL_GRAB_ON);
+//	SDL_WM_GrabInput(SDL_GRAB_ON);
 	SDL_ShowCursor(SDL_DISABLE);
 }
 
@@ -119,77 +124,52 @@ void Core::start()
 	t.start();
 
 	preprocess();
+
+	double avg = 0;
+	int count = 0;
+
 	while (running) {
 		render();
 		handleEvents();
+
 		elapsedTime = t.getSeconds();
 		t.start();
+
+		if (avg < 1)
+		{
+			avg += elapsedTime;
+			count++;
+		}
+		else
+		{
+			SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(count)).c_str(), "");
+			avg = 0;
+			count = 0;
+		}
+
 	}
 	cleanup();
 }
 
 void Core::preprocess()
 {
-
-	this->objects.push_back(new Object("Assets/Person.obj"));
-	this->objects.push_back(new Object("Assets/Cube_CubeMapped.obj", "", Mat4::translate(0, 0, 4)));
-
-	// Load objects here
-	camera.setSpeed(0.5);
-	camera.setPosition(Vec4(0, 0, 5, 1));
-	camera.setTarget(Vec4(0, 0, 0, 1));
-
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(45, ((float) width / height), 1, 50);
+	gluPerspective(45, ((float) width / height), 1, 2000);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	//gluLookAt(323, 318, 33, 0, 0, 0, 0, 1, 0);
 
-	vShader = Loader::loadShader("Assets/basic_shader_v.glsl", GL_VERTEX_SHADER);
-	fShader = Loader::loadShader("Assets/basic_shader_f.glsl", GL_FRAGMENT_SHADER);
+	camera.setPosition(Vec3(1250, 1000, -300));
+	camera.setViewAngle(45, 225, 0);
 
-	shaderProgram = Loader::linkShader(vShader, fShader);
-	glUseProgram(shaderProgram);
-
-	float bg_colour[] = {0.1f, 0.2f, 0.4f, 0.0f};
-
-	int bg_colour_id = glGetUniformLocation(shaderProgram, "bg_colour");
-
-	glUniform3fv(bg_colour_id, 1, bg_colour);
-	glClearColor(bg_colour[0], bg_colour[1], bg_colour[2], bg_colour[3]);
+	game = new PacmanGame();
+	game->initialise();
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_TEXTURE_2D);
-
-	SDL_Surface * img = IMG_Load("Assets/Checkerboard.png");
-
-	unsigned int texture_id;
-	glGenTextures(1, &texture_id);
-	glBindTexture(GL_TEXTURE_2D, texture_id);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, img->format->BytesPerPixel, img->w, img->h, 0, GL_RGB, GL_UNSIGNED_BYTE, img->pixels);
-
-	createVBOs();
-}
-
-void Core::createVBOs()
-{
-	for (int i=0; i < objects.size(); i++)
-	{
-		glGenBuffers(1, &objects[i]->vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, objects[i]->vbo);
-
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * objects[i]->mesh.size(),
-					&objects[i]->mesh[0], GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-	}
-
+	glDepthMask(GL_TRUE);
 }
 
 void Core::render()
@@ -202,13 +182,11 @@ void Core::render()
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
+	// Push a new matrix to the GL_MODELVIEW stack.
 	glPushMatrix();
-
-	// set up the camera
 	camera.load();
 
-	for (int i=0; i < objects.size(); i++)
-		objects[i]->draw();
+	game->draw();
 
 	glPopMatrix();
 
@@ -216,76 +194,23 @@ void Core::render()
 	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
 
-	// Flip the buffer for double buffering
 	SDL_GL_SwapBuffers();
 }
 
 void Core::cleanup()
 {
-	for (int i=0; i < objects.size(); i++)
-		delete objects[i];
-
+	delete game;
 }
 
 void Core::handleEvents()
 {
-	SDL_Event e;
-	while (SDL_PollEvent(&e)) {
-		switch (e.type) {
-			case SDL_QUIT:
-				running = false;
-				break;
-			case SDL_KEYUP:
-				switch (e.key.keysym.sym) {
-					case SDLK_ESCAPE:
-						running = false;
-						break;
-					default: break;
-				}
-			case SDL_KEYDOWN:
-				switch (e.key.keysym.sym) {
-					case SDLK_w:
-						camera.move(FORWARD);
-						break;
-					case SDLK_s:
-						camera.move(BACKWARD);
-						break;
-					case SDLK_a:
-						camera.move(LEFT);
-						break;
-					case SDLK_d:
-						camera.move(RIGHT);
-						break;
-					case SDLK_SPACE:
-						camera.move(UP);
-						break;
-					case SDLK_LSHIFT:
-						camera.move(DOWN);
-						break;
-					case SDLK_r:
-						camera.look(DOWN);
-						break;
-					case SDLK_f:
-						camera.look(UP);
-						break;
-					case SDLK_q:
-						camera.look(LEFT);
-						break;
-					case SDLK_e:
-						camera.look(RIGHT);
-						break;
-					default: break;
-				}
-				break;
-			case SDL_MOUSEMOTION:
-				camera.handleMouse(e.motion.xrel, e.motion.yrel);
-				break;
-			default: break;
-		}
-	}
+	game->update(elapsedTime);
+
+	if (game->getGameState() == GAME_QUIT)
+		running = false;
 }
 
-Vec4 Core::getpixel24(SDL_Surface *surface, int x, int y)
+Vec3 Core::getpixel24(SDL_Surface *surface, int x, int y)
 {
 	Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * surface->format->BytesPerPixel;
 #if defined(__MACH__) && defined(__APPLE__)
@@ -297,6 +222,6 @@ Vec4 Core::getpixel24(SDL_Surface *surface, int x, int y)
 	float g = p[1];
 	float r = p[0]; // little endian
 #endif
-	float result[] = {r, g, b, 1};
-	return Vec4(result); // You may have to change this, depending on your data structure
+	float result[] = {r, g, b};
+	return Vec3(result); // You may have to change this, depending on your data structure
 }

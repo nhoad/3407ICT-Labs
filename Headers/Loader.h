@@ -5,6 +5,7 @@
  * Student Number: s2754580
  */
 #include "Primitives.h"
+#include "Terrain.h"
 #include <string>
 
 #pragma once

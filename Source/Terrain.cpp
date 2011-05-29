@@ -1,227 +1,123 @@
-//////////////////////////////////////////////////////////////
-/// Author:             <Your Name>
-/// Student Number:     <s0000000>
-/// Operating System:   <Windows|Mac OS X|Linux>
-/// Comments:           <Notes about running your program>
-//////////////////////////////////////////////////////////////
-#if defined(__MACH__) && defined(__APPLE__)
-// Allow SDL main hack, because of the OS X Cocoa binding
-#else
-// SDL main hackery disabled for Windows and Linux
-#define SDL_main main
-#endif
-
-// SDL's glext.h version disabled
-#define NO_SDL_GLEXT
-
 #include "Terrain.h"
-#include "HPTime.h"
-#include "Mat4.h"
-#include "Camera.h"
-#include "Loader.h"
-#include "Pacman.h"
-#include "StringFunctions.h"
+#include "glew.h"
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <cmath>
+using std::vector;
 
-using namespace std;
-
-///
-/// Program Entry
-///
-int main(int argc, char* argv[])
+Terrain::Terrain(unsigned int vbo, unsigned int color_vbo, vector<Vec3> mesh)
 {
-
-	Core example;
-	example.start();
-	return 0;
+	this->vbo = vbo;
+	this->color_vbo = color_vbo;
+	this->mesh = mesh;
 }
 
-///
-/// Constructors and Destructors
-///
-	Core::Core(int width, int height, bool fullscreen)
-: width(width), height(height), fullscreen(fullscreen),
-	elapsedTime(0), running(true), camera(FPS)
+float Terrain::getHeight(std::vector<float> * heights, int x, int y, int y_step)
 {
+	return (*heights)[x + (y * y_step)];
+}
 
+Vec3 Terrain::getColour(std::vector<float> * heights, int x, int y, int y_step)
+{
+	float height = Terrain::getHeight(heights, x, y, y_step);
+
+	if (height == 0)
+		return Vec3();
+
+	return Vec3(0.13, 0.24, (height / 255.0) * 12);
+}
+
+Terrain::~Terrain()
+{
 
 }
 
-Core::~Core()
+void Terrain::draw()
 {
-	if (TTF_WasInit())
-		TTF_Quit();
-	if (SDL_WasInit(SDL_INIT_VIDEO))
-		SDL_Quit();
-
-	IMG_Quit();
-}
-
-///
-/// Individual Functions
-///
-void Core::initialise()
-{
-	// Initialise SDL with C-style error checking
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
-		cerr << SDL_GetError() << endl;
-		SDL_Quit();
-	}
-
-	// Create a render buffer through SDL
-	Uint32 flags = SDL_HWSURFACE | SDL_DOUBLEBUF | SDL_OPENGL;
-	if (fullscreen)
-		flags |= SDL_FULLSCREEN;
-	SDL_Surface* buffer = SDL_SetVideoMode(width, height, 32, flags);
-	if (!buffer) {
-		cerr << SDL_GetError() << endl;
-		SDL_Quit();
-	}
-
-	// Initialise GLEW for OGL extension bindings
-	GLenum err = glewInit();
-	if (err != GLEW_OK) {
-		cerr << glewGetErrorString(err) << endl;
-		SDL_Quit();
-	}
-
-	// Initialise SDL_ttf, a truetype wrapper for SDL
-	if (TTF_Init() < 0) {
-		cerr << TTF_GetError() << endl;
-		TTF_Quit();
-		SDL_Quit();
-	}
-
-	/*if (SDL_EnableKeyRepeat(100, SDL_DEFAULT_REPEAT_INTERVAL))
-		cerr << "couldn't enable key repeat!" << endl;
-*/
-	// Initialises SDL_image, an image reading wrapper on many popular formats.
-	// SDL_image supports more than just these two formats. Have a look at the
-	// documentation page linked in the #include comments.
-	int img_flags = IMG_INIT_JPG | IMG_INIT_PNG;
-
-	if ((IMG_Init(flags)&img_flags) != img_flags) {
-		cerr << "Failed to support JPEG and PNG image reading." << endl;
-		cerr << IMG_GetError() << endl;
-		SDL_Quit();
-	}
-
-//	SDL_WM_GrabInput(SDL_GRAB_ON);
-	SDL_ShowCursor(SDL_DISABLE);
-}
-
-///
-/// The Main Loop
-///
-void Core::start()
-{
-	initialise();
-	Time t;
-	t.start();
-
-	preprocess();
-
-	double avg = 0;
-	int count = 0;
-
-	while (running) {
-		render();
-		handleEvents();
-
-		elapsedTime = t.getSeconds();
-		t.start();
-
-		if (avg < 1)
-		{
-			avg += elapsedTime;
-			count++;
-		}
-		else
-		{
-			SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(count)).c_str(), "");
-			avg = 0;
-			count = 0;
-		}
-
-	}
-	cleanup();
-}
-
-void Core::preprocess()
-{
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(45, ((float) width / height), 1, 2000);
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-
-	camera.setPosition(Vec3(1250, 1000, -300));
-	camera.setViewAngle(45, 225, 0);
-
-	game = new PacmanGame();
-	game->initialise();
-
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_TEXTURE_2D);
-	glDepthMask(GL_TRUE);
-}
-
-void Core::render()
-{
-	// Clear the frame buffer each time we draw.
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Enable vertex array and such
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_NORMAL_ARRAY);
-	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-	// Push a new matrix to the GL_MODELVIEW stack.
-	glPushMatrix();
-	camera.load();
-
-	game->draw();
-
-	glPopMatrix();
+	if (mesh.size() == 0)
+		return;
 
 	glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-	glDisableClientState(GL_VERTEX_ARRAY);
 	glDisableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
 
-	SDL_GL_SwapBuffers();
+	glPushMatrix();
+
+	glBindBuffer(GL_ARRAY_BUFFER, color_vbo);
+	glColorPointer(3, GL_FLOAT, sizeof(Vec3), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glVertexPointer(3, GL_FLOAT, sizeof(Vec3), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	// disable mesh mode
+	glDrawArrays(GL_TRIANGLES, 0, mesh.size());
+
+	glPopMatrix();
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glDisableClientState(GL_COLOR_ARRAY);
+	glDisableClientState(GL_NORMAL_ARRAY);
 }
 
-void Core::cleanup()
+bool Terrain::canGoRight(GameEntity * g)
 {
-	delete game;
+	BoundingBox * b = g->getBoundingBox();
+
+	b->calculateWorld(Z_AXIS, -2);
+	bool result = testMovement(b);
+	b->calculateWorld(Z_AXIS, 2);
+
+	return result;
 }
 
-void Core::handleEvents()
+bool Terrain::canGoLeft(GameEntity * g)
 {
-	game->update(elapsedTime);
+	BoundingBox * b = g->getBoundingBox();
 
-	if (game->getGameState() == GAME_QUIT)
-		running = false;
+	b->calculateWorld(Z_AXIS, 2);
+	bool result = testMovement(b);
+	b->calculateWorld(Z_AXIS, -2);
+
+	return result;
 }
 
-Vec3 Core::getpixel24(SDL_Surface *surface, int x, int y)
+bool Terrain::canGoUp(GameEntity * g)
 {
-	Uint8 *p = (Uint8 *)surface->pixels + y * surface->pitch + x * surface->format->BytesPerPixel;
-#if defined(__MACH__) && defined(__APPLE__)
-	float b = p[0];
-	float g = p[1];
-	float r = p[2]; // Big endian
-#else
-	float b = p[2];
-	float g = p[1];
-	float r = p[0]; // little endian
-#endif
-	float result[] = {r, g, b};
-	return Vec3(result); // You may have to change this, depending on your data structure
+	BoundingBox * b = g->getBoundingBox();
+
+	b->calculateWorld(X_AXIS, -2);
+	bool result = testMovement(b);
+	b->calculateWorld(X_AXIS, 2);
+
+	return result;
+}
+
+bool Terrain::canGoDown(GameEntity * g)
+{
+	BoundingBox * b = g->getBoundingBox();
+
+	b->calculateWorld(X_AXIS, 2);
+	bool result = testMovement(b);
+	b->calculateWorld(X_AXIS, -2);
+
+	return result;
+}
+
+bool Terrain::testMovement(BoundingBox * b)
+{
+	bool result = true;
+
+	for (int i=0; i < mesh.size(); i++)
+		if (mesh[i].y > 0 && b->collisionAt(&mesh[i]))
+		{
+			result = false;
+			break;
+		}
+
+	return result;
+
+}
+
+int Terrain::size()
+{
+	return mesh.size();
 }

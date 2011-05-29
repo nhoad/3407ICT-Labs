@@ -6,15 +6,17 @@
 #include "SDL_ttf.h"
 // http://www.libsdl.org/projects/SDL_image/
 #include "SDL_image.h"
+#include "SDL_mixer.h"
 // http://glew.sourceforge.net/
+
 #include "glew.h"
 
-#include "Primitives.h"
-#include "Camera.h"
-
-// Include your headers here
-// #include "Primitives.h"
+#include <list>
 #include <vector>
+
+#include "Game.h"
+#include "Pacman.h"
+#include "Camera.h"
 
 /**
  * Top-tier class, handles mainloop, events, and other classes.
@@ -22,68 +24,68 @@
  */
 class Core
 {
-    /** Width and height of the rendering window. */
-    int width, height;
+	/** Width and height of the rendering window. */
+	int width, height;
 
-    /** fullscreen flag */
-    bool fullscreen;
+	/** fullscreen flag */
+	bool fullscreen;
 
-    /** The amount of time passed after each frame */
-    double elapsedTime;
+	/** The amount of time passed after each frame */
+	double elapsedTime;
 
-    /** Mainloop control toggle */
-    bool running;
+	/** Mainloop control toggle */
+	bool running;
 
-    /** Images */
-    SDL_Surface *terrainHeightMap;
+	/**
+	  Get a height from the heightmap using nice x and y coordinates
 
-    /** Objects */
-    Object terrain;
+	  \param heights the heightmap
+	  \param x x coordinate of desired heightmap value.
+	  \param y y coordinate of desired heightmap value (this should be your z value really)
+	  \param size the width or height of the height map (same size)
+	  \return heightmap value at x and y
+	  */
 
-    /** List of Objects */ // Optional but helpful
-    std::vector<Object*> objects;
+	Game * game;
 
-	unsigned int shaderProgram, vShader, fShader;
+	float timeframe;
 
 	Camera camera;
 
-	void createVBOs();
+	public:
+	/** Constructor. */
+	Core(int width=800, int height=600, bool fullscreen=false);
 
+	/** Destructor */
+	virtual ~Core();
 
-public:
-    /** Constructor. */
-    Core(int width=800, int height=600, bool fullscreen=false);
+	/** Starts the main loop. */
+	void start();
 
-    /** Destructor */
-    virtual ~Core();
+	protected:
+	/** Sets up rendering context. */
+	void initialise();
 
-    /** Starts the main loop. */
-    void start();
+	/** Prepares objects for rendering. */
+	void preprocess();
 
-protected:
-    /** Sets up rendering context. */
-    void initialise();
+	/** Draws to screen. */
+	void render();
 
-    /** Prepares objects for rendering. */
-    void preprocess();
+	/** Free any OpenGL resources here */
+	void cleanup();
 
-    /** Draws to screen. */
-    void render();
+	/** Handles user events. */
+	void handleEvents();
 
-    /** Free any OpenGL resources here */
-    void cleanup();
+	/** Generates a square ground plane, 1x1, with even tessellation into a VBO.
+	  xDiv and yDiv determines the number of polygon divisions on the plane.
+	  heights is the height map array.
+	  Result is stored in obj. */ //                       v- You may also use std::vector<float>
+	void createTerrain(int xDiv, int zDiv, GameEntity* _terrain, std::vector<float> heights);
 
-    /** Handles user events. */
-    void handleEvents();
+	/** Copies the data from the height map into memory. */
+	void fillTerrainHeights(int xDiv, int zDiv);
 
-    /** Generates a square ground plane, 1x1, with even tessellation into a VBO.
-        xDiv and yDiv determines the number of polygon divisions on the plane.
-        heights is the height map array.
-        Result is stored in obj. */ //                       v- You may also use std::vector<float>
-    void createTerrain(int xDiv, int zDiv, Object* _terrain, std::vector<float> heights);
-
-    /** Copies the data from the height map into memory. */
-    void fillTerrainHeights(int xDiv, int zDiv);
-
-    Vec4 getpixel24(SDL_Surface *surface, int x, int y);
+	Vec3 getpixel24(SDL_Surface *surface, int x, int y);
 };

@@ -1,91 +1,29 @@
 #pragma once
-
-// http://www.libsdl.org/
-#include "SDL.h"
-// http://www.libsdl.org/projects/SDL_ttf/
-#include "SDL_ttf.h"
-// http://www.libsdl.org/projects/SDL_image/
-#include "SDL_image.h"
-#include "SDL_mixer.h"
-// http://glew.sourceforge.net/
-
-#include "glew.h"
-
-#include <list>
 #include <vector>
-
+#include "Vec3.h"
 #include "Game.h"
-#include "Pacman.h"
-#include "Camera.h"
 
-/**
- * Top-tier class, handles mainloop, events, and other classes.
- * This class has been designed with a minimal style in mind.
- */
-class Core
+class Terrain
 {
-	/** Width and height of the rendering window. */
-	int width, height;
+	private:
+		int vbo, color_vbo;
+		std::vector<Vec3> mesh;
 
-	/** fullscreen flag */
-	bool fullscreen;
-
-	/** The amount of time passed after each frame */
-	double elapsedTime;
-
-	/** Mainloop control toggle */
-	bool running;
-
-	/**
-	  Get a height from the heightmap using nice x and y coordinates
-
-	  \param heights the heightmap
-	  \param x x coordinate of desired heightmap value.
-	  \param y y coordinate of desired heightmap value (this should be your z value really)
-	  \param size the width or height of the height map (same size)
-	  \return heightmap value at x and y
-	  */
-
-	Game * game;
-
-	float timeframe;
-
-	Camera camera;
+		bool testMovement(BoundingBox * b);
 
 	public:
-	/** Constructor. */
-	Core(int width=800, int height=600, bool fullscreen=false);
+		Terrain(unsigned int vbo, unsigned int color_vbo, std::vector<Vec3> mesh);
+		~Terrain();
 
-	/** Destructor */
-	virtual ~Core();
+		static float getHeight(std::vector<float> * heights, int x, int y, int y_step);
+		static Vec3 getColour(std::vector<float> * heights, int x, int y, int y_step);
 
-	/** Starts the main loop. */
-	void start();
+		void draw();
+		int size();
 
-	protected:
-	/** Sets up rendering context. */
-	void initialise();
+		bool canGoUp(GameEntity * g);
+		bool canGoDown(GameEntity * g);
+		bool canGoLeft(GameEntity * g);
+		bool canGoRight(GameEntity * g);
 
-	/** Prepares objects for rendering. */
-	void preprocess();
-
-	/** Draws to screen. */
-	void render();
-
-	/** Free any OpenGL resources here */
-	void cleanup();
-
-	/** Handles user events. */
-	void handleEvents();
-
-	/** Generates a square ground plane, 1x1, with even tessellation into a VBO.
-	  xDiv and yDiv determines the number of polygon divisions on the plane.
-	  heights is the height map array.
-	  Result is stored in obj. */ //                       v- You may also use std::vector<float>
-	void createTerrain(int xDiv, int zDiv, GameEntity* _terrain, std::vector<float> heights);
-
-	/** Copies the data from the height map into memory. */
-	void fillTerrainHeights(int xDiv, int zDiv);
-
-	Vec3 getpixel24(SDL_Surface *surface, int x, int y);
 };
