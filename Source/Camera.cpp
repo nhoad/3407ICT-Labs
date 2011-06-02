@@ -1,4 +1,4 @@
-#include "glut.h"
+#include "glew.h"
 
 #include "Camera.h"
 
