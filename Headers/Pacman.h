@@ -11,7 +11,6 @@
 #pragma once
 
 #include "Game.h"
-#include "HUD.h"
 #include "Terrain.h"
 
 #include <string>
@@ -23,9 +22,12 @@
 #define LEFT 3
 #define RIGHT 4
 
+class Pacman;
+
 class Ghost : public GameEntity
 {
 	public:
+		void checkDirection(Pacman * pacman, Terrain * terrain);
 		Ghost(Mesh * mesh, Mat4 * matrix, Vec3 * start, unsigned int vbo, unsigned int texture);
 		~Ghost();
 
@@ -65,7 +67,6 @@ class PacmanGame : public Game
 		std::vector<Ghost*> ghost_entities;
 		int lives, score;
 		unsigned int pacmanShader;
-		HUD * hud;
 
 		void loadGhosts();
 		void loadFood();
