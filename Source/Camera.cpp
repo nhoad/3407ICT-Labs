@@ -1,3 +1,10 @@
+/**
+ * High level camera implementation
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ *
+ * Description: Implementation of a high level camera
+ */
 #include "glew.h"
 
 #include "Camera.h"

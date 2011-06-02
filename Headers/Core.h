@@ -14,7 +14,6 @@
 #include <list>
 #include <vector>
 
-#include "Game.h"
 #include "Pacman.h"
 #include "Camera.h"
 
@@ -46,10 +45,10 @@ class Core
 	  \return heightmap value at x and y
 	  */
 
-	Game * game;
+	// Game object to control all game stuff
+	PacmanGame * game;
 
-	float timeframe;
-
+	// Camera object for high-level camera control
 	Camera camera;
 
 	public:

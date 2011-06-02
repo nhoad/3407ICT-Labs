@@ -1,10 +1,10 @@
 /**
- * 3407ICT Graphics Programming
- * Tutorial Graphics Rendering Framework
- * @author Nathan Hoad (nathan@getoffmalawn.com)
- * Student Number: s2754580
+ * Misc String functions
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ *
+ * Description: Various string funtions that C++ really could have used
  */
-
 #include <string>
 using std::string;
 

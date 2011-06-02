@@ -3,6 +3,7 @@
 
 class Vec4;
 
+/// 3D vector class
 class Vec3
 {
 	public:

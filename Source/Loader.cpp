@@ -1,8 +1,10 @@
-/*e
- * 3407ICT Graphics Programming
- * Tutorial Graphics Rendering Framework
- * @author Nathan Hoad (nathan@getoffmalawn.com)
- * Student Number: s2754580
+/**
+ * Loader object implementation.
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ *
+ * Description: Implementation of the Loader class. Provides high level
+ * functionality for various open GL functions to simplify development
  */
 #pragma once
 

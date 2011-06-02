@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 
+/// 2D vector class
 class Vec2
 {
 	public:

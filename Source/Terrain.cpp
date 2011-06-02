@@ -1,3 +1,10 @@
+/**
+ * Terrain implementation
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ *
+ * Implementation of the Terrain class for loading terrain from a heightmap
+ */
 #include "Terrain.h"
 #include "glew.h"
 

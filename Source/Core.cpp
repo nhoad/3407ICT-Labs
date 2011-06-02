@@ -67,7 +67,7 @@ Core::~Core()
 void Core::initialise()
 {
 	// Initialise SDL with C-style error checking
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		cerr << SDL_GetError() << endl;
 		SDL_Quit();
 	}
@@ -142,7 +142,9 @@ void Core::start()
 		}
 		else
 		{
-			SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(count)).c_str(), "");
+			SDL_WM_SetCaption(string("Pacman, by Nathan Hoad 2011 - FPS: " + typeToString<int>(count)
+				+ string(" Score: " + typeToString<int>(game->score))
+				+ string(" Lives: " + typeToString<int>(game->lives))).c_str(), "");
 			avg = 0;
 			count = 0;
 		}

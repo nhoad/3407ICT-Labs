@@ -48,11 +48,37 @@ class Loader
 		 */
 		static unsigned int linkShader(unsigned int vertex, unsigned int fragment);
 
+		/**
+			Load a texture from a file and buffer it.
+
+			\param file the filename of the texture to load
+			\return texture buffer id of the buffered texture
+		*/
 		static unsigned int loadTexture(std::string file);
 
+		/**
+			Create a terrain from a heightmap
+
+			\param heightmap filename of the heightmap image to load
+			\return divisions the distance between each point on the heightmap. Influences overall height as well
+		*/
 		static Terrain * loadTerrain(std::string heightmap, float divisions);
 
+		/**
+		   Get the colour values of a pixel on an SDL_Surface
+
+			\param img the SDL_Surface to retrieve a color from
+			\param x the x coordinate of the desired pixel
+			\param y the y coordinate of the desired pixel
+			\return a Vec3 containing R, G and B components
+		*/
 		static Vec3 getPixel(SDL_Surface * img, int x, int y);
 
+		/**
+			Buffer a mesh to a VBO. This is useful when you need to buffer one Mesh for many GameEntities to save space.
+
+			\param mesh the mesh to buffer
+			\return the vbo id
+		*/
 		static unsigned int buffer(Mesh * mesh);
 };

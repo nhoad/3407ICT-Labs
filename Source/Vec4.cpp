@@ -1,3 +1,8 @@
+/**
+ * Vec4 implementation
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ */
 #include "Vec4.h"
 #include "Vec3.h"
 

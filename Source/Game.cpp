@@ -1,3 +1,10 @@
+/**
+ * Game object implementation
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ *
+ * Description: Implementation of a Game object for a graphics engine
+ */
 #include "Game.h"
 #include "Loader.h"
 

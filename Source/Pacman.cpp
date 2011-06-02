@@ -1,7 +1,11 @@
+/**
+ * Pacman class implementation
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ *
+ * Description: Implementation of the Pacman class for a Pacman player object
+ */
 #include "Pacman.h"
-#include <iostream>
-using std::cout;
-using std::endl;
 
 Pacman::Pacman() : GameEntity("Assets/sphere.obj", "Assets/pacmanTexture.png", new Mat4(), new Vec3(12, 0, 9))
 {

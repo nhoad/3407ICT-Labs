@@ -1,3 +1,8 @@
+/**
+ * Vec2 implementation
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ */
 #include "Vec2.h"
 
 #include <cmath>

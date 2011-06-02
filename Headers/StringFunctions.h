@@ -42,9 +42,7 @@ template <typename T> T stringToType(std::string text)
 template <typename T> std::string typeToString(T thing)
 {
 	std::ostringstream converter;
-
 	converter << thing;
-
 	return converter.str();
 }
 

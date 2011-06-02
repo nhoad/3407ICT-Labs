@@ -215,9 +215,31 @@ class GameEntity
 		*/
 		virtual void move(double x_amount, double y_amount, double z_amount);
 
+		/**
+			Getter for the GameEntity's transformation matrix. Do NOT delete this.
+
+			\return this object's transformation matrix.
+		*/
 		virtual Mat4 * getMatrix();
+
+		/**
+			Getter for the GameEntity's local coordinates. Do NOT delete this.
+
+			\return this object's transformation matrix.
+		*/
 		virtual Vec3 * getLocalCoordinates();
+
+		/**
+			Getter for the GameEntity's world coordinates, i.e. the local
+			coordinates multiplied by the transformation matrix
+		*/
 		virtual Vec3 getWorldCoordinates();
+
+		/**
+			Getter for the GameEntity's bounding box for collision detection. Do NOT delete this.
+
+			\return this object's transformation matrix.
+		*/
 		virtual BoundingBox * getBoundingBox();
 };
 
@@ -244,6 +266,12 @@ class BoundingBox
 		*/
 		bool collisionAt(Vec3 * position);
 
+		/**
+			Recalculate the BoundingBox's worldMin and worldMax according to changes in the parent object's coordinates
+
+			\param offset_axis the axis to offset on amount. Useful for detecting collisions before they occur. Should be X_AXIS, Y_AXIS, Z_AXIS or NONE_AXIS for none.
+			\param amount the amount to offset your offset_axis by. 0 if you don't want to change it
+		*/
 		void calculateWorld(int offset_axis, float amount);
 
 	private:

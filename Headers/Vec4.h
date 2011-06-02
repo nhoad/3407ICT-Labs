@@ -3,7 +3,7 @@
 
 class Vec3;
 
-/** Vec4 class repesenting a 1x4 matrix. */
+/// 4D vector class
 class Vec4
 {
 	public:

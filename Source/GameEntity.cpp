@@ -1,3 +1,10 @@
+/**
+ * GameEntity object implementation
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ *
+ * Description: Implementation of a GameEntity object in a world
+ */
 #include "Game.h"
 
 #include "Loader.h"

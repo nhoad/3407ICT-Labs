@@ -1,3 +1,10 @@
+/**
+ * PacmanGame class implementation
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ *
+ * Description: Implementation of the PacmanGame class for the Pacman game
+ */
 #include "Loader.h"
 #include "Pacman.h"
 

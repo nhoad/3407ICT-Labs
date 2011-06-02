@@ -1,3 +1,10 @@
+/**
+ * Mat4 implementation
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ *
+ * Description: Implementation of the Mat4 class for a 4x4 matrix.
+ */
 #include "Mat4.h"
 #include "Vec4.h"
 

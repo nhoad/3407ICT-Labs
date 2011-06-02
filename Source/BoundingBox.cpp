@@ -1,11 +1,13 @@
+/**
+ * BoundingBox collision implementation
+ * Author: Nathan Hoad.
+ * Date: 20th May 2011
+ *
+ * Description: Implementation of bounding box collision
+ */
 #include "Game.h"
 
 using std::vector;
-
-#include <iostream>
-using std::cout;
-using std::endl;
-
 
 BoundingBox::BoundingBox(Mat4 * matrix, Vec3 * coordinates, Mesh * mesh)
 {
